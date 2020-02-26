@@ -1,0 +1,195 @@
+apply plugin: 'com.android.application'
+//Android美团多渠道打包Walle集成
+apply plugin: 'walle'
+
+android {
+    compileSdkVersion project.ANDROID_BUILD_SDK_VERSION as int
+    //关闭Android Studio的PNG合法性检查,将Eclipse项目导入到Android studio 中 很多点9图出现问题解决方法：
+    // 用来关闭Android Studio的PNG合法性检查的，直接不让它检查。
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+    defaultConfig {
+        applicationId project.APPLICATION_ID // lib项目不需要配置这一项
+        versionCode project.VERSION_CODE as int
+        versionName project.VERSION_NAME
+        minSdkVersion project.ANDROID_BUILD_MIN_SDK_VERSION as int
+        targetSdkVersion project.ANDROID_BUILD_TARGET_SDK_VERSION as int
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //指定EventBus加速用的Index
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [eventBusIndex: "com.example.baseapplication.MyEventBusIndex"]
+            }
+        }
+        manifestPlaceholders = [
+                qq_id: ""
+        ]
+        multiDexEnabled true
+    }
+    signingConfigs {// 自动化打包配置
+        config {
+            keyAlias project.KEY_ALIAS
+            keyPassword project.KEY_PASSWORD
+            storeFile file('../key_boniu_videoplayer.jks')
+            storePassword project.STORE_PASSWORD
+        }
+    }
+    buildTypes {
+        //android代码编译成apk后如果没有进行任何防护措施是很容易被反编译的，并且反编译的结果甚至就是简单的源码，
+        // 带来的损失可大可小。幸好，AndroidStudio提供编译代码加密，即ProGuard。
+        release {
+            minifyEnabled false//是否进行代码混淆
+            /*proguardFiles 代码加密原则 有两个文件对，getDefaultProguardFile(‘proguard-android.txt’)表示默认文件，
+            这个文件是sdk自带的，有一些通用的配置；但是如果apk需要更加严格的加密，我们可以在’proguard-rules.pro’文件中进行更加详尽的配置。*/
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //是否清理无用资源,如果我们需要移除项目无用资源，就必须同时打开混淆配置
+            shrinkResources false
+            //是否启用zipAlign压缩
+            zipAlignEnabled false
+            pseudoLocalesEnabled true//是否在APK中生成伪语言环境，帮助国际化的东西，一般使用的不多
+            signingConfig signingConfigs.config//设置签名信息
+        }
+        debug {
+            minifyEnabled false//true：启用混淆,false:不启用
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            zipAlignEnabled false
+            pseudoLocalesEnabled true
+            signingConfig signingConfigs.config
+            debuggable true//是否支持断点调试
+            jniDebuggable true//是否可以调试NDK代码
+            renderscriptDebuggable true//是否开启渲染脚本就是一些c写的渲染方法
+        }
+    }
+    //配置目录指向
+    //配置 jniLibs.srcDirs = ['libs']，可以在Android studio的Android视图下生成jniLibs文件夹，
+    // 可以方便我们存放jar包和库文件
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            assets.srcDirs = ['assets']
+        }
+    }
+    packagingOptions {//打包时的相关配置
+        //pickFirsts做用是 当有重复文件时 打包会报错 这样配置会使用第一个匹配的文件打包进入apk
+        // 表示当apk中有重复的META-INF目录下有重复的LICENSE文件时 只用第一个 这样打包就不会报错
+        pickFirsts = ['META-INF/LICENSE']
+        //merges何必 当出现重复文件时 合并重复的文件 然后打包入apk
+        //这个是有默认值得 merges = [] 这样会把默默认值去掉 所以我们用下面这种方式 在默认值后添加
+        merge 'META-INF/LICENSE'
+        //这个是在同时使用butterknife、dagger2做的一个处理。同理，遇到类似的问题，只要根据gradle的提示，做类似处理即可。
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+    //程序在编译的时候会检查lint，有任何错误提示会停止build，我们可以关闭这个开关
+    lintOptions {
+        abortOnError false //即使报错也不会停止打包
+        checkReleaseBuilds false //打包release版本的时候进行检测
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.annotation:annotation:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    //网络请求，Retrofit2作为网络请求适配器，实际网络请求是okhttp
+    implementation project(':rxeasyhttp')
+    //倒计时控件
+    implementation project(':countdown_library')
+    //新手引导控件
+    implementation project(':guideview')
+    //瀑布流控件
+    implementation project(':stagger_library')
+    //时间，省市滚轮控件
+    implementation project(':wheelview')
+    //时间，省市滚轮控件
+    implementation project(':pickerview')
+    //TabLayout控件，类似今日头条顶部导航效果
+    implementation project(':FlycoTabLayout_Lib')
+    //底部弹框控件
+    implementation project(':bottomdialog')
+    //知乎图片选择框架，支持选择GIF图和视频
+    implementation project(':matisse')
+    //仿微信拍照Android控件（轻触拍照，长按摄像）
+    implementation project(':camera')
+    //空祖家的对话框(支持iOS风格和MD风格)
+    implementation project(':dialog')
+    //功能强大，UI简洁，交互优雅的通用弹窗(主要用作查看大图)
+    implementation project(':library')
+    //微光加载效果
+    implementation project(':shimmerlayout')
+    //RxPermission权限申请
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    //Glide图片加载
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    //EventBus事件总线
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    //用于eventbus在编译时生成加速用的Index文件
+    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.1.1'
+    //资源绑定
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    //用于butterknife在编译时根据注解生成相关文件
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    //文件下载控件，支持断点续传，用于检测更新apk
+    implementation 'com.liulishuo.filedownloader:library:1.7.6'
+    //微信SDK
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    //支付宝SDK
+    implementation(name: 'alipaySdk-15.6.5-20190718211148', ext: 'aar')
+    //今日头条屏幕适配方案终极版，一个极低成本的 Android 屏幕适配方案
+    implementation 'me.jessyan:autosize:1.1.2'
+    //侧滑退出
+    implementation 'me.imid.swipebacklayout.lib:library:1.1.0'
+    //通用适配器
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
+    //Rxjava2 & RxAndroid2
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.13'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    //广告图片轮播控件
+    implementation 'com.youth.banner:banner:1.4.10'
+    //下拉刷新、上拉加载
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0'
+    //AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库
+    implementation 'com.just.agentweb:agentweb:4.1.2' // (必选)
+    implementation 'com.just.agentweb:filechooser:4.1.2'// (可选)
+    implementation 'com.download.library:Downloader:4.1.2'// (可选)
+    //json解析
+    implementation 'com.google.code.gson:gson:2.8.6'
+    //可能是最接近微信朋友圈的图片压缩算法
+    implementation 'top.zibin:Luban:1.1.8'
+    //二维码扫描功能
+    implementation 'cn.yipianfengye.android:zxing-library:2.2'
+    //Android平台下的富文本解析器，支持Html和Markdown
+    implementation 'com.zzhoujay.richtext:richtext:3.0.8'
+    //当项目的总方法数查过65536个时，需要用到分包
+    implementation 'androidx.multidex:multidex:2.0.0'
+    //Android美团多渠道打包Walle集成
+    implementation 'com.meituan.android.walle:library:1.1.6'
+    //图片裁剪框架
+    implementation 'com.github.yalantis:ucrop:2.2.4-native'
+    //沉浸式(基础依赖包，必须要依赖)
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    //fragment快速实现（可选）
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+    //kotlin扩展（可选）
+    implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
+}
+
+walle {
+    // 指定渠道包的输出路径
+    apkOutputFolder = new File("${project.buildDir}/outputs/channels")
+    // 定制渠道包的APK的文件名称
+    apkFileNameFormat = '${channel}-${buildType}-v${versionName}-${versionCode}-${buildTime}.apk'
+    // 渠道配置文件
+    channelFile = new File("${project.getProjectDir()}/channel")
+}

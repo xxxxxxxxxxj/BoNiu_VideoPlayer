@@ -1,0 +1,183 @@
+<resources>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+        <!-- 该属性解决某些系统上layer-list bottom属性看上去失效，实际上是没算上虚拟导航栏的高度 -->
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:windowFullscreen">true</item><!--全屏-->
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="CollapsingTopBarLayoutExpanded">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="CollapsingTopBarLayoutCollapsed">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+    <!--loadingdialog样式-->
+    <style name="QMUI.TipDialog" parent="android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="qmui_tip_dialog_wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">110dp</item>
+        <item name="android:minHeight">110dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:alpha">0.9</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:background">@drawable/qmui_tip_dialog_bg</item>
+    </style>
+    <!--popwindow样式-->
+    <style name="QMUI.Animation" parent="@android:style/Animation" />
+
+    <style name="QMUI.Animation.PopUpMenu" />
+
+    <style name="QMUI.Animation.PopUpMenu.Center">
+        <item name="android:windowEnterAnimation">@anim/grow_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_top</item>
+    </style>
+
+    <style name="QMUI.Animation.PopUpMenu.Left">
+        <item name="android:windowEnterAnimation">@anim/grow_from_bottomleft_to_topright</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_topright_to_bottomleft</item>
+    </style>
+
+    <style name="QMUI.Animation.PopUpMenu.Right">
+        <item name="android:windowEnterAnimation">@anim/grow_from_bottomright_to_topleft</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_topleft_to_bottomright</item>
+    </style>
+
+    <style name="QMUI.Animation.PopDownMenu" />
+
+    <style name="QMUI.Animation.PopDownMenu.Center">
+        <item name="android:windowEnterAnimation">@anim/grow_from_top</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_bottom</item>
+    </style>
+
+    <style name="QMUI.Animation.PopDownMenu.Left">
+        <item name="android:windowEnterAnimation">@anim/grow_from_topleft_to_bottomright</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_bottomright_to_topleft</item>
+    </style>
+
+    <style name="QMUI.Animation.PopDownMenu.Right">
+        <item name="android:windowEnterAnimation">@anim/grow_from_topright_to_bottomleft</item>
+        <item name="android:windowExitAnimation">@anim/shrink_from_bottomleft_to_topright</item>
+    </style>
+    <!--用于控制toolbar溢出菜单的样式-->
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TabLayoutTextStyle" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+    <!--控制头部据appbar的样式-->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="NoTitleTranslucentTheme" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="loadingdialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowBackground">@drawable/bg_loading_round</item>
+    </style>
+
+    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/bg_dialog_confirm</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="windowNoTitle">true</item>
+        <!--Appbar背景色，应用的主要色调，actionBar默认使用该颜色-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!--状态栏颜色，应用的主要暗色调，statusBarColor默认使用该颜色-->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--状态栏颜色，默认使用colorPrimaryDark-->
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- 项目中button不规范使用会造成样式变形，这里把button样式覆盖为最普通的样式，以避免老代码样式走样-->
+        <item name="android:buttonStyle">@android:style/Widget.Button</item>
+        <item name="android:navigationBarColor"/>
+        <!--ToolBar上的Title颜色-->
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        <!--一般控件的选种效果默认采用该颜色-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- 设置activity切换动画 -->
+        <item name="android:windowAnimationStyle">@style/activityAnimation</item>
+        <item name="android:windowContentOverlay">@null</item><!--是否有遮盖-->
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+    <!-- animation 样式 -->
+    <style name="activityAnimation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_still</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_still</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        &lt;!&ndash;Appbar背景色，应用的主要色调，actionBar默认使用该颜色&ndash;&gt;
+        <item name="android:colorPrimary">@color/material_animations_primary</item>
+        &lt;!&ndash;状态栏颜色，应用的主要暗色调，statusBarColor默认使用该颜色&ndash;&gt;
+        <item name="android:colorPrimaryDark">@color/material_animations_primary_dark</item>
+        &lt;!&ndash;状态栏颜色，默认使用colorPrimaryDark&ndash;&gt;
+        <item name="android:statusBarColor">@color/material_animations_primary_dark</item>
+        &lt;!&ndash;页面背景色&ndash;&gt;
+        <item name="android:windowBackground">@color/light_grey</item>
+        &lt;!&ndash;底部导航栏颜色&ndash;&gt;
+        <item name="android:navigationBarColor">@color/navigationColor</item>
+        &lt;!&ndash;应用的主要文字颜色，actionBar的标题文字默认使用该颜色&ndash;&gt;
+        <item name="android:textColorPrimary">@android:color/black</item>
+        &lt;!&ndash;ToolBar上的Title颜色&ndash;&gt;
+        <item name="android:textColorPrimaryInverse">@color/text_light</item>
+        &lt;!&ndash;应用的前景色，ListView的分割线，switch滑动区默认使用该颜色&ndash;&gt;
+        <item name="android:colorForeground">@color/colorForeground</item>
+        &lt;!&ndash;应用的背景色，popMenu的背景默认使用该颜色&ndash;&gt;
+        <item name="android:colorBackground">@color/colorForeground</item>
+        &lt;!&ndash;一般控件的选种效果默认采用该颜色&ndash;&gt;
+        <item name="android:colorAccent">@color/colorAccent</item>
+        &lt;!&ndash;控件选中时的颜色，默认使用colorAccent&ndash;&gt;
+        <item name="android:colorControlActivated">@color/colorControlActivated</item>
+        &lt;!&ndash;各个控制控件的默认颜色&ndash;&gt;
+        <item name="android:colorControlNormal">@color/colorControlNormal</item>
+        &lt;!&ndash;Button，textView的文字颜色&ndash;&gt;
+        <item name="android:textColor">@color/text_dark</item>
+        &lt;!&ndash;RadioButton checkbox等控件的文字&ndash;&gt;
+        <item name="android:textColorPrimaryDisableOnly">@color/text_dark</item>
+        &lt;!&ndash;默认按钮的背景颜色&ndash;&gt;
+        <item name="android:colorButtonNormal">@color/text_dark</item>
+        &lt;!&ndash;控件按压时的色调&ndash;&gt;
+        <item name="android:colorControlHighlight">@color/colorControlHighlight</item>
+        &lt;!&ndash;title 标题栏字体设置&ndash;&gt;
+        <item name="android:titleTextAppearance">@style/MaterialAnimations.TextAppearance.Title
+        </item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">false</item>
+        <item name="android:windowAllowReturnTransitionOverlap">false</item>
+    </style>-->
+</resources>

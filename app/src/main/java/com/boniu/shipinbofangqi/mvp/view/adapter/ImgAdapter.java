@@ -1,0 +1,70 @@
+package com.boniu.shipinbofangqi.mvp.view.adapter;
+
+import android.app.Activity;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.mvp.view.widget.NiceImageView;
+import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.GlideUtil;
+import com.boniu.shipinbofangqi.util.QMUIDisplayHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * <p>Title:${type_name}</p>
+ * <p>Description:</p>
+ * <p>Company:北京昊唐科技有限公司</p>
+ *
+ * @author 徐俊
+ * @date zhoujunxia on 2019-10-23 12:50
+ */
+public class ImgAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+    private final float offSet;
+    private Activity mActivity;
+    private List<Object> imgList = new ArrayList<Object>();
+
+    public ImgAdapter(Activity mActivity, int layoutResId, List<String> data, float offSet) {
+        super(layoutResId, data);
+        this.mActivity = mActivity;
+        this.offSet = offSet;
+        imgList.clear();
+        for (int i = 0; i < mData.size(); i++) {
+            imgList.add(mData.get(i));
+        }
+    }
+
+    @Override
+    protected void convert(final BaseViewHolder helper, String item) {
+        NiceImageView iv_item_img = helper.getView(R.id.iv_item_img);
+        int windowWidth = QMUIDisplayHelper.getScreenWidth(mContext);
+        int imgWidth = (windowWidth - QMUIDisplayHelper.dp2px(mContext, (int) offSet)) / 3;
+        int imgHeight = imgWidth;
+        ViewGroup.LayoutParams layoutParams = iv_item_img.getLayoutParams();
+        layoutParams.width = imgWidth;
+        layoutParams.height = imgHeight;
+        iv_item_img.setLayoutParams(layoutParams);
+        GlideUtil.displayImage(mContext, item, iv_item_img);
+        iv_item_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecyclerView recyclerView = (RecyclerView) helper.itemView.getParent();
+                CommonUtil.photoView(mActivity, iv_item_img, recyclerView, helper.getLayoutPosition(), imgList);
+            }
+        });
+    }
+
+    public void setImgData(List<String> data) {
+        imgList.clear();
+        for (int i = 0; i < data.size(); i++) {
+            imgList.add(data.get(i));
+        }
+        notifyDataSetChanged();
+    }
+}
