@@ -56,7 +56,6 @@ import com.boniu.shipinbofangqi.permission.PermissionListener;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.FileSizeUtil;
-import com.boniu.shipinbofangqi.util.PatchManipulateImp;
 import com.boniu.shipinbofangqi.util.PayUtils;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.QMUIDisplayHelper;
@@ -69,9 +68,6 @@ import com.kongzue.dialog.v3.MessageDialog;
 import com.kongzue.dialog.v3.Notification;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
-import com.meituan.robust.Patch;
-import com.meituan.robust.PatchExecutor;
-import com.meituan.robust.RobustCallBack;
 import com.zzhoujay.richtext.RichText;
 import com.zzhoujay.richtext.callback.OnUrlClickListener;
 
@@ -504,7 +500,6 @@ public class ShopFragment extends BaseFragment<ShopFragPresenter> implements ISh
                         getPhoto();
                         break;
                     case 28://加载robust补丁
-                        new PatchExecutor(mActivity, new PatchManipulateImp(), new callBack()).start();
                         break;
                     case 29://测试robust
                         startActivity(RobustActivity.class);
@@ -529,33 +524,6 @@ public class ShopFragment extends BaseFragment<ShopFragPresenter> implements ISh
                 }
             }
         });
-    }
-
-    private class callBack implements RobustCallBack {
-        @Override
-        public void onPatchListFetched(boolean result, boolean isNet, List<Patch> patches) {
-
-        }
-
-        @Override
-        public void onPatchFetched(boolean result, boolean isNet, Patch patch) {
-
-        }
-
-        @Override
-        public void onPatchApplied(boolean result, Patch patch) {
-
-        }
-
-        @Override
-        public void logNotify(String log, String where) {
-
-        }
-
-        @Override
-        public void exceptionNotify(Throwable throwable, String where) {
-
-        }
     }
 
     private void addGoodToCar() {
