@@ -38,7 +38,7 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
-        android:name="com.boniu.shipinbofangqi.app.MApplication"
+        android:name=".app.MApplication"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -71,7 +71,7 @@
             android:value="640" />
 
         <activity
-            android:name="com.boniu.shipinbofangqi.mvp.view.activity.FlashActivity"
+            android:name=".mvp.view.activity.FlashActivity"
             android:launchMode="singleTop"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -89,30 +89,33 @@
                     android:host="app"
                     android:path="/activitypath"
                     android:port="8888"
-                    android:scheme="baseapp" />
+                    android:scheme="boniu_videoplayer" />
             </intent-filter>
         </activity>
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.MainActivity" />
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.FlipperActivity" />
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.StickLayoutActivity" />
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.StaggerActivity" />
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.CameraActivity" />
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.ScanCodeActivity" />
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.ShimmerActivity" />
-        <activity android:name="com.boniu.shipinbofangqi.mvp.view.activity.RobustActivity" />
         <activity
-            android:name="com.boniu.shipinbofangqi.mvp.view.activity.WebViewActivity"
+            android:name=".mvp.view.activity.LoginActivity"
+            android:windowSoftInputMode="stateAlwaysVisible" />
+        <activity android:name=".mvp.view.activity.MainActivity" />
+        <activity android:name=".mvp.view.activity.FlipperActivity" />
+        <activity android:name=".mvp.view.activity.StickLayoutActivity" />
+        <activity android:name=".mvp.view.activity.StaggerActivity" />
+        <activity android:name=".mvp.view.activity.CameraActivity" />
+        <activity android:name=".mvp.view.activity.ScanCodeActivity" />
+        <activity android:name=".mvp.view.activity.ShimmerActivity" />
+        <activity android:name=".mvp.view.activity.RobustActivity" />
+        <activity
+            android:name=".mvp.view.activity.WebViewActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true" />
         <activity
-            android:name="com.boniu.shipinbofangqi.wxapi.WXEntryActivity"
+            android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:taskAffinity="net.sourceforge.simcpux"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name="com.boniu.shipinbofangqi.wxapi.WXPayEntryActivity"
+            android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop" />
         <activity

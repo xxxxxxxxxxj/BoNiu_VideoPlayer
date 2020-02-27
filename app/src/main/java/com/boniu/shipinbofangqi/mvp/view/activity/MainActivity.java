@@ -48,7 +48,6 @@ import com.flyco.tablayout.widget.MsgView;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.MessageDialog;
-import com.meituan.android.walle.WalleChannelReader;
 import com.yalantis.ucrop.UCrop;
 import com.zhihu.matisse.Matisse;
 import com.zhouyou.http.EasyHttp;
@@ -93,8 +92,6 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        String channel = WalleChannelReader.getChannel(this.getApplicationContext());
-        RingLog.e("channel = " + channel);
     }
 
     @Override

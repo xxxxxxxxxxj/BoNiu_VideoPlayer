@@ -23,43 +23,44 @@ package com.zhouyou.http.model;
  * 版本： v1.0<br>
  */
 public class ApiResult<T> {
-    private int code;
-    private String msg;
-    private T data;
+    private int errorCode;
+    private String errorMsg;
+    private T result;
+
     public int getCode() {
-        return code;
+        return errorCode;
     }
 
     public void setCode(int code) {
-        this.code = code;
+        this.errorCode = code;
     }
 
     public String getMsg() {
-        return msg;
+        return errorMsg;
     }
 
     public void setMsg(String msg) {
-        this.msg = msg;
+        this.errorMsg = msg;
     }
 
     public T getData() {
-        return data;
+        return result;
     }
 
     public void setData(T data) {
-        this.data = data;
+        this.result = data;
     }
 
     public boolean isOk() {
-        return code == 0;
+        return errorCode == 0;
     }
 
     @Override
     public String toString() {
         return "ApiResult{" +
-                "code='" + code + '\'' +
-                ", msg='" + msg + '\'' +
-                ", data=" + data +
+                "errorCode='" + errorCode + '\'' +
+                ", errorMsg='" + errorMsg + '\'' +
+                ", result=" + result +
                 '}';
     }
 }

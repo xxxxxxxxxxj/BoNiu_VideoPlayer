@@ -11,4 +11,9 @@ package com.boniu.shipinbofangqi.util;
 public class Global {
     public static final int H5_TO_LOGIN = 1;
     public static int WXPAYCODE = -1;
+
+    public static final String SP_KEY_ISAGREEPRIVACY = "SP_KEY_ISAGREEPRIVACY";
+    public static final String SP_KEY_ISJUMPLOGIN = "SP_KEY_ISJUMPLOGIN";
+    public static final String SP_KEY_ISLOGIN = "SP_KEY_ISLOGIN";
+    public static final String SP_KEY_ISOPENFINGER = "SP_KEY_ISOPENFINGER";
 }
