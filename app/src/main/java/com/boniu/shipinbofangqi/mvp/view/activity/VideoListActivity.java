@@ -16,8 +16,10 @@ import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.VideoAdapter;
+import com.boniu.shipinbofangqi.sqllite.dao.BoNiuFolderDao;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuVideoDao;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.FileSizeUtil;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
@@ -53,6 +55,7 @@ public class VideoListActivity extends BaseActivity {
     private BoNiuVideoDao boNiuVideoDao;
     private List<BoNiuVideoInfo> videoList = new ArrayList<BoNiuVideoInfo>();
     private VideoAdapter videoAdapter;
+    private BoNiuFolderDao boNiuFolderDao;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(RefreshVideoEvent event) {
@@ -84,7 +87,10 @@ public class VideoListActivity extends BaseActivity {
     protected void initData(Bundle savedInstanceState) {
         boniu_folder_id = getIntent().getIntExtra("boniu_folder_id", 0);
         boniu_folder_name = getIntent().getStringExtra("boniu_folder_name");
+        RingLog.e("boniu_folder_id = " + boniu_folder_id);
+        RingLog.e("boniu_folder_name = " + boniu_folder_name);
         boNiuVideoDao = new BoNiuVideoDao(mActivity);
+        boNiuFolderDao = new BoNiuFolderDao(mActivity);
     }
 
     @Override
@@ -132,9 +138,16 @@ public class VideoListActivity extends BaseActivity {
                                 } else if (index == 1) {
                                     Bundle bundle = new Bundle();
                                     bundle.putInt("boniu_video_id", boniu_video_id);
+                                    bundle.putInt("boniu_folder_id", boniu_folder_id);
                                     startActivity(FolderListActivity.class, bundle);
                                 } else if (index == 2) {
                                     boNiuVideoDao.updateVideoFolder(boniu_video_id, 0);
+                                    double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
+                                    String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
+                                    if(formatSize.equals("0.00M")){
+                                        sizeByFolderId = 0.00;
+                                    }
+                                    boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
                                     setData();
                                     RingToast.show("视频移出成功");
                                     EventBus.getDefault().post(new RefreshVideoEvent());
@@ -143,6 +156,12 @@ public class VideoListActivity extends BaseActivity {
                                         @Override
                                         public boolean onClick(BaseDialog baseDialog, View v) {
                                             boNiuVideoDao.deleteById(boniu_video_id);
+                                            double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
+                                            String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
+                                            if(formatSize.equals("0.00M")){
+                                                sizeByFolderId = 0.00;
+                                            }
+                                            boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
                                             setData();
                                             RingToast.show("视频删除成功");
                                             EventBus.getDefault().post(new RefreshVideoEvent());

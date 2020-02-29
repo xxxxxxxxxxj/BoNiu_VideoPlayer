@@ -75,6 +75,34 @@ public class BoNiuFolderDao {
     }
 
     /**
+     * 查询除了指定文件夹之外的所有文件夹
+     *
+     * @return
+     */
+    public List<BoNiuFolderInfo> getAll(int local_boniu_folder_id) {
+        List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select * from boniu_folder where boniu_folder_id!=? order by boniu_folder_id desc";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_folder_id)});
+        while (cursor.moveToNext()) {
+            int boniu_folder_id = cursor.getInt(0);
+            String boniu_folder_name = cursor.getString(1);
+            String boniu_folder_formatmemory = cursor.getString(2);
+            double boniu_folder_memory = cursor.getDouble(3);
+            String boniu_folder_createtime = cursor.getString(4);
+            BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
+                    boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
+                    boniu_folder_createtime);
+            list.add(boNiuFolderInfo);
+        }
+        cursor.close();
+        database.close();
+        RingLog.e("list = " + list.toString());
+        return list;
+    }
+
+    /**
      * 判断文件夹是否已存在
      *
      * @return

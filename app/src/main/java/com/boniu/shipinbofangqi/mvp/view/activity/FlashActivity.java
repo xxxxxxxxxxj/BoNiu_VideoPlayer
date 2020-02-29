@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.boniu.shipinbofangqi.R;
@@ -159,6 +160,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 startActivity(MainActivity.class, true);
                 break;
             case R.id.rl_flash_root:
+                fingerNum = 0;
                 //判断是否开启指纹识别
                 boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
                 if (ISOPENFINGER) {
@@ -183,6 +185,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
 
     private void startAgainFingerDialog() {
         startAgainfingerDialog = MessageDialog.show(mActivity, "", "", "再次尝试指纹识别", "取消")
+                .setButtonOrientation(LinearLayout.VERTICAL)
                 .setCustomView(R.layout.layout_startagainfinger_dialog, new MessageDialog.OnBindView() {
                     @Override
                     public void onBind(MessageDialog dialog, View v) {
@@ -204,7 +207,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     }
 
     private void showFingerFailDialog() {
-        fingerFailDialog = MessageDialog.show(mActivity, "", "", "", "取消")
+        fingerFailDialog = MessageDialog.show(mActivity, "", "", "取消")
                 .setCustomView(R.layout.layout_fingerfail_dialog, new MessageDialog.OnBindView() {
                     @Override
                     public void onBind(MessageDialog dialog, View v) {
@@ -318,8 +321,19 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 //判断是否跳转登录
                 boolean ISJUMPLOGIN = spUtil.getBoolean(Global.SP_KEY_ISJUMPLOGIN, false);
                 if (ISJUMPLOGIN) {
-                    //直接进入首页
-                    startActivity(MainActivity.class, true);
+                    //判断是否开启指纹识别
+                    boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                    if (ISOPENFINGER) {
+                        tv_flash_shouquan.setVisibility(View.VISIBLE);
+                        //开启指纹识别
+                        if (!mFingerprintCore.isAuthenticating()) {
+                            mFingerprintCore.startAuthenticate();
+                        }
+                        startFingerDialog();
+                    } else {
+                        //直接进入首页
+                        startActivity(MainActivity.class, true);
+                    }
                 } else {
                     spUtil.saveBoolean(Global.SP_KEY_ISJUMPLOGIN, true);
                     //先进入首页

@@ -8,4 +8,80 @@
 
     <include layout="@layout/include_toolbar" />
 
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/srl_fragresources"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbarSize="7dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_track">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_fragmy_finger"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <Switch
+                            android:id="@+id/sh_fragmy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:switchMinWidth="20dp"
+                            android:textOff="off"
+                            android:textOn="on"
+                            android:thumb="@drawable/thumb"
+                            android:track="@drawable/track" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/sh_fragmy"
+                            android:gravity="center_vertical">
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="20dip"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/icon_appoint_close" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="开启面容/指纹识别"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 </LinearLayout>

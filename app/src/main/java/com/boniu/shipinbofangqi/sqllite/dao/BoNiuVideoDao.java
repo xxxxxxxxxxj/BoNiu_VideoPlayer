@@ -111,8 +111,8 @@ public class BoNiuVideoDao {
         List<BoNiuVideoInfo> list = new ArrayList<BoNiuVideoInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select * from boniu_video where boniu_video_folder_id=local_boniu_video_folder_id order by boniu_video_id desc";
-        Cursor cursor = database.rawQuery(sql, null);
+        String sql = "select * from boniu_video where boniu_video_folder_id=? order by boniu_video_id desc";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_video_folder_id)});
         while (cursor.moveToNext()) {
             int boniu_video_id = cursor.getInt(0);
             String boniu_video_name = cursor.getString(1);
@@ -143,8 +143,8 @@ public class BoNiuVideoDao {
         double totalSize = 0;
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select boniu_video_memory from boniu_video where boniu_video_folder_id=local_boniu_video_folder_id order by boniu_video_id desc";
-        Cursor cursor = database.rawQuery(sql, null);
+        String sql = "select boniu_video_memory from boniu_video where boniu_video_folder_id=? order by boniu_video_id desc";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_video_folder_id)});
         while (cursor.moveToNext()) {
             double boniu_video_memory = cursor.getDouble(0);
             totalSize = QMUILangHelper.add(totalSize, boniu_video_memory);

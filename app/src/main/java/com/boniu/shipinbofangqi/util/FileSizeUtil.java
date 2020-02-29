@@ -148,7 +148,7 @@ public class FileSizeUtil {
      */
     public static String formatFileSize(long size, boolean isInteger) {
         DecimalFormat df = isInteger ? fileIntegerFormat : fileDecimalFormat;
-        String fileSizeString = "0M";
+        String fileSizeString = "0.00M";
         if (size < 1024 && size > 0) {
             fileSizeString = df.format((double) size) + "B";
         } else if (size < 1024 * 1024) {
@@ -158,6 +158,9 @@ public class FileSizeUtil {
         } else {
             fileSizeString = df.format((double) size / (1024 * 1024 * 1024))
                     + "G";
+        }
+        if (fileSizeString.equals("0B") || fileSizeString.equals("0K") || fileSizeString.equals("0M") || fileSizeString.equals("0G")) {
+            fileSizeString = "0.00M";
         }
         return fileSizeString;
     }
@@ -220,9 +223,9 @@ public class FileSizeUtil {
         return size;
     }
 
-    public static String formatSeconds(long seconds){
+    public static String formatSeconds(long seconds) {
         String standardTime;
-        if (seconds <= 0){
+        if (seconds <= 0) {
             standardTime = "00:00";
         } else if (seconds < 60) {
             standardTime = String.format(Locale.getDefault(), "00:%02d", seconds % 60);

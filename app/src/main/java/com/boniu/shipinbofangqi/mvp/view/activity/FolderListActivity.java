@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuFolderInfo;
 import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
@@ -45,6 +46,7 @@ public class FolderListActivity extends BaseActivity {
     private List<BoNiuFolderInfo> folderList = new ArrayList<BoNiuFolderInfo>();
     private FolderAdapter folderAdapter;
     private int boniu_video_id;
+    private int boniu_folder_id;
     private BoNiuVideoDao boNiuVideoDao;
 
     @Override
@@ -69,6 +71,9 @@ public class FolderListActivity extends BaseActivity {
     @Override
     protected void initData(Bundle savedInstanceState) {
         boniu_video_id = getIntent().getIntExtra("boniu_video_id", 0);
+        boniu_folder_id = getIntent().getIntExtra("boniu_folder_id", 0);
+        RingLog.e("boniu_video_id = " + boniu_video_id);
+        RingLog.e("boniu_folder_id = " + boniu_folder_id);
         boNiuVideoDao = new BoNiuVideoDao(mActivity);
         boNiuFolderDao = new BoNiuFolderDao(mActivity);
     }
@@ -82,9 +87,19 @@ public class FolderListActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.ll_item_videofrag_video_root:
                         boNiuVideoDao.updateVideoFolder(boniu_video_id, boNiuFolderInfo.getBoniu_folder_id());
-                        double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_video_id);
+                        double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boNiuFolderInfo.getBoniu_folder_id());
                         String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
+                        if(formatSize.equals("0.00M")){
+                            sizeByFolderId = 0.00;
+                        }
                         boNiuFolderDao.updateFolderSize(boNiuFolderInfo.getBoniu_folder_id(), sizeByFolderId, formatSize);
+
+                        double sizeByFolderId1 = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
+                        String formatSize1 = FileSizeUtil.formatFileSize((long) sizeByFolderId1, false);
+                        if(formatSize1.equals("0.00M")){
+                            sizeByFolderId1 = 0.00;
+                        }
+                        boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId1, formatSize1);
                         EventBus.getDefault().post(new RefreshVideoEvent());
                         finish();
                         break;
@@ -96,7 +111,7 @@ public class FolderListActivity extends BaseActivity {
     @Override
     protected void loadData() {
         folderList.clear();
-        folderList.addAll(boNiuFolderDao.getAll());
+        folderList.addAll(boNiuFolderDao.getAll(boniu_folder_id));
         folderAdapter.notifyDataSetChanged();
         if (folderList.size() <= 0) {
             folderAdapter.setEmptyView(setEmptyViewBase(2, "您还没有创建文件夹", null));

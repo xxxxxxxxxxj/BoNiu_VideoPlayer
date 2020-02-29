@@ -304,6 +304,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                                         @Override
                                         public boolean onClick(BaseDialog baseDialog, View v) {
                                             boNiuFolderDao.deleteById(boniu_folder_id);
+                                            boNiuVideoDao.deleteByFolderId(boniu_folder_id);
                                             setData();
                                             RingToast.show("文件夹删除成功");
                                             return false;
@@ -331,7 +332,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                 DialogSettings.theme = DialogSettings.THEME.LIGHT;
                 DialogSettings.tipTheme = DialogSettings.THEME.DARK;
                 InputDialog.build(mActivity)
-                        .setTitle("新建文件夹").setMessage("请输入文件夹名称")
+                        .setTitle("新建文件夹").setMessage("")
                         .setOkButton("确定", new OnInputDialogButtonClickListener() {
                             @Override
                             public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
