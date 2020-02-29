@@ -8,8 +8,6 @@ import com.boniu.shipinbofangqi.util.GetDeviceId;
 import com.boniu.shipinbofangqi.util.QMUIPackageHelper;
 import com.zhouyou.http.model.HttpHeaders;
 
-import java.net.URLEncoder;
-
 /**
  * <p>Title:${type_name}</p>
  * <p>Description:</p>
@@ -104,8 +102,9 @@ public class UrlConstants {
 
     public static HttpHeaders getHeaders(Context mContext) {
         HttpHeaders headers = new HttpHeaders();
+        headers.put(HttpHeaders.HEAD_KEY_CONTENT_TYPE, "application/json");
         headers.put("uuid", GetDeviceId.readDeviceID(mContext));
-        headers.put("appName", URLEncoder.encode(QMUIPackageHelper.getAppName(mContext)));
+        headers.put("appName", "SHIPINBOFANGQI_BONIU");
         headers.put("brand", android.os.Build.BRAND);
         headers.put("channel", ChannelUtil.getChannel(mContext));
         headers.put("deviceModel", android.os.Build.MODEL);
@@ -115,6 +114,7 @@ public class UrlConstants {
                 + android.os.Build.VERSION.RELEASE);
         headers.put("petTimeStamp", String.valueOf(System.currentTimeMillis()));
         RingLog.e("headers = " + headers.toString());
+        RingLog.e("toJSONString = " + headers.toJSONString());
         return headers;
     }
 }

@@ -270,17 +270,17 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
         RingLog.e("getAccountInfoSuccess() accountInfoBean = " + accountInfoBean);
         hideLoadDialog();
         spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
-        setJumpLogic();
+        //setJumpLogic();
     }
 
     @Override
     public void getAccountInfoFail(int status, String desc) {
         hideLoadDialog();
-        RingLog.e("checkVersionFail() status = " + status + "---desc = " + desc);
+        RingLog.e("getAccountInfoFail() status = " + status + "---desc = " + desc);
         if (status == AppConfig.EXIT_USER_CODE) {
             spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, false);
         }
-        setJumpLogic();
+        //setJumpLogic();
     }
 
     private void setJumpLogic() {

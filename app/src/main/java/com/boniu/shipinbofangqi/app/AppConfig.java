@@ -25,7 +25,7 @@ public class AppConfig {
     public static final int environmental = 1;//1.test环境---2.demo环境---3.线上环境
     public static final int ALI_SDK_PAY_FLAG = 1000;
     public static final int REQUEST_CODE_CHOOSE = 23;
-    public static final String KEYWORD = "BASE_APP";
+    public static final String KEYWORD = "boniu_player";
     public static final String DIRECTORY_CAPTURE = "base_capture";//拍照存储图片的文件夹
     public static final String DIRECTORY_CROP = "base_crop";//裁剪存储图片的文件夹
     public static final String DIRECTORY_LUBAN = "base_luban";//鲁班压缩存储图片的文件夹
