@@ -2,13 +2,7 @@ package com.kongzue.dialog.v3;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.DrawableRes;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +10,12 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.kongzue.dialog.R;
+import com.kongzue.dialog.interfaces.OnBackClickListener;
 import com.kongzue.dialog.interfaces.OnShowListener;
 import com.kongzue.dialog.interfaces.OnDismissListener;
 import com.kongzue.dialog.util.BaseDialog;
@@ -26,6 +25,8 @@ import com.kongzue.dialog.util.view.BlurView;
 import com.kongzue.dialog.util.view.ProgressView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -57,6 +58,7 @@ public class TipDialog extends BaseDialog {
     
     private RelativeLayout boxBody;
     private RelativeLayout boxBlur;
+    private RelativeLayout boxProgress;
     private ProgressView progress;
     private RelativeLayout boxTip;
     private TextView txtInfo;
@@ -78,7 +80,6 @@ public class TipDialog extends BaseDialog {
                     waitDialogTemp = waitDialog;
                 } else {
                     waitDialog = waitDialogTemp;
-                    return null;
                 }
             }
             waitDialog.log("装载提示/等待框: " + waitDialog.toString());
@@ -220,12 +221,16 @@ public class TipDialog extends BaseDialog {
     
     @Override
     public void bindView(View rootView) {
-        
+        if (boxTip != null) {
+            boxTip.removeAllViews();
+        }
+        if (boxBlur != null) {
+            boxBlur.removeAllViews();
+        }
         this.rootView = rootView;
-        
-        if (boxBlur != null) boxBlur.removeAllViews();
         boxBody = rootView.findViewById(R.id.box_body);
         boxBlur = rootView.findViewById(R.id.box_blur);
+        boxProgress = rootView.findViewById(R.id.box_progress);
         progress = rootView.findViewById(R.id.progress);
         boxTip = rootView.findViewById(R.id.box_tip);
         txtInfo = rootView.findViewById(R.id.txt_info);
@@ -262,10 +267,10 @@ public class TipDialog extends BaseDialog {
                     bkgResId = R.drawable.rect_light;
                     int darkColor = Color.rgb(0, 0, 0);
                     blurFrontColor = Color.argb(blurAlpha, 255, 255, 255);
-                    progress.setStrokeColors(new int[]{darkColor});
+                    progress.setup(R.color.black);
                     txtInfo.setTextColor(darkColor);
                     if (type != null) {
-                        progress.setVisibility(View.GONE);
+                        boxProgress.setVisibility(View.GONE);
                         boxTip.setVisibility(View.VISIBLE);
                         switch (type) {
                             case OTHER:
@@ -282,7 +287,7 @@ public class TipDialog extends BaseDialog {
                                 break;
                         }
                     } else {
-                        progress.setVisibility(View.VISIBLE);
+                        boxProgress.setVisibility(View.VISIBLE);
                         boxTip.setVisibility(View.GONE);
                     }
                     break;
@@ -290,10 +295,10 @@ public class TipDialog extends BaseDialog {
                     bkgResId = R.drawable.rect_dark;
                     int lightColor = Color.rgb(255, 255, 255);
                     blurFrontColor = Color.argb(blurAlpha, 0, 0, 0);
-                    progress.setStrokeColors(new int[]{lightColor});
+                    progress.setup(R.color.white);
                     txtInfo.setTextColor(lightColor);
                     if (type != null) {
-                        progress.setVisibility(View.GONE);
+                        boxProgress.setVisibility(View.GONE);
                         boxTip.setVisibility(View.VISIBLE);
                         switch (type) {
                             case OTHER:
@@ -310,7 +315,7 @@ public class TipDialog extends BaseDialog {
                                 break;
                         }
                     } else {
-                        progress.setVisibility(View.VISIBLE);
+                        boxProgress.setVisibility(View.VISIBLE);
                         boxTip.setVisibility(View.GONE);
                     }
                     break;
@@ -356,7 +361,7 @@ public class TipDialog extends BaseDialog {
             }
             
             if (customView != null) {
-                progress.setVisibility(View.GONE);
+                boxProgress.setVisibility(View.GONE);
                 boxTip.setBackground(null);
                 boxTip.setVisibility(View.VISIBLE);
                 boxTip.addView(customView);
@@ -418,8 +423,10 @@ public class TipDialog extends BaseDialog {
     public static void dismiss() {
         if (waitDialogTemp != null) waitDialogTemp.doDismiss();
         waitDialogTemp = null;
-        for (BaseDialog dialog:dialogList){
-            if (dialog instanceof TipDialog){
+        List<BaseDialog> temp = new ArrayList<>();
+        temp.addAll(dialogList);
+        for (BaseDialog dialog : temp) {
+            if (dialog instanceof TipDialog) {
                 dialog.doDismiss();
             }
         }
@@ -556,5 +563,14 @@ public class TipDialog extends BaseDialog {
     
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+    }
+    
+    public OnBackClickListener getOnBackClickListener() {
+        return onBackClickListener;
+    }
+    
+    public TipDialog setOnBackClickListener(OnBackClickListener onBackClickListener) {
+        this.onBackClickListener = onBackClickListener;
+        return this;
     }
 }

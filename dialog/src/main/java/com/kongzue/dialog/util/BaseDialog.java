@@ -1,23 +1,25 @@
 package com.kongzue.dialog.util;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.kongzue.dialog.R;
+import com.kongzue.dialog.interfaces.OnBackClickListener;
 import com.kongzue.dialog.interfaces.OnShowListener;
 import com.kongzue.dialog.interfaces.OnDismissListener;
 import com.kongzue.dialog.v3.BottomMenu;
@@ -38,7 +40,6 @@ import java.util.List;
  */
 public abstract class BaseDialog {
     
-    protected Handler mainHandler = new Handler(Looper.getMainLooper());
     protected static WeakReference<AppCompatActivity> newContext;
     
     public BaseDialog() {
@@ -78,6 +79,7 @@ public abstract class BaseDialog {
     protected OnDismissListener onDismissListener;
     protected OnDismissListener dismissEvent;
     protected OnShowListener onShowListener;
+    protected OnBackClickListener onBackClickListener;
     
     public void log(Object o) {
         if (DialogSettings.DEBUGMODE) Log.i(">>>", o.toString());
@@ -117,6 +119,7 @@ public abstract class BaseDialog {
             @Override
             public void onDismiss() {
                 log("# dismissEvent");
+                dismissEvent();
                 dismissedFlag = true;
                 isShow = false;
                 dialogList.remove(baseDialog);
@@ -127,9 +130,9 @@ public abstract class BaseDialog {
             }
         };
         dialogList.add(this);
-        if (!DialogSettings.modalDialog){
+        if (!DialogSettings.modalDialog) {
             showNow();
-        }else{
+        } else {
             if (baseDialog instanceof TipDialog) {
                 showNow();
             } else {
@@ -167,8 +170,8 @@ public abstract class BaseDialog {
     private void showNow() {
         log("# showNow: " + toString());
         isShow = true;
-        if (context.get().isDestroyed()) {
-            if (newContext.get() == null) {
+        if (context.get() == null || context.get().isDestroyed()) {
+            if (newContext == null || newContext.get() == null) {
                 error("Context错误的指向了一个已被关闭的Activity或者Null，有可能是Activity因横竖屏切换被重启或者您手动执行了unload()方法，请确认其能够正确指向一个正在使用的Activity");
                 return;
             }
@@ -190,12 +193,26 @@ public abstract class BaseDialog {
         dialog.get().setOnShowListener(new DialogHelper.PreviewOnShowListener() {
             @Override
             public void onShow(Dialog dialog) {
+                showEvent();
                 if (DialogSettings.dialogLifeCycleListener != null)
                     DialogSettings.dialogLifeCycleListener.onShow(BaseDialog.this);
+                dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        boolean flag = false;
+                        if (onBackClickListener != null) {
+                            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                                return flag = onBackClickListener.onBackClick();
+                            }
+                        }
+                        return flag;
+                    }
+                });
             }
         });
-        if (DialogSettings.systemDialogStyle == 0 && style == DialogSettings.STYLE.STYLE_IOS && !(baseDialog instanceof TipDialog) && !(baseDialog instanceof BottomMenu) && !(baseDialog instanceof ShareDialog))
+        if (DialogSettings.systemDialogStyle == 0 && style == DialogSettings.STYLE.STYLE_IOS && !(baseDialog instanceof TipDialog) && !(baseDialog instanceof BottomMenu) && !(baseDialog instanceof ShareDialog)) {
             dialog.get().setAnim(R.style.iOSDialogAnimStyle);
+        }
         
         if (baseDialog instanceof TipDialog) {
             if (cancelable == null)
@@ -204,9 +221,7 @@ public abstract class BaseDialog {
             if (cancelable == null)
                 cancelable = DialogSettings.cancelable ? BOOLEAN.TRUE : BOOLEAN.FALSE;
         }
-        if (dialog != null) {
-            dialog.get().setCancelable(cancelable == BOOLEAN.TRUE);
-        }
+        dialog.get().setCancelable(cancelable == BOOLEAN.TRUE);
     }
     
     public abstract void bindView(View rootView);
@@ -219,7 +234,9 @@ public abstract class BaseDialog {
     
     public void doDismiss() {
         dismissedFlag = true;
-        dialog.get().dismiss();
+        if (dialog != null && dialog.get() != null) {
+            dialog.get().dismiss();
+        }
     }
     
     protected void initDefaultSettings() {
@@ -292,22 +309,43 @@ public abstract class BaseDialog {
     }
     
     protected int getRootHeight() {
-        int diaplayHeight = 0;
+        int displayHeight = 0;
         Display display = context.get().getWindowManager().getDefaultDisplay();
         Point point = new Point();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             display.getRealSize(point);
-            diaplayHeight = point.y;
+            displayHeight = point.y;
         } else {
             DisplayMetrics dm = new DisplayMetrics();
             context.get().getWindowManager().getDefaultDisplay().getMetrics(dm);
-            diaplayHeight = dm.heightPixels;
+            displayHeight = dm.heightPixels;
         }
-        return diaplayHeight;
+        return displayHeight;
+    }
+    
+    protected int getRootWidth() {
+        int displayWidth = 0;
+        Display display = context.get().getWindowManager().getDefaultDisplay();
+        Point point = new Point();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealSize(point);
+            displayWidth = point.x;
+        } else {
+            DisplayMetrics dm = new DisplayMetrics();
+            context.get().getWindowManager().getDefaultDisplay().getMetrics(dm);
+            displayWidth = dm.widthPixels;
+        }
+        return displayWidth;
     }
     
     protected int getNavigationBarHeight() {
-        int result = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            WindowInsets windowInsets = null;
+            windowInsets = context.get().getWindow().getDecorView().getRootView().getRootWindowInsets();
+            if (windowInsets != null) {
+                return windowInsets.getStableInsetBottom();
+            }
+        }
         int resourceId = 0;
         int rid = context.get().getResources().getIdentifier("config_showNavigationBar", "bool", "android");
         if (rid != 0) {
@@ -316,5 +354,13 @@ public abstract class BaseDialog {
         } else {
             return 0;
         }
+    }
+    
+    protected void showEvent() {
+    
+    }
+    
+    protected void dismissEvent() {
+    
     }
 }

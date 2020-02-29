@@ -1,7 +1,6 @@
 package com.kongzue.dialog.util;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 
 import androidx.renderscript.Element;
@@ -93,11 +92,15 @@ public class DialogSettings {
     //全局提示框背景资源，值0时不生效
     public static int tipBackgroundResId = 0;
     
+    //输入对话框，是否自动弹出输入键盘
+    public static boolean autoShowInputKeyboard = false;
+    
     //检查Renderscript支持性
     public static boolean checkRenderscriptSupport(Context context) {
         boolean isSupport = true;
         try {
-            DialogSettings.class.getClassLoader().loadClass("android.support.v8.renderscript.RenderScript");
+            DialogSettings.class.getClassLoader().loadClass("android.graphics.drawable.RippleDrawable");
+            DialogSettings.class.getClassLoader().loadClass("androidx.renderscript.RenderScript");
         } catch (ClassNotFoundException e) {
             isSupport = false;
             if (DEBUGMODE) {
@@ -113,7 +116,7 @@ public class DialogSettings {
             blurScript = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
         } catch (Exception e) {
             isSupport = false;
-        }finally {
+        } finally {
             if (renderScript != null) {
                 renderScript.destroy();
                 renderScript = null;
@@ -126,12 +129,12 @@ public class DialogSettings {
         isUseBlur = isSupport;
         
         if (DEBUGMODE) {
-            Log.i(">>>", "检查Renderscript支持性: "+isSupport);
+            Log.i(">>>", "检查Renderscript支持性: " + isSupport);
         }
         return isSupport;
     }
     
-    public static void init(){
+    public static void init() {
         BaseDialog.reset();
     }
 }

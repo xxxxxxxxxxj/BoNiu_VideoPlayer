@@ -21,6 +21,21 @@ public class BoNiuVideoInfo implements Serializable {
     private int boniu_video_folder_id;
     private String boniu_video_length;
 
+    @Override
+    public String toString() {
+        return "BoNiuVideoInfo{" +
+                "boniu_video_id=" + boniu_video_id +
+                ", boniu_video_name='" + boniu_video_name + '\'' +
+                ", boniu_video_coverimg='" + boniu_video_coverimg + '\'' +
+                ", boniu_video_formatmemory='" + boniu_video_formatmemory + '\'' +
+                ", boniu_video_createtime='" + boniu_video_createtime + '\'' +
+                ", boniu_video_memory=" + boniu_video_memory +
+                ", boniu_video_url='" + boniu_video_url + '\'' +
+                ", boniu_video_folder_id=" + boniu_video_folder_id +
+                ", boniu_video_length='" + boniu_video_length + '\'' +
+                '}';
+    }
+
     public BoNiuVideoInfo(int boniu_video_id, String boniu_video_name, String boniu_video_coverimg, String boniu_video_formatmemory, String boniu_video_createtime, double boniu_video_memory, String boniu_video_url, int boniu_video_folder_id, String boniu_video_length) {
         this.boniu_video_id = boniu_video_id;
         this.boniu_video_name = boniu_video_name;

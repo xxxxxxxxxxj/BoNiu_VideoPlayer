@@ -1,5 +1,6 @@
 package com.kongzue.dialog.v3;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,14 +19,14 @@ import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.kongzue.dialog.R;
+import com.kongzue.dialog.interfaces.OnBackClickListener;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
-import com.kongzue.dialog.interfaces.OnDismissListener;
 import com.kongzue.dialog.interfaces.OnShowListener;
+import com.kongzue.dialog.interfaces.OnDismissListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.util.DialogSettings;
 import com.kongzue.dialog.util.TextInfo;
@@ -51,9 +52,9 @@ public class MessageDialog extends BaseDialog {
     
     protected int buttonOrientation;
     
-    private OnDialogButtonClickListener onOkButtonClickListener;
-    private OnDialogButtonClickListener onCancelButtonClickListener;
-    private OnDialogButtonClickListener onOtherButtonClickListener;
+    protected OnDialogButtonClickListener onOkButtonClickListener;
+    protected OnDialogButtonClickListener onCancelButtonClickListener;
+    protected OnDialogButtonClickListener onOtherButtonClickListener;
     
     protected Drawable okButtonDrawable;
     protected Drawable cancelButtonDrawable;
@@ -265,9 +266,9 @@ public class MessageDialog extends BaseDialog {
                         btnSelectOther.setBackgroundResource(R.drawable.button_menu_ios_center_dark);
                         btnSelectNegative.setBackgroundResource(R.drawable.button_dialog_ios_left_dark);
                     }
-                    if (backgroundResId!=-1){
+                    if (backgroundResId != -1) {
                         bkg.setBackgroundResource(backgroundResId);
-                    }else{
+                    } else {
                         if (DialogSettings.isUseBlur) {
                             bkg.post(new Runnable() {
                                 @Override
@@ -589,14 +590,14 @@ public class MessageDialog extends BaseDialog {
     private ViewTreeObserver.OnGlobalLayoutListener blurViewRefreshLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
-            if (isShow){
-                if (bkg!=null && blurView!=null){
+            if (isShow) {
+                if (bkg != null && blurView != null) {
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bkg.getHeight());
                     blurView.setLayoutParams(params);
                     blurView.requestLayout();
                 }
-            }else{
-                if (bkg!=null) {
+            } else {
+                if (bkg != null) {
                     bkg.getViewTreeObserver().removeOnGlobalLayoutListener(blurViewRefreshLayoutListener);
                 }
             }
@@ -613,6 +614,7 @@ public class MessageDialog extends BaseDialog {
         useTextInfo(txtDialogTip, messageTextInfo);
         useTextInfo(btnSelectNegative, buttonTextInfo);
         useTextInfo(btnSelectOther, buttonTextInfo);
+        useTextInfo(btnSelectPositive, buttonTextInfo);
         useTextInfo(btnSelectPositive, buttonPositiveTextInfo);
     }
     
@@ -1009,5 +1011,14 @@ public class MessageDialog extends BaseDialog {
     
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+    }
+    
+    public OnBackClickListener getOnBackClickListener() {
+        return onBackClickListener;
+    }
+    
+    public MessageDialog setOnBackClickListener(OnBackClickListener onBackClickListener) {
+        this.onBackClickListener = onBackClickListener;
+        return this;
     }
 }

@@ -2,6 +2,7 @@ package com.kongzue.dialog.v3;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
@@ -13,6 +14,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -529,7 +532,7 @@ public class Notification {
                 boxCustom.setVisibility(View.VISIBLE);
                 boxCustom.addView(customView);
                 rootView.setDispatchTouchEvent(false);
-                if (onBindView!=null)onBindView.onBind(this,customView);
+                if (onBindView != null) onBindView.onBind(this, customView);
             } else {
                 boxCustom.setVisibility(View.GONE);
                 rootView.setDispatchTouchEvent(true);
@@ -575,7 +578,7 @@ public class Notification {
             toast.setDuration(durationTime.ordinal());
             toast.setView(view);
             toast.getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            
+    
             view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View v) {
@@ -603,7 +606,10 @@ public class Notification {
                         params.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
                         params.width = WindowManager.LayoutParams.MATCH_PARENT;
                         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                        
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                        }
+    
                         Field tnNextViewField = mTN.getClass().getDeclaredField("mNextView");
                         tnNextViewField.setAccessible(true);
                         tnNextViewField.set(mTN, toast.getView());
@@ -817,11 +823,11 @@ public class Notification {
         return this;
     }
     
-    private  OnBindView onBindView;
+    private OnBindView onBindView;
     
     public Notification setCustomView(int customViewLayoutId, OnBindView onBindView) {
         customView = LayoutInflater.from(context.get()).inflate(customViewLayoutId, null);
-        this.onBindView=onBindView;
+        this.onBindView = onBindView;
         refreshView();
         return this;
     }

@@ -3,9 +3,6 @@ package com.kongzue.dialog.v3;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,7 +19,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.kongzue.dialog.R;
+import com.kongzue.dialog.interfaces.OnBackClickListener;
 import com.kongzue.dialog.interfaces.OnShowListener;
 import com.kongzue.dialog.interfaces.OnDismissListener;
 import com.kongzue.dialog.interfaces.OnMenuItemClickListener;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.kongzue.dialog.util.DialogSettings.blurAlpha;
+import static com.kongzue.dialog.util.DialogSettings.menuTitleInfo;
 
 /**
  * Author: @Kongzue
@@ -57,6 +59,7 @@ public class BottomMenu extends BaseDialog {
     private TextInfo menuTitleTextInfo;
     private TextInfo cancelButtonTextInfo;
     
+    private LinearLayout boxRoot;
     private LinearLayout boxBody;
     private RelativeLayout boxList;
     private TextView txtTitle;
@@ -66,6 +69,8 @@ public class BottomMenu extends BaseDialog {
     private ViewGroup boxCancel;
     private TextView btnCancel;
     private TextInfo menuTextInfo;
+    private ImageView imgTab;
+    private ImageView imgSplit;
     
     private BottomMenu() {
     }
@@ -157,7 +162,9 @@ public class BottomMenu extends BaseDialog {
         log("启动底部菜单 -> " + toString());
         this.rootView = rootView;
         if (boxCustom != null) boxCustom.removeAllViews();
+        boxRoot = rootView.findViewById(R.id.box_root);
         boxBody = rootView.findViewById(R.id.box_body);
+        imgTab = rootView.findViewById(R.id.img_tab);
         boxList = rootView.findViewById(R.id.box_list);
         txtTitle = rootView.findViewById(R.id.txt_title);
         boxCustom = rootView.findViewById(R.id.box_custom);
@@ -165,6 +172,129 @@ public class BottomMenu extends BaseDialog {
         listMenu = rootView.findViewById(R.id.list_menu);
         boxCancel = rootView.findViewById(R.id.box_cancel);
         btnCancel = rootView.findViewById(R.id.btn_cancel);
+        imgSplit = rootView.findViewById(R.id.img_split);
+        
+        switch (style) {
+            case STYLE_MATERIAL:
+                boxCancel.setVisibility(View.GONE);
+                boxBody.setY(getRootHeight());
+                boxBody.setVisibility(View.VISIBLE);
+                boxBody.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (boxBody.getHeight() > getRootHeight() * 2 / 3) {
+                            boxBody.setY(boxBody.getHeight());
+                            boxBody.animate().setDuration(300).translationY(boxBody.getHeight() / 2);
+                        } else {
+                            boxBody.animate().setDuration(300).translationY(0);
+                        }
+                    }
+                });
+                listMenu.setOnTouchListener(listViewTouchListener);
+                boxBody.setOnTouchListener(listViewTouchListener);
+                
+                if (theme == DialogSettings.THEME.LIGHT) {
+                    boxBody.setBackgroundResource(R.drawable.rect_bottom_dialog);
+                    imgTab.setBackgroundResource(R.drawable.rect_share_material_tab);
+                    txtTitle.setTextColor(context.get().getResources().getColor(R.color.tipTextColor));
+                } else {
+                    boxBody.setBackgroundResource(R.drawable.rect_bottom_dialog_dark);
+                    imgTab.setBackgroundResource(R.drawable.rect_share_material_tab_dark);
+                    txtTitle.setTextColor(context.get().getResources().getColor(R.color.materialDarkTitleColor));
+                }
+                
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window window = dialog.get().getDialog().getWindow();
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    dialog.get().getDialog().getWindow().setNavigationBarColor(Color.WHITE);
+                    boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
+                }
+                break;
+            case STYLE_KONGZUE:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window window = dialog.get().getDialog().getWindow();
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.setNavigationBarColor(Color.WHITE);
+                    boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
+                    
+                    if (theme == DialogSettings.THEME.LIGHT) {
+                        boxRoot.setBackgroundColor(context.get().getResources().getColor(R.color.menuSplitSpaceKongzue));
+                        txtTitle.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                        boxCustom.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                        listMenu.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                        boxCancel.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                        imgSplit.setBackgroundColor(context.get().getResources().getColor(R.color.menuSplitSpaceKongzue));
+                        btnCancel.setTextColor(context.get().getResources().getColor(R.color.dark));
+                        btnCancel.setBackgroundResource(R.drawable.button_menu_kongzue);
+                        txtTitle.setTextColor(context.get().getResources().getColor(R.color.tipTextColor));
+                    } else {
+                        boxRoot.setBackgroundColor(context.get().getResources().getColor(R.color.kongzueDarkBkgColor));
+                        txtTitle.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                        boxCustom.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                        listMenu.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                        boxCancel.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                        imgSplit.setBackgroundColor(context.get().getResources().getColor(R.color.kongzueDarkBkgColor));
+                        btnCancel.setTextColor(context.get().getResources().getColor(R.color.materialDarkTextColor));
+                        btnCancel.setBackgroundResource(R.drawable.button_menu_kongzue_dark);
+                        txtTitle.setTextColor(context.get().getResources().getColor(R.color.materialDarkTitleColor));
+                    }
+                    
+                    //设置底部导航栏按钮暗色，无效，悬赏解决————
+                    View decorView = window.getDecorView();
+                    int vis = decorView.getSystemUiVisibility();
+                    vis |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                    vis |= WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
+                    vis |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                    decorView.setSystemUiVisibility(vis);
+                }
+                break;
+            case STYLE_IOS:
+                final int bkgResId, blurFrontColor;
+                if (theme == DialogSettings.THEME.LIGHT) {
+                    bkgResId = R.drawable.rect_menu_bkg_ios;
+                    blurFrontColor = Color.argb(blurAlpha, 244, 245, 246);
+                    btnCancel.setBackgroundResource(R.drawable.button_menu_ios_light);
+                    listMenu.setDivider(new ColorDrawable(context.get().getResources().getColor(R.color.dialogSplitIOSLight)));
+                    listMenu.setDividerHeight(1);
+                    titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSLight));
+                } else {
+                    bkgResId = R.drawable.rect_menu_bkg_ios;
+                    blurFrontColor = Color.argb(blurAlpha + 10, 22, 22, 22);
+                    btnCancel.setBackgroundResource(R.drawable.button_menu_ios_dark);
+                    listMenu.setDivider(new ColorDrawable(context.get().getResources().getColor(R.color.dialogSplitIOSDark)));
+                    listMenu.setDividerHeight(1);
+                    titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSDark));
+                }
+                if (DialogSettings.isUseBlur) {
+                    boxList.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            blurList = new BlurView(context.get(), null);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxList.getHeight());
+                            blurList.setOverlayColor(blurFrontColor);
+                            blurList.setRadius(context.get(), 11, 11);
+                            boxList.addView(blurList, 0, params);
+                        }
+                    });
+                    boxCancel.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            blurCancel = new BlurView(context.get(), null);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxCancel.getHeight());
+                            blurCancel.setOverlayColor(blurFrontColor);
+                            blurCancel.setRadius(context.get(), 11, 11);
+                            boxCancel.addView(blurCancel, 0, params);
+                        }
+                    });
+                } else {
+                    boxList.setBackgroundResource(bkgResId);
+                    boxCancel.setBackgroundResource(bkgResId);
+                }
+                break;
+        }
         
         refreshView();
         if (onShowListener != null) onShowListener.onShow(this);
@@ -176,120 +306,48 @@ public class BottomMenu extends BaseDialog {
     @Override
     public void refreshView() {
         if (cancelButtonTextInfo == null) cancelButtonTextInfo = menuTextInfo;
-        if (menuTitleTextInfo == null) menuTitleTextInfo = DialogSettings.menuTitleInfo;
+        if (menuTitleTextInfo == null) menuTitleTextInfo = menuTitleInfo;
         if (menuTextInfo == null) menuTextInfo = DialogSettings.menuTextInfo;
         if (cancelButtonText == null) cancelButtonText = "取消";
         
         if (rootView != null) {
             btnCancel.setText(cancelButtonText);
             
-            ((ViewGroup)boxBody.getParent()).setOnClickListener(new View.OnClickListener() {
+            ((ViewGroup) boxBody.getParent()).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     doDismiss();
                 }
             });
             
-            if (showCancelButton) {
-                if (boxCancel != null) boxCancel.setVisibility(View.VISIBLE);
-            } else {
-                if (boxCancel != null) boxCancel.setVisibility(View.GONE);
-            }
-            
             switch (style) {
                 case STYLE_MATERIAL:
-                    boxCancel.setVisibility(View.GONE);
-                    
                     if (customAdapter != null) {
                         menuArrayAdapter = customAdapter;
                     } else {
                         menuArrayAdapter = new NormalMenuArrayAdapter(context.get(), R.layout.item_bottom_menu_material, menuTextList);
                     }
                     listMenu.setAdapter(menuArrayAdapter);
-                    
-                    boxBody.setY(getRootHeight());
-                    boxBody.setVisibility(View.VISIBLE);
-                    boxBody.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (boxBody.getHeight() > getRootHeight() * 2 / 3) {
-                                boxBody.setY(boxBody.getHeight());
-                                boxBody.animate().setDuration(300).translationY(boxBody.getHeight() / 2);
-                            }else{
-                                boxBody.animate().setDuration(300).translationY(0);
-                            }
-                        }
-                    });
-                    listMenu.setOnTouchListener(listViewTouchListener);
-                    boxBody.setOnTouchListener(listViewTouchListener);
-                    
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = dialog.get().getDialog().getWindow();
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        dialog.get().getDialog().getWindow().setNavigationBarColor(Color.WHITE);
-                        boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
-                    }
                     break;
                 case STYLE_KONGZUE:
+                    if (showCancelButton) {
+                        if (boxCancel != null) boxCancel.setVisibility(View.VISIBLE);
+                    } else {
+                        if (boxCancel != null) boxCancel.setVisibility(View.GONE);
+                    }
                     if (customAdapter != null) {
                         menuArrayAdapter = customAdapter;
                     } else {
                         menuArrayAdapter = new NormalMenuArrayAdapter(context.get(), R.layout.item_bottom_menu_kongzue, menuTextList);
                     }
                     listMenu.setAdapter(menuArrayAdapter);
-                    
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = dialog.get().getDialog().getWindow();
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        dialog.get().getDialog().getWindow().setNavigationBarColor(Color.WHITE);
-                        boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
-                    }
                     break;
                 case STYLE_IOS:
-                    final int bkgResId, blurFrontColor;
-                    if (theme == DialogSettings.THEME.LIGHT) {
-                        bkgResId = R.drawable.rect_menu_bkg_ios;
-                        blurFrontColor = Color.argb(blurAlpha, 244, 245, 246);
-                        btnCancel.setBackgroundResource(R.drawable.button_menu_ios_light);
-                        listMenu.setDivider(new ColorDrawable(context.get().getResources().getColor(R.color.dialogSplitIOSLight)));
-                        listMenu.setDividerHeight(1);
-                        titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSLight));
+                    if (showCancelButton) {
+                        if (boxCancel != null) boxCancel.setVisibility(View.VISIBLE);
                     } else {
-                        bkgResId = R.drawable.rect_menu_bkg_ios;
-                        blurFrontColor = Color.argb(blurAlpha + 10, 22, 22, 22);
-                        btnCancel.setBackgroundResource(R.drawable.button_menu_ios_dark);
-                        listMenu.setDivider(new ColorDrawable(context.get().getResources().getColor(R.color.dialogSplitIOSDark)));
-                        listMenu.setDividerHeight(1);
-                        titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSDark));
+                        if (boxCancel != null) boxCancel.setVisibility(View.GONE);
                     }
-                    if (DialogSettings.isUseBlur) {
-                        boxList.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                blurList = new BlurView(context.get(), null);
-                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxList.getHeight());
-                                blurList.setOverlayColor(blurFrontColor);
-                                blurList.setRadius(context.get(), 11, 11);
-                                boxList.addView(blurList, 0, params);
-                            }
-                        });
-                        boxCancel.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                blurCancel = new BlurView(context.get(), null);
-                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxCancel.getHeight());
-                                blurCancel.setOverlayColor(blurFrontColor);
-                                blurCancel.setRadius(context.get(), 11, 11);
-                                boxCancel.addView(blurCancel, 0, params);
-                            }
-                        });
-                    } else {
-                        boxList.setBackgroundResource(bkgResId);
-                        boxCancel.setBackgroundResource(bkgResId);
-                    }
-                    
                     if (customAdapter != null) {
                         menuArrayAdapter = customAdapter;
                     } else {
@@ -481,6 +539,21 @@ public class BottomMenu extends BaseDialog {
             String text = objects.get(position);
             if (null != text) {
                 viewHolder.textView.setText(text);
+                
+                if (style == DialogSettings.STYLE.STYLE_KONGZUE) {
+                    if (theme == DialogSettings.THEME.LIGHT) {
+                        viewHolder.textView.setTextColor(context.getResources().getColor(R.color.dark));
+                    } else {
+                        viewHolder.textView.setTextColor(context.getResources().getColor(R.color.materialDarkTextColor));
+                    }
+                }
+                if (style == DialogSettings.STYLE.STYLE_MATERIAL) {
+                    if (theme == DialogSettings.THEME.LIGHT) {
+                        viewHolder.textView.setTextColor(context.getResources().getColor(R.color.notificationTipTextColorMaterial));
+                    } else {
+                        viewHolder.textView.setTextColor(context.getResources().getColor(R.color.materialDarkTextColor));
+                    }
+                }
                 
                 useTextInfo(viewHolder.textView, menuTextInfo);
             }
@@ -694,8 +767,6 @@ public class BottomMenu extends BaseDialog {
         return this;
     }
     
-    
-    
     private float boxBodyOldY;
     private int step;
     private boolean isTouchDown;
@@ -808,5 +879,24 @@ public class BottomMenu extends BaseDialog {
     
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+    }
+    
+    public OnBackClickListener getOnBackClickListener() {
+        return onBackClickListener;
+    }
+    
+    public BottomMenu setOnBackClickListener(OnBackClickListener onBackClickListener) {
+        this.onBackClickListener = onBackClickListener;
+        return this;
+    }
+    
+    public boolean getCancelable() {
+        return cancelable == BOOLEAN.TRUE;
+    }
+    
+    public BottomMenu setCancelable(boolean enable) {
+        this.cancelable = enable ? BOOLEAN.TRUE : BOOLEAN.FALSE;
+        if (dialog != null) dialog.get().setCancelable(cancelable == BOOLEAN.TRUE);
+        return this;
     }
 }

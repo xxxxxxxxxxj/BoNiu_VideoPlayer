@@ -75,13 +75,47 @@ public class BoNiuFolderDao {
     }
 
     /**
-     * 更新视频名字
+     * 判断文件夹是否已存在
+     *
+     * @return
+     */
+    public boolean isExists(String boniu_folder_name) {
+        List<BoNiuFolderInfo> all = getAll();
+        boolean isExists = false;
+        if (all != null && all.size() > 0) {
+            for (int i = 0; i < all.size(); i++) {
+                if (all.get(i).getBoniu_folder_name().equals(boniu_folder_name)) {
+                    isExists = true;
+                    break;
+                }
+            }
+        }
+        return isExists;
+    }
+
+    /**
+     * 更新文件夹名字
      **/
     public void updateFolderName(int boniu_folder_id, String boniu_folder_name) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // update
         ContentValues values = new ContentValues();
         values.put("boniu_folder_name", boniu_folder_name);
+        int updateCount = database.update("boniu_folder", values,
+                "boniu_folder_id=" + boniu_folder_id, null);
+        RingLog.e("updateCount = " + updateCount);
+        database.close();
+    }
+
+    /**
+     * 更新文件夹大小
+     **/
+    public void updateFolderSize(int boniu_folder_id, double boniu_folder_memory, String boniu_folder_formatmemory) {
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // update
+        ContentValues values = new ContentValues();
+        values.put("boniu_folder_memory", boniu_folder_memory);
+        values.put("boniu_folder_formatmemory", boniu_folder_formatmemory);
         int updateCount = database.update("boniu_folder", values,
                 "boniu_folder_id=" + boniu_folder_id, null);
         RingLog.e("updateCount = " + updateCount);

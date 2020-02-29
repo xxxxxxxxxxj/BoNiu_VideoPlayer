@@ -95,7 +95,10 @@
         <activity
             android:name=".mvp.view.activity.LoginActivity"
             android:windowSoftInputMode="stateAlwaysVisible" />
-        <activity android:name=".mvp.view.activity.MainActivity" />
+        <activity
+            android:name=".mvp.view.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".mvp.view.activity.FlipperActivity" />
         <activity android:name=".mvp.view.activity.StickLayoutActivity" />
         <activity android:name=".mvp.view.activity.StaggerActivity" />

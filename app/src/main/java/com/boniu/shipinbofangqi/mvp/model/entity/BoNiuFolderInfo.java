@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class BoNiuFolderInfo implements Serializable {
     private int boniu_folder_id;
     private String boniu_folder_name;
-    private String boniu_folder_formatmemory;
+    private String boniu_folder_formatmemory = "0.00M";
     private double boniu_folder_memory;
     private String boniu_folder_createtime;
 
@@ -29,6 +29,11 @@ public class BoNiuFolderInfo implements Serializable {
     }
 
     public BoNiuFolderInfo() {
+    }
+
+    public BoNiuFolderInfo(String boniu_folder_name, String boniu_folder_createtime) {
+        this.boniu_folder_name = boniu_folder_name;
+        this.boniu_folder_createtime = boniu_folder_createtime;
     }
 
     public BoNiuFolderInfo(int boniu_folder_id, String boniu_folder_name, String boniu_folder_formatmemory, double boniu_folder_memory, String boniu_folder_createtime) {

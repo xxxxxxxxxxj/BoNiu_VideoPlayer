@@ -5,12 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-
-import androidx.annotation.NonNull;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Build;
 import android.view.Display;
 import android.view.Gravity;
@@ -23,9 +17,16 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
 import com.kongzue.dialog.R;
+import com.kongzue.dialog.interfaces.OnBackClickListener;
 import com.kongzue.dialog.interfaces.OnDismissListener;
 import com.kongzue.dialog.interfaces.OnShowListener;
 import com.kongzue.dialog.util.BaseDialog;
@@ -69,6 +70,9 @@ public class ShareDialog extends BaseDialog {
     private ViewGroup boxItem;
     private ViewGroup boxCancel;
     private TextView btnCancel;
+    private ImageView imgTab;
+    private ImageView imgSplit;
+    private ScrollView boxScroller;
     
     private ShareDialog() {
     }
@@ -94,7 +98,7 @@ public class ShareDialog extends BaseDialog {
         }
     }
     
-    public static ShareDialog show(@NonNull AppCompatActivity context, List<ShareDialog.Item> itemList, OnItemClickListener onItemClickListener) {
+    public static ShareDialog show(@NonNull AppCompatActivity context, List<Item> itemList, OnItemClickListener onItemClickListener) {
         ShareDialog shareDialog = build(context);
         shareDialog.items = itemList;
         shareDialog.onItemClickListener = onItemClickListener;
@@ -110,6 +114,7 @@ public class ShareDialog extends BaseDialog {
         this.rootView = rootView;
         if (boxCustom != null) boxCustom.removeAllViews();
         boxBody = rootView.findViewById(R.id.box_body);
+        boxScroller = rootView.findViewById(R.id.box_scroller);
         boxShare = rootView.findViewById(R.id.box_share);
         txtTitle = rootView.findViewById(R.id.txt_title);
         boxCustom = rootView.findViewById(R.id.box_custom);
@@ -117,6 +122,128 @@ public class ShareDialog extends BaseDialog {
         boxItem = rootView.findViewById(R.id.box_item);
         boxCancel = rootView.findViewById(R.id.box_cancel);
         btnCancel = rootView.findViewById(R.id.btn_cancel);
+        imgTab = rootView.findViewById(R.id.img_tab);
+        imgSplit = rootView.findViewById(R.id.img_split);
+        
+        Window window;
+        switch (style) {
+            case STYLE_IOS:
+                final int bkgResId, blurFrontColor;
+                if (theme == DialogSettings.THEME.LIGHT) {
+                    bkgResId = R.drawable.rect_menu_bkg_ios;
+                    blurFrontColor = Color.argb(blurAlpha, 244, 245, 246);
+                    btnCancel.setBackgroundResource(R.drawable.button_menu_ios_light);
+                    titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSLight));
+                } else {
+                    bkgResId = R.drawable.rect_menu_bkg_ios;
+                    blurFrontColor = Color.argb(blurAlpha + 10, 22, 22, 22);
+                    btnCancel.setBackgroundResource(R.drawable.button_menu_ios_dark);
+                    titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSDark));
+                }
+                
+                if (DialogSettings.isUseBlur) {
+                    boxShare.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            blurContent = new BlurView(context.get(), null);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxShare.getHeight());
+                            blurContent.setOverlayColor(blurFrontColor);
+                            blurContent.setRadius(context.get(), 11, 11);
+                            boxShare.addView(blurContent, 0, params);
+                        }
+                    });
+                    boxCancel.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            blurCancel = new BlurView(context.get(), null);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxCancel.getHeight());
+                            blurCancel.setOverlayColor(blurFrontColor);
+                            blurCancel.setRadius(context.get(), 11, 11);
+                            boxCancel.addView(blurCancel, 0, params);
+                        }
+                    });
+                } else {
+                    boxShare.setBackgroundResource(bkgResId);
+                    boxCancel.setBackgroundResource(bkgResId);
+                }
+                break;
+            case STYLE_MATERIAL:
+                window = dialog.get().getDialog().getWindow();
+                WindowManager windowManager = context.get().getWindowManager();
+                Display display = windowManager.getDefaultDisplay();
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.width = display.getWidth();
+                lp.height = display.getHeight() - getStatusBarHeight();
+                window.setGravity(Gravity.BOTTOM);
+                window.setAttributes(lp);
+                
+                boxBody.setY(boxBody.getHeight());
+                boxBody.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        boxBody.animate().setDuration(300).translationY(boxBody.getHeight() / 2);
+                    }
+                });
+                
+                if (theme == DialogSettings.THEME.LIGHT) {
+                    boxBody.setBackgroundResource(R.drawable.rect_bottom_dialog);
+                    imgTab.setBackgroundResource(R.drawable.rect_share_material_tab);
+                    txtTitle.setTextColor(context.get().getResources().getColor(R.color.tipTextColor));
+                } else {
+                    boxBody.setBackgroundResource(R.drawable.rect_bottom_dialog_dark);
+                    imgTab.setBackgroundResource(R.drawable.rect_share_material_tab_dark);
+                    txtTitle.setTextColor(context.get().getResources().getColor(R.color.materialDarkTitleColor));
+                }
+                
+                boxBody.setOnTouchListener(materialScrollTouchListener);
+                
+                rootView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        doDismiss();
+                    }
+                });
+                
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    dialog.get().getDialog().getWindow().setNavigationBarColor(Color.WHITE);
+                    boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
+                }
+                break;
+            case STYLE_KONGZUE:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    window = dialog.get().getDialog().getWindow();
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    dialog.get().getDialog().getWindow().setNavigationBarColor(Color.WHITE);
+                    boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
+                }
+                
+                if (theme == DialogSettings.THEME.LIGHT) {
+                    boxBody.setBackgroundColor(context.get().getResources().getColor(R.color.menuSplitSpaceKongzue));
+                    txtTitle.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                    boxCustom.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                    boxCancel.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                    boxScroller.setBackgroundColor(context.get().getResources().getColor(R.color.white));
+                    imgSplit.setBackgroundColor(context.get().getResources().getColor(R.color.menuSplitSpaceKongzue));
+                    btnCancel.setTextColor(context.get().getResources().getColor(R.color.dark));
+                    btnCancel.setBackgroundResource(R.drawable.button_menu_kongzue);
+                    txtTitle.setTextColor(context.get().getResources().getColor(R.color.tipTextColor));
+                    
+                } else {
+                    boxBody.setBackgroundColor(context.get().getResources().getColor(R.color.kongzueDarkBkgColor));
+                    txtTitle.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                    boxCustom.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                    boxCancel.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                    boxScroller.setBackgroundColor(context.get().getResources().getColor(R.color.materialDarkBackgroundColor));
+                    imgSplit.setBackgroundColor(context.get().getResources().getColor(R.color.kongzueDarkBkgColor));
+                    btnCancel.setTextColor(context.get().getResources().getColor(R.color.materialDarkTextColor));
+                    btnCancel.setBackgroundResource(R.drawable.button_menu_kongzue_dark);
+                    txtTitle.setTextColor(context.get().getResources().getColor(R.color.materialDarkTitleColor));
+                }
+                break;
+        }
         
         refreshView();
         if (onShowListener != null) onShowListener.onShow(this);
@@ -138,46 +265,6 @@ public class ShareDialog extends BaseDialog {
         if (rootView != null) {
             switch (style) {
                 case STYLE_IOS:
-                    
-                    final int bkgResId, blurFrontColor;
-                    if (theme == DialogSettings.THEME.LIGHT) {
-                        bkgResId = R.drawable.rect_menu_bkg_ios;
-                        blurFrontColor = Color.argb(blurAlpha, 244, 245, 246);
-                        btnCancel.setBackgroundResource(R.drawable.button_menu_ios_light);
-                        titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSLight));
-                    } else {
-                        bkgResId = R.drawable.rect_menu_bkg_ios;
-                        blurFrontColor = Color.argb(blurAlpha + 10, 22, 22, 22);
-                        btnCancel.setBackgroundResource(R.drawable.button_menu_ios_dark);
-                        titleSplitLine.setBackgroundColor(context.get().getResources().getColor(R.color.dialogSplitIOSDark));
-                    }
-                    
-                    if (DialogSettings.isUseBlur) {
-                        boxShare.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                blurContent = new BlurView(context.get(), null);
-                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxShare.getHeight());
-                                blurContent.setOverlayColor(blurFrontColor);
-                                blurContent.setRadius(context.get(), 11, 11);
-                                boxShare.addView(blurContent, 0, params);
-                            }
-                        });
-                        boxCancel.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                blurCancel = new BlurView(context.get(), null);
-                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, boxCancel.getHeight());
-                                blurCancel.setOverlayColor(blurFrontColor);
-                                blurCancel.setRadius(context.get(), 11, 11);
-                                boxCancel.addView(blurCancel, 0, params);
-                            }
-                        });
-                    } else {
-                        boxShare.setBackgroundResource(bkgResId);
-                        boxCancel.setBackgroundResource(bkgResId);
-                    }
-                    
                     if (items != null) {
                         boxItem.removeAllViews();
                         for (int i = 0; i < items.size(); i++) {
@@ -247,6 +334,12 @@ public class ShareDialog extends BaseDialog {
                             imgIcon.setImageBitmap(item.getIcon());
                             txtLabel.setText(item.getText());
                             
+                            if (theme == DialogSettings.THEME.DARK) {
+                                txtLabel.setTextColor(context.get().getResources().getColor(R.color.materialDarkTextColor));
+                            } else {
+                                txtLabel.setTextColor(context.get().getResources().getColor(R.color.black));
+                            }
+                            
                             final int index = i;
                             itemView.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -263,39 +356,6 @@ public class ShareDialog extends BaseDialog {
                             
                             boxItem.addView(itemView);
                         }
-                        
-                        Window window = dialog.get().getDialog().getWindow();
-                        WindowManager windowManager = context.get().getWindowManager();
-                        Display display = windowManager.getDefaultDisplay();
-                        WindowManager.LayoutParams lp = window.getAttributes();
-                        lp.width = display.getWidth();
-                        lp.height = display.getHeight() - getStatusBarHeight();
-                        window.setGravity(Gravity.BOTTOM);
-                        window.setAttributes(lp);
-                        
-                        boxBody.setY(boxBody.getHeight());
-                        boxBody.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                boxBody.animate().setDuration(300).translationY(boxBody.getHeight() / 2);
-                            }
-                        });
-                        
-                        boxBody.setOnTouchListener(materialScrollTouchListener);
-                        
-                        rootView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                doDismiss();
-                            }
-                        });
-                        
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                            dialog.get().getDialog().getWindow().setNavigationBarColor(Color.WHITE);
-                            boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
-                        }
                     }
                     break;
                 case STYLE_KONGZUE:
@@ -305,13 +365,20 @@ public class ShareDialog extends BaseDialog {
                         for (int i = 0; i < items.size(); i++) {
                             final Item item = items.get(i);
                             final View itemView = LayoutInflater.from(context.get()).inflate(R.layout.item_share_kongzue, null);
-                            itemView.setBackgroundColor(Color.WHITE);
                             
                             final IOSItemImageView imgIcon = itemView.findViewById(R.id.img_icon);
                             TextView txtLabel = itemView.findViewById(R.id.txt_label);
                             
                             imgIcon.setImageBitmap(item.getIcon());
                             txtLabel.setText(item.getText());
+                            
+                            if (theme == DialogSettings.THEME.DARK) {
+                                txtLabel.setTextColor(context.get().getResources().getColor(R.color.materialDarkTextColor));
+                            } else {
+                                txtLabel.setTextColor(context.get().getResources().getColor(R.color.black));
+                            }
+                            
+                            useTextInfo(txtLabel, itemTextInfo);
                             
                             final int index = i;
                             itemView.setOnClickListener(new View.OnClickListener() {
@@ -347,14 +414,6 @@ public class ShareDialog extends BaseDialog {
                             
                             boxItem.addView(itemView);
                         }
-                        
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            Window window = dialog.get().getDialog().getWindow();
-                            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                            dialog.get().getDialog().getWindow().setNavigationBarColor(Color.WHITE);
-                            boxBody.setPadding(0, 0, 0, getNavigationBarHeight());
-                        }
                     }
                     break;
             }
@@ -383,7 +442,14 @@ public class ShareDialog extends BaseDialog {
             } else {
                 boxCustom.setVisibility(View.GONE);
             }
+            
+            refreshTextViews();
         }
+    }
+    
+    protected void refreshTextViews() {
+        useTextInfo(txtTitle, titleTextInfo);
+        useTextInfo(btnCancel, cancelButtonTextInfo);
     }
     
     private float boxBodyOldY;
@@ -724,5 +790,14 @@ public class ShareDialog extends BaseDialog {
     
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+    }
+    
+    public OnBackClickListener getOnBackClickListener() {
+        return onBackClickListener;
+    }
+    
+    public ShareDialog setOnBackClickListener(OnBackClickListener onBackClickListener) {
+        this.onBackClickListener = onBackClickListener;
+        return this;
     }
 }

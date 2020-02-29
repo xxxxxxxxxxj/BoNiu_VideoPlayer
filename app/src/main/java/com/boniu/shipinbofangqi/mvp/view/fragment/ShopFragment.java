@@ -231,6 +231,7 @@ public class ShopFragment extends BaseFragment<ShopFragPresenter> implements ISh
 
     @Override
     protected void initView() {
+
         RichText.initCacheDir(mActivity);
         RichText.debugMode = true;
 

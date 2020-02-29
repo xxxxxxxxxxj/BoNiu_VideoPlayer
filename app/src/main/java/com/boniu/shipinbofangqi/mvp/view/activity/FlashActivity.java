@@ -22,6 +22,7 @@ import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.JumpToUtil;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
+import com.kongzue.dialog.util.DialogSettings;
 import com.kongzue.dialog.v3.CustomDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 
@@ -110,7 +111,17 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-
+        DialogSettings.init();
+        boolean isUseBlur = DialogSettings.checkRenderscriptSupport(this);
+        Log.e("TAG", "isUseBlur = " + isUseBlur);
+        DialogSettings.DEBUGMODE = true;
+        DialogSettings.isUseBlur = isUseBlur;
+        DialogSettings.autoShowInputKeyboard = true;
+        //DialogSettings.backgroundColor = Color.BLUE;
+        //DialogSettings.titleTextInfo = new TextInfo().setFontSize(50);
+        //DialogSettings.buttonPositiveTextInfo = new TextInfo().setFontColor(Color.GREEN);
+        DialogSettings.style = DialogSettings.STYLE.STYLE_IOS;
+        DialogSettings.theme = DialogSettings.THEME.LIGHT;
     }
 
     @Override

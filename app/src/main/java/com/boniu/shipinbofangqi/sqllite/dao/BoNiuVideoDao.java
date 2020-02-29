@@ -83,6 +83,25 @@ public class BoNiuVideoDao {
     }
 
     /**
+     * 判断视频是否已存在
+     *
+     * @return
+     */
+    public boolean isExists(String boniu_video_url) {
+        List<BoNiuVideoInfo> all = getAll();
+        boolean isExists = false;
+        if (all != null && all.size() > 0) {
+            for (int i = 0; i < all.size(); i++) {
+                if (all.get(i).getBoniu_video_url().equals(boniu_video_url)) {
+                    isExists = true;
+                    break;
+                }
+            }
+        }
+        return isExists;
+    }
+
+    /**
      * 查询一个文件夹下所有的视频
      *
      * @return

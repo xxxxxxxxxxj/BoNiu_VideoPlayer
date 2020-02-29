@@ -1,11 +1,14 @@
 package com.kongzue.dialog.v3;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.kongzue.dialog.R;
+import com.kongzue.dialog.interfaces.OnBackClickListener;
 import com.kongzue.dialog.interfaces.OnShowListener;
 import com.kongzue.dialog.interfaces.OnDismissListener;
 import com.kongzue.dialog.util.BaseDialog;
@@ -24,7 +27,7 @@ public class CustomDialog extends BaseDialog {
     private boolean fullScreen = false;
     private OnBindView onBindView;
     
-    public enum ALIGN{
+    public enum ALIGN {
         DEFAULT,
         TOP,
         BOTTOM
@@ -108,13 +111,14 @@ public class CustomDialog extends BaseDialog {
     @Override
     public void bindView(View rootView) {
         log("启动自定义对话框 -> " + toString());
-        if (boxCustom!=null)boxCustom.removeAllViews();
+        if (boxCustom != null) boxCustom.removeAllViews();
         boxCustom = rootView.findViewById(R.id.box_custom);
         if (boxCustom == null) {
             if (onBindView != null) onBindView.onBind(this, rootView);
         } else {
             boxCustom.removeAllViews();
-            boxCustom.addView(customView);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            boxCustom.addView(customView, lp);
             if (onBindView != null) onBindView.onBind(this, customView);
         }
         
@@ -188,7 +192,7 @@ public class CustomDialog extends BaseDialog {
     
     public CustomDialog setAlign(ALIGN align) {
         this.align = align;
-        switch (align){
+        switch (align) {
             case BOTTOM:
                 customDialogStyleId = R.style.BottomDialog;
                 break;
@@ -214,5 +218,14 @@ public class CustomDialog extends BaseDialog {
     
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+    }
+    
+    public OnBackClickListener getOnBackClickListener() {
+        return onBackClickListener;
+    }
+    
+    public CustomDialog setOnBackClickListener(OnBackClickListener onBackClickListener) {
+        this.onBackClickListener = onBackClickListener;
+        return this;
     }
 }

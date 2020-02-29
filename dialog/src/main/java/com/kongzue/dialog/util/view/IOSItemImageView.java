@@ -5,8 +5,14 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.widget.ImageView;
 
-public class IOSItemImageView extends androidx.appcompat.widget.AppCompatImageView {
+import androidx.appcompat.widget.AppCompatImageView;
+
+public class IOSItemImageView extends AppCompatImageView {
     
     public IOSItemImageView(Context context, AttributeSet attrs) {
         super(context, attrs);

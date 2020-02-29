@@ -3,7 +3,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'walle'
 
 android {
+    //编译SDK的版本
     compileSdkVersion project.ANDROID_BUILD_SDK_VERSION as int
+    //构建工作的版本
+    //buildToolsVersion project.ANDROID_BUILD_SDK_VERSION as int
     //关闭Android Studio的PNG合法性检查,将Eclipse项目导入到Android studio 中 很多点9图出现问题解决方法：
     // 用来关闭Android Studio的PNG合法性检查的，直接不让它检查。
     aaptOptions.cruncherEnabled = false
@@ -25,6 +28,9 @@ android {
                 qq_id: ""
         ]
         multiDexEnabled true
+
+        renderscriptTargetApi 14
+        renderscriptSupportModeEnabled true    // Enable RS support
     }
     signingConfigs {// 自动化打包配置
         config {
@@ -121,12 +127,12 @@ dependencies {
     implementation project(':matisse')
     //仿微信拍照Android控件（轻触拍照，长按摄像）
     implementation project(':camera')
-    //空祖家的对话框(支持iOS风格和MD风格)
-    implementation project(':dialog')
     //功能强大，UI简洁，交互优雅的通用弹窗(主要用作查看大图)
     implementation project(':library')
     //微光加载效果
     implementation project(':shimmerlayout')
+    //空祖家的对话框(支持iOS风格和MD风格)
+    implementation project(':dialog')
     //RxPermission权限申请
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     //Glide图片加载

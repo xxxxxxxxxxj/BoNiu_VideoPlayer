@@ -244,8 +244,8 @@ public class MApplication extends MultiDexApplication {
                 })*/
                 //.setHostnameVerifier(new UnSafeHostnameVerifier(UrlConstants.getServiceBaseUrl()))//全局访问规则
                 .setCertificates();//信任所有证书
-                //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
-                //.addCommonHeaders(UrlConstants.getHeaders(this));//设置全局公共头
+        //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
+        //.addCommonHeaders(UrlConstants.getHeaders(this));//设置全局公共头
         //.addCommonParams(params);//设置全局公共参数
         //.addInterceptor(new HeTInterceptor());//处理自己业务的拦截器
     }
