@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -21,10 +20,9 @@ import com.boniu.shipinbofangqi.mvp.model.event.CaptureEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MainActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
-import com.boniu.shipinbofangqi.mvp.view.fragment.MainFragment;
 import com.boniu.shipinbofangqi.mvp.view.fragment.MyFragment;
-import com.boniu.shipinbofangqi.mvp.view.fragment.PetCircleFragment;
-import com.boniu.shipinbofangqi.mvp.view.fragment.ShopFragment;
+import com.boniu.shipinbofangqi.mvp.view.fragment.ResourcesFragment;
+import com.boniu.shipinbofangqi.mvp.view.fragment.VideoFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMainActivityView;
 import com.boniu.shipinbofangqi.permission.PermissionListener;
 import com.boniu.shipinbofangqi.toast.RingToast;
@@ -37,13 +35,9 @@ import com.boniu.shipinbofangqi.updateapputil.UpdateUtil;
 import com.boniu.shipinbofangqi.util.GetDeviceId;
 import com.boniu.shipinbofangqi.util.PathUtils;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
-import com.boniu.shipinbofangqi.util.QMUIDisplayHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
-import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.flyco.tablayout.utils.UnreadMsgUtils;
-import com.flyco.tablayout.widget.MsgView;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.MessageDialog;
@@ -70,13 +64,13 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
     private DownloadProgressDialog progressDialog;
     private boolean isShow;
     private ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
-    private String[] mTitles = {"首页", "商城", "宠圈", "我的"};
+    private String[] mTitles = {"视频", "资源", "我的"};
     private int[] mIconUnselectIds = {
             R.mipmap.tab_home_normal, R.mipmap.tab_shop_normal,
-            R.mipmap.tab_petcircle_normal, R.mipmap.tab_my_normal};
+            R.mipmap.tab_petcircle_normal};
     private int[] mIconSelectIds = {
             R.mipmap.tab_home_passed, R.mipmap.tab_shop_passed,
-            R.mipmap.tab_petcircle_passed, R.mipmap.tab_my_passed};
+            R.mipmap.tab_petcircle_passed};
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private int currentIndex;
     private long exitTime;
@@ -94,38 +88,14 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
 
     @Override
     protected void setView(Bundle savedInstanceState) {
-        mFragments.add(new MainFragment());
-        mFragments.add(new ShopFragment());
-        mFragments.add(new PetCircleFragment());
+        mFragments.add(new VideoFragment());
+        mFragments.add(new ResourcesFragment());
         mFragments.add(new MyFragment());
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
         }
         ctlMain.setTabData(mTabEntities, this, R.id.fl_main, mFragments);
         ctlMain.setCurrentTab(currentIndex);
-
-        //两位数
-        ctlMain.showMsg(0, 55);
-        ctlMain.setMsgMargin(0, -5, 5);
-
-        //三位数
-        ctlMain.showMsg(1, 100);
-        ctlMain.setMsgMargin(1, -5, 5);
-
-        //设置未读消息红点
-        ctlMain.showDot(2);
-        MsgView rtv_2_2 = ctlMain.getMsgView(2);
-        if (rtv_2_2 != null) {
-            UnreadMsgUtils.setSize(rtv_2_2, QMUIDisplayHelper.dp2px(mActivity, 7));
-        }
-
-        //设置未读消息背景
-        ctlMain.showMsg(3, 5);
-        ctlMain.setMsgMargin(3, 0, 5);
-        MsgView rtv_2_3 = ctlMain.getMsgView(3);
-        if (rtv_2_3 != null) {
-            rtv_2_3.setBackgroundColor(Color.parseColor("#6D8FB0"));
-        }
     }
 
     @Override
@@ -135,25 +105,6 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
 
     @Override
     protected void initEvent() {
-        ctlMain.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelect(int position) {
-                RingLog.e("TAG", "onTabSelect position = " + position);
-                if (position == 2) {
-                    ctlMain.hideMsg(2);
-                }
-            }
-
-            @Override
-            public void onTabReselect(int position) {
-                RingLog.e("TAG", "ponTabReselect position = " + position);
-                if (position == 0) {//刷新
-                    ctlMain.showMsg(0, mRandom.nextInt(100) + 1);
-                    MainFragment mainFragment = (MainFragment) getSupportFragmentManager().getFragments().get(position);
-                    mainFragment.autoRefresh();
-                }
-            }
-        });
         requestEachCombined(new PermissionListener() {
             @Override
             public void onGranted(String permissionName) {

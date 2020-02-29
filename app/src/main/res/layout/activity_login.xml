@@ -34,12 +34,12 @@
         android:layout_marginRight="@dimen/dp_20">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_mobile"
+            android:id="@+id/til_login_mobile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_mobile"
+                android:id="@+id/tiet_login_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -72,12 +72,13 @@
         android:layout_marginBottom="@dimen/dp_40">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_password"
+            android:id="@+id/til_login_yzm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_login_yzm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -90,6 +91,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/tv_login_yzm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -101,6 +103,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_login_sub"
         android:layout_width="match_parent"
         android:layout_height="42dip"
         android:layout_marginLeft="@dimen/dp_20"

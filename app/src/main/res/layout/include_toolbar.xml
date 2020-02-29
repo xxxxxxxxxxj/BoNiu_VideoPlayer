@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tb_toolbar"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_56"
-    android:background="@color/colorPrimaryDark"
-    app:layout_scrollFlags="scroll|enterAlways"
-    app:popupTheme="@style/AppTheme"
-    app:theme="@style/OverFlowMenuTheme"
-    app:title="@string/app_name" />
+    android:layout_height="@dimen/dp_50"
+    android:background="@color/a2D2D2D"
+    android:paddingLeft="20dip"
+    android:paddingRight="20dip">
+
+    <ImageView
+        android:id="@+id/iv_toolbar_back"
+        android:layout_width="16dip"
+        android:layout_height="15dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@mipmap/icon_appoint_close" />
+
+    <ImageView
+        android:id="@+id/iv_toolbar_right"
+        android:layout_width="16dip"
+        android:layout_height="15dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:src="@mipmap/icon_appoint_close" />
+
+    <TextView
+        android:id="@+id/tv_toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="关于我们"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+</RelativeLayout>
 

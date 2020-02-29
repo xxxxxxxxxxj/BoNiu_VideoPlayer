@@ -2,25 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tl="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/a2D2D2D"
     android:layout_height="match_parent">
 
     <com.flyco.tablayout.CommonTabLayout
         android:id="@+id/ctl_main"
         android:layout_width="match_parent"
-        android:layout_height="49dip"
+        android:layout_height="62dip"
         android:layout_alignParentBottom="true"
-        android:background="#ffffff"
+        android:background="@color/a242424"
         tl:tl_iconHeight="22dip"
         tl:tl_iconWidth="22dip"
         tl:tl_indicator_color="@color/transparent"
         tl:tl_indicator_height="0dp"
         tl:tl_textBold="SELECT"
-        tl:tl_textSelectColor="@color/aD1494F"
-        tl:tl_textUnselectColor="@color/a666666"
-        tl:tl_textsize="12sp"
+        tl:tl_textSelectColor="@color/white"
+        tl:tl_textUnselectColor="@color/a5B5B5B"
+        tl:tl_textsize="10sp"
         tl:tl_underline_color="@color/aEEEEEE"
         tl:tl_underline_gravity="TOP"
-        tl:tl_underline_height="1dp" />
+        tl:tl_underline_height="0dp" />
 
     <FrameLayout
         android:id="@+id/fl_main"

@@ -8,9 +8,9 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
-import com.boniu.shipinbofangqi.mvp.presenter.MyFragPresenter;
+import com.boniu.shipinbofangqi.mvp.presenter.ResourcesFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
-import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
+import com.boniu.shipinbofangqi.mvp.view.iview.IResourcesFragView;
 
 import butterknife.BindView;
 
@@ -20,9 +20,10 @@ import butterknife.BindView;
  * <p>Company:北京昊唐科技有限公司</p>
  *
  * @author 徐俊
- * @date zhoujunxia on 2019-10-14 19:09
+ * @date zhoujunxia on 2020-02-29 09:48
  */
-public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFragView {
+public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> implements IResourcesFragView {
+
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
     @BindView(R.id.iv_toolbar_back)
@@ -31,8 +32,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     RelativeLayout toolbar;
 
     @Override
-    protected MyFragPresenter createPresenter() {
-        return new MyFragPresenter(mActivity, this);
+    protected ResourcesFragPresenter createPresenter() {
+        return new ResourcesFragPresenter(mActivity, this);
     }
 
     @Override
@@ -47,12 +48,12 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
 
     @Override
     protected int getContentLayout() {
-        return R.layout.fragment_my;
+        return R.layout.fragment_resources;
     }
 
     @Override
     protected void initView() {
-        tvToolbarTitle.setText("我的");
+        tvToolbarTitle.setText("资源");
         ivToolbarBack.setVisibility(View.GONE);
         toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.colorPrimary));
     }
