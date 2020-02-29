@@ -1,6 +1,7 @@
 package com.boniu.shipinbofangqi.mvp.view.fragment;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,7 +16,10 @@ import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuFolderInfo;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
+import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.VideoFragPresenter;
+import com.boniu.shipinbofangqi.mvp.view.activity.FolderListActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.VideoListActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.FolderAdapter;
 import com.boniu.shipinbofangqi.mvp.view.adapter.VideoAdapter;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
@@ -28,10 +32,14 @@ import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.FileSizeUtil;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.interfaces.OnInputDialogButtonClickListener;
+import com.kongzue.dialog.interfaces.OnMenuItemClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.util.DialogSettings;
+import com.kongzue.dialog.v3.BottomMenu;
 import com.kongzue.dialog.v3.InputDialog;
+import com.kongzue.dialog.v3.MessageDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -74,6 +82,13 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     private List<BoNiuFolderInfo> folderList = new ArrayList<BoNiuFolderInfo>();
     private VideoAdapter videoAdapter;
     private FolderAdapter folderAdapter;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(RefreshVideoEvent event) {
+        if (event != null) {
+            setData();
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(MatisseDataEvent event) {
@@ -174,12 +189,8 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
         videoList.addAll(boNiuVideoDao.getAll());
         folderList.clear();
         folderList.addAll(boNiuFolderDao.getAll());
-        if (videoList != null && videoList.size() > 0) {
-            videoAdapter.notifyDataSetChanged();
-        }
-        if (folderList != null && folderList.size() > 0) {
-            folderAdapter.notifyDataSetChanged();
-        }
+        videoAdapter.notifyDataSetChanged();
+        folderAdapter.notifyDataSetChanged();
         if (videoList.size() <= 0 && folderList.size() <= 0) {
             llFragvideoInput.setVisibility(View.VISIBLE);
         } else {
@@ -197,6 +208,54 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                     case R.id.ll_item_videofrag_video_root:
                         break;
                     case R.id.iv_item_videofrag_video_operation:
+                        BottomMenu.show(mActivity, new String[]{"重命名", "移动", "删除"}, new OnMenuItemClickListener() {
+                            @Override
+                            public void onClick(String text, int index) {
+                                int boniu_video_id = boNiuVideoInfo.getBoniu_video_id();
+                                String boniu_video_name = boNiuVideoInfo.getBoniu_video_name();
+                                if (index == 0) {
+                                    String[] split = boniu_video_name.split("\\.");
+                                    RingLog.e("boniu_video_name = " + boniu_video_name);
+                                    RingLog.e("split = " + split.length);
+                                    RingLog.e("split = " + split.toString());
+                                    InputDialog.build(mActivity)
+                                            .setTitle("重命名").setMessage("")
+                                            .setOkButton("确定", new OnInputDialogButtonClickListener() {
+                                                @Override
+                                                public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
+                                                    if (StringUtil.isNotEmpty(inputStr)) {
+                                                        boNiuVideoDao.updateVideoName(boniu_video_id, inputStr + "." + split[1]);
+                                                        setData();
+                                                        RingToast.show("视频名称修改成功");
+                                                        return false;
+                                                    } else {
+                                                        RingToast.show("请输入视频名称");
+                                                        return true;
+                                                    }
+                                                }
+                                            })
+                                            .setCancelButton("取消")
+                                            .setHintText("请输入视频名称")
+                                            .setInputText(split[0])
+                                            .setCancelable(false)
+                                            .show();
+                                } else if (index == 1) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("boniu_video_id", boniu_video_id);
+                                    startActivity(FolderListActivity.class, bundle);
+                                } else if (index == 2) {
+                                    MessageDialog.show(mActivity, "删除视频", "确定删除视频吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                        @Override
+                                        public boolean onClick(BaseDialog baseDialog, View v) {
+                                            boNiuVideoDao.deleteById(boniu_video_id);
+                                            setData();
+                                            RingToast.show("视频删除成功");
+                                            return false;
+                                        }
+                                    });
+                                }
+                            }
+                        });
                         break;
                 }
             }
@@ -207,8 +266,52 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                 BoNiuFolderInfo boNiuFolderInfo = folderList.get(position);
                 switch (view.getId()) {
                     case R.id.ll_item_videofrag_video_root:
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("boniu_folder_id", boNiuFolderInfo.getBoniu_folder_id());
+                        bundle.putString("boniu_folder_name", boNiuFolderInfo.getBoniu_folder_name());
+                        startActivity(VideoListActivity.class, bundle);
                         break;
                     case R.id.iv_item_videofrag_video_operation:
+                        BottomMenu.show(mActivity, new String[]{"重命名", "删除"}, new OnMenuItemClickListener() {
+                            @Override
+                            public void onClick(String text, int index) {
+                                int boniu_folder_id = boNiuFolderInfo.getBoniu_folder_id();
+                                if (index == 0) {
+                                    String boniu_folder_name = boNiuFolderInfo.getBoniu_folder_name();
+                                    InputDialog.build(mActivity)
+                                            .setTitle("重命名").setMessage("")
+                                            .setOkButton("确定", new OnInputDialogButtonClickListener() {
+                                                @Override
+                                                public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
+                                                    if (StringUtil.isNotEmpty(inputStr)) {
+                                                        boNiuFolderDao.updateFolderName(boniu_folder_id, inputStr);
+                                                        setData();
+                                                        RingToast.show("文件夹名称修改成功");
+                                                        return false;
+                                                    } else {
+                                                        RingToast.show("请输入文件夹名称");
+                                                        return true;
+                                                    }
+                                                }
+                                            })
+                                            .setCancelButton("取消")
+                                            .setHintText("请输入文件夹名称")
+                                            .setInputText(boniu_folder_name)
+                                            .setCancelable(false)
+                                            .show();
+                                } else if (index == 1) {
+                                    MessageDialog.show(mActivity, "删除文件夹", "确定删除文件夹吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                        @Override
+                                        public boolean onClick(BaseDialog baseDialog, View v) {
+                                            boNiuFolderDao.deleteById(boniu_folder_id);
+                                            setData();
+                                            RingToast.show("文件夹删除成功");
+                                            return false;
+                                        }
+                                    });
+                                }
+                            }
+                        });
                         break;
                 }
             }

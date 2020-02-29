@@ -21,9 +21,15 @@ import java.util.List;
  * @date zhoujunxia on 2020-02-29 13:53
  */
 public class FolderAdapter extends BaseQuickAdapter<BoNiuFolderInfo, BaseViewHolder> {
+    private int type;
 
     public FolderAdapter(int layoutResId, List<BoNiuFolderInfo> data) {
         super(layoutResId, data);
+    }
+
+    public FolderAdapter(int layoutResId, List<BoNiuFolderInfo> data,int type) {
+        super(layoutResId, data);
+        this.type = type;
     }
 
     @Override
@@ -33,7 +39,13 @@ public class FolderAdapter extends BaseQuickAdapter<BoNiuFolderInfo, BaseViewHol
         TextView tv_item_videofrag_video_memory = helper.getView(R.id.tv_item_videofrag_video_memory);
         TextView tv_item_videofrag_video_length = helper.getView(R.id.tv_item_videofrag_video_length);
         TextView tv_item_videofrag_video_name = helper.getView(R.id.tv_item_videofrag_video_name);
+        ImageView iv_item_videofrag_video_operation = helper.getView(R.id.iv_item_videofrag_video_operation);
         if (item != null) {
+            if(type == 0){
+                iv_item_videofrag_video_operation.setVisibility(View.VISIBLE);
+            }else if(type == 1){
+                iv_item_videofrag_video_operation.setVisibility(View.GONE);
+            }
             tv_item_videofrag_video_length.setVisibility(View.GONE);
             iv_item_videofrag_video_img.setImageResource(R.mipmap.ic_image_load);
             StringUtil.setText(tv_item_videofrag_video_memory, item.getBoniu_folder_formatmemory(), "", View.VISIBLE, View.VISIBLE);

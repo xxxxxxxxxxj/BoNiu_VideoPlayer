@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
 import com.boniu.shipinbofangqi.sqllite.helper.DBHelper;
+import com.boniu.shipinbofangqi.util.QMUILangHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +132,27 @@ public class BoNiuVideoDao {
         database.close();
         RingLog.e("list = " + list.toString());
         return list;
+    }
+
+    /**
+     * 获取文件夹的大小
+     *
+     * @return
+     */
+    public double getSizeByFolderId(int local_boniu_video_folder_id) {
+        double totalSize = 0;
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select boniu_video_memory from boniu_video where boniu_video_folder_id=local_boniu_video_folder_id order by boniu_video_id desc";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            double boniu_video_memory = cursor.getDouble(0);
+            totalSize = QMUILangHelper.add(totalSize, boniu_video_memory);
+        }
+        cursor.close();
+        database.close();
+        RingLog.e("totalSize = " + totalSize);
+        return totalSize;
     }
 
     /**
