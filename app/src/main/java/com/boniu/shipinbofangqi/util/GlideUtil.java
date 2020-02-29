@@ -21,7 +21,7 @@ public class GlideUtil {
             Glide.with(mContext)
                     .setDefaultRequestOptions(
                             new RequestOptions()
-                                    .frame(4000000)
+                                    .frame(1000000)
                                     .centerCrop()
                                     .error(R.mipmap.ic_image_load)//可以忽略
                                     .placeholder(R.mipmap.ic_image_load)//可以忽略

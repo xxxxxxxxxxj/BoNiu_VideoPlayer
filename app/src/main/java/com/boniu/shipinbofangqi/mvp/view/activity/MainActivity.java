@@ -386,4 +386,9 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
             EventBus.getDefault().post(new MatisseDataEvent(null, strings1));
         }
     }
+
+    public void setFragMentIndex(int index) {
+        this.currentIndex = index;
+        ctlMain.setCurrentTab(currentIndex);
+    }
 }

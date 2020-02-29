@@ -8,11 +8,17 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.ResourcesFragPresenter;
+import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IResourcesFragView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * <p>Title:${type_name}</p>
@@ -23,13 +29,20 @@ import butterknife.BindView;
  * @date zhoujunxia on 2020-02-29 09:48
  */
 public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> implements IResourcesFragView {
-
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
     @BindView(R.id.iv_toolbar_back)
     ImageView ivToolbarBack;
     @BindView(R.id.toolbar)
     RelativeLayout toolbar;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(MatisseDataEvent event) {
+        if (event != null) {
+            MainActivity mainActivity = (MainActivity)mActivity;
+            mainActivity.setFragMentIndex(0);
+        }
+    }
 
     @Override
     protected ResourcesFragPresenter createPresenter() {
@@ -38,7 +51,7 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
 
     @Override
     protected boolean isUseEventBus() {
-        return false;
+        return true;
     }
 
     @Override
@@ -71,5 +84,14 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
     @Override
     protected void loadData() {
 
+    }
+
+    @OnClick({R.id.ll_fragresources_input})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.ll_fragresources_input:
+                getVideo(9);
+                break;
+        }
     }
 }
