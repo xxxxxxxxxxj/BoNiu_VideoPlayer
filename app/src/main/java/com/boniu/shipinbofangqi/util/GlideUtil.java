@@ -11,6 +11,26 @@ import com.boniu.shipinbofangqi.R;
  * Glide图片加载工具类
  */
 public class GlideUtil {
+    /**
+     * 加载第四秒的帧数作为封面
+     * url就是视频的地址
+     */
+    public static void displayVideoCoverImg(Context mContext, String videoUrl,
+                                            ImageView imageView) {
+        if (StringUtil.isNotEmpty(videoUrl)) {
+            Glide.with(mContext)
+                    .setDefaultRequestOptions(
+                            new RequestOptions()
+                                    .frame(4000000)
+                                    .centerCrop()
+                                    .error(R.mipmap.ic_image_load)//可以忽略
+                                    .placeholder(R.mipmap.ic_image_load)//可以忽略
+                    )
+                    .load(videoUrl)
+                    .into(imageView);
+        }
+    }
+
     public static void displayImage(Context mContext, String imgUrl,
                                     ImageView imageView) {
         if (StringUtil.isNotEmpty(imgUrl)) {
@@ -22,7 +42,7 @@ public class GlideUtil {
                         .fitCenter()
                         .error(R.mipmap.ic_image_load)
                         .into(imageView);
-            }else{
+            } else {
                 Glide.with(mContext)
                         .load(imgUrl)
                         .placeholder(R.mipmap.ic_image_load)

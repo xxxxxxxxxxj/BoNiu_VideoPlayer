@@ -51,7 +51,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import butterknife.BindView;
 
@@ -75,7 +74,6 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
     private int currentIndex;
     private long exitTime;
     private List<String> pathList = new ArrayList<String>();
-    private Random mRandom = new Random();
 
     @Override
     protected int getLayoutResID() {

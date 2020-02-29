@@ -562,7 +562,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
                 try {
                     //步骤四：调取系统拍照
                     Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, CommonUtil.getUri(mActivity, FileUtil.createFile(mActivity, 1,"",null)));
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, CommonUtil.getUri(mActivity, FileUtil.createFile(mActivity, 1, "", null)));
                     startActivityForResult(intent, REQUEST_CODE_CAPTURE);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -601,7 +601,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
                                 int requestCode, float aspectRatioX, float aspectRatioY) {
         File outFile = null;
         try {
-            outFile = FileUtil.createFile(mActivity, 2,"",null);
+            outFile = FileUtil.createFile(mActivity, 2, "", null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -630,6 +630,46 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
         //跳转裁剪页面
         uCrop.start(mActivity, requestCode);
         return cameraScalePath;
+    }
+
+    protected void getVideo(int maxSelectable) {
+        requestEachCombined(new PermissionListener() {
+            @Override
+            public void onGranted(String permissionName) {
+                Matisse.from(mActivity)
+                        .choose(MimeType.ofVideo(), false)
+                        .countable(true)//是否显示数字
+                        .capture(false)//是否显示拍照
+                        .maxSelectable(maxSelectable)
+                        .addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+                        .gridExpectedSize(
+                                getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                        .thumbnailScale(0.85f)
+                        .imageEngine(new GlideEngine())
+                        .setOnSelectedListener((uriList, pathList) -> {
+                            Log.e("onSelected", "onSelected: pathList=" + pathList);
+                        })
+                        .showSingleMediaType(true)
+                        .originalEnable(true)
+                        .maxOriginalSize(10)
+                        .autoHideToolbarOnSingleTap(true)
+                        .setOnCheckedListener(isChecked -> {
+                            Log.e("isChecked", "onCheck: isChecked=" + isChecked);
+                        })
+                        .forResult(REQUEST_CODE_CHOOSE);
+            }
+
+            @Override
+            public void onDenied(String permissionName) {
+                showToast("请打开存储和相机权限");
+            }
+
+            @Override
+            public void onDeniedWithNeverAsk(String permissionName) {
+                showToast("请打开存储和相机权限");
+            }
+        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA});
     }
 
     protected void goPhoto(int maxSelectable) {
@@ -707,7 +747,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     private String getPath() {
         String path = "";
         try {
-            File outFile = FileUtil.createFile(mActivity, 3,"",null);
+            File outFile = FileUtil.createFile(mActivity, 3, "", null);
             path = outFile.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();

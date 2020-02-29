@@ -3,6 +3,7 @@ package com.boniu.shipinbofangqi.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -13,10 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.log.RingLog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.boniu.shipinbofangqi.R;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.ImageViewerPopupView;
 import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener;
@@ -27,6 +29,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -157,5 +160,40 @@ public class CommonUtil {
             mUri = Uri.fromFile(file);
         }
         return mUri;
+    }
+
+    /**
+     * get Local video duration
+     *
+     * @return
+     */
+    public static int getLocalVideoDuration(String videoPath) {
+        int duration;
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(videoPath);
+            duration = Integer.parseInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_DURATION));
+        } catch (Exception e) {
+            e.printStackTrace();
+            RingLog.e("获取视频时长", "获取失败!");
+            return 0;
+        }
+        return duration;
+    }
+
+    /**
+     * 获取当前时间
+     *
+     * @return
+     */
+    public static String getCurrentTime() {
+        Date date = new Date();
+        String time = date.toLocaleString();
+        RingLog.e("md", "时间time为： " + time);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sim = dateFormat.format(date);
+        RingLog.e("md", "时间sim为： " + sim);
+        return sim;
     }
 }
