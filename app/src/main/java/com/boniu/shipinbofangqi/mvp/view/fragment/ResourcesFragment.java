@@ -13,6 +13,7 @@ import com.boniu.shipinbofangqi.mvp.presenter.ResourcesFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IResourcesFragView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -35,6 +36,8 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
     ImageView ivToolbarBack;
     @BindView(R.id.toolbar)
     RelativeLayout toolbar;
+    @BindView(R.id.srl_fragresources)
+    SmartRefreshLayout srlFragResources;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(MatisseDataEvent event) {
@@ -66,6 +69,7 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
 
     @Override
     protected void initView() {
+        srlFragResources.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("资源");
         ivToolbarBack.setVisibility(View.GONE);
         toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.colorPrimary));

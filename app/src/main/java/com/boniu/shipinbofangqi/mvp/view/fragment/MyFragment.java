@@ -18,6 +18,7 @@ import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.Global;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import butterknife.BindView;
 
@@ -40,6 +41,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     Switch sh_fragmy;
     @BindView(R.id.ll_fragmy_finger)
     LinearLayout ll_fragmy_finger;
+    @BindView(R.id.srl_fragmy)
+    SmartRefreshLayout srlFragMy;
     private FingerprintCore mFingerprintCore;
 
     @Override
@@ -64,6 +67,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
 
     @Override
     protected void initView() {
+        srlFragMy.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("我的");
         ivToolbarBack.setVisibility(View.GONE);
         toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.colorPrimary));

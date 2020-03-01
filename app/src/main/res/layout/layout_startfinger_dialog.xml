@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="正在指纹验证"
+            android:text="开始指纹验证"
             android:textColor="@color/a333333"
             android:textSize="15sp" />
     </LinearLayout>

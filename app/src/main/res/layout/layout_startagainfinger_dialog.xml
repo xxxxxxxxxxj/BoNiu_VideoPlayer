@@ -16,7 +16,7 @@
             android:layout_marginTop="15dip"
             android:layout_marginBottom="15dip"
             android:scaleType="fitXY"
-            android:src="@mipmap/icon_zhiwen_hui" />
+            android:src="@mipmap/icon_zhiwen" />
 
         <TextView
             android:id="@+id/tv_startagainfingerdialog"

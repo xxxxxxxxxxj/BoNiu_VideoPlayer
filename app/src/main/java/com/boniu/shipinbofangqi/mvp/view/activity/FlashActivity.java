@@ -1,11 +1,11 @@
 package com.boniu.shipinbofangqi.mvp.view.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -45,8 +45,6 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     private MessageDialog startAgainfingerDialog;
     private MessageDialog fingerFailDialog;
     private int fingerNum;
-    private ImageView iv_startagainfingerdialog;
-    private TextView tv_startagainfingerdialog;
 
     @Override
     protected int getLayoutResID() {
@@ -149,6 +147,10 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setAllowFullScreen(true);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
         super.onCreate(savedInstanceState);
         setSwipeBack(false);
     }
@@ -160,10 +162,10 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 startActivity(MainActivity.class, true);
                 break;
             case R.id.rl_flash_root:
-                fingerNum = 0;
                 //判断是否开启指纹识别
                 boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
                 if (ISOPENFINGER) {
+                    fingerNum = 0;
                     //开启指纹识别
                     if (!mFingerprintCore.isAuthenticating()) {
                         mFingerprintCore.startAuthenticate();
@@ -184,26 +186,19 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     }
 
     private void startAgainFingerDialog() {
-        startAgainfingerDialog = MessageDialog.show(mActivity, "", "", "再次尝试指纹识别", "取消")
+        startAgainfingerDialog = MessageDialog.show(mActivity, "", "", "取消")
                 .setButtonOrientation(LinearLayout.VERTICAL)
                 .setCustomView(R.layout.layout_startagainfinger_dialog, new MessageDialog.OnBindView() {
                     @Override
                     public void onBind(MessageDialog dialog, View v) {
-                        iv_startagainfingerdialog = v.findViewById(R.id.iv_startagainfingerdialog);
-                        tv_startagainfingerdialog = v.findViewById(R.id.tv_startagainfingerdialog);
                     }
                 }).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
                     @Override
                     public boolean onClick(BaseDialog baseDialog, View v) {
-                        iv_startagainfingerdialog.setImageResource(R.mipmap.icon_zhiwen);
-                        tv_startagainfingerdialog.setText("指纹识别");
-                        //开启指纹识别
-                        if (!mFingerprintCore.isAuthenticating()) {
-                            mFingerprintCore.startAuthenticate();
-                        }
-                        return true;
+                        mFingerprintCore.cancelAuthenticate();
+                        return false;
                     }
-                });
+                }).setCancelable(false);
     }
 
     private void showFingerFailDialog() {
@@ -212,7 +207,13 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                     @Override
                     public void onBind(MessageDialog dialog, View v) {
                     }
-                });
+                }).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+                        mFingerprintCore.cancelAuthenticate();
+                        return false;
+                    }
+                }).setCancelable(false);
     }
 
     private FingerprintCore.IFingerprintResultListener mResultListener = new FingerprintCore.IFingerprintResultListener() {

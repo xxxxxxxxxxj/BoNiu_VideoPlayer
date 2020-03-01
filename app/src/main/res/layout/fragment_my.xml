@@ -9,7 +9,7 @@
     <include layout="@layout/include_toolbar" />
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/srl_fragresources"
+        android:id="@+id/srl_fragmy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false">
