@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.CheckVersionBean;
 import com.boniu.shipinbofangqi.mvp.model.entity.TabEntity;
@@ -43,6 +44,7 @@ import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.yalantis.ucrop.UCrop;
 import com.zhihu.matisse.Matisse;
+import com.zhouyou.http.EasyHttp;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -108,7 +110,7 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
             public void onGranted(String permissionName) {
                 if (StringUtil.isEmpty(GetDeviceId.readDeviceID(mContext))) {
                     GetDeviceId.saveDeviceID(mContext);
-                    //EasyHttp.getInstance().addCommonHeaders(UrlConstants.getHeaders(mActivity));//设置全局公共头
+                    EasyHttp.getInstance().addCommonHeaders(UrlConstants.getHeaders(mActivity));//设置全局公共头
                 }
             }
 

@@ -117,4 +117,21 @@ public class UrlConstants {
         RingLog.e("toJSONString = " + headers.toJSONString());
         return headers;
     }
+
+    public static HttpHeaders getHeadersNouuid(Context mContext) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.put(HttpHeaders.HEAD_KEY_CONTENT_TYPE, "application/json");
+        headers.put("appName", "SHIPINBOFANGQI_BONIU");
+        headers.put("brand", android.os.Build.BRAND);
+        headers.put("channel", ChannelUtil.getChannel(mContext));
+        headers.put("deviceModel", android.os.Build.MODEL);
+        headers.put("deviceType", "Android");
+        headers.put("version", QMUIPackageHelper.getAppVersion(mContext));
+        headers.put("phoneSystemVersion", "Android "
+                + android.os.Build.VERSION.RELEASE);
+        headers.put("petTimeStamp", String.valueOf(System.currentTimeMillis()));
+        RingLog.e("headers = " + headers.toString());
+        RingLog.e("toJSONString = " + headers.toJSONString());
+        return headers;
+    }
 }
