@@ -189,6 +189,8 @@ dependencies {
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
     //kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
+    //视频播放器（IJKplayer、ExoPlayer、MediaPlayer）
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.2'
 }
 
 walle {

@@ -3,7 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.boniu.shipinbofangqi">
 
-    <uses-sdk tools:overrideLibrary="com.lxj.easyadapter" />
+    <uses-sdk tools:overrideLibrary="com.lxj.easyadapter,com.shuyu.gsyvideoplayer.lib,com.shuyu.gsyvideoplayer,
+    tv.danmaku.ijk.media.exo2,com.google.android.exoplayer2,com.google.android.exoplayer2.ui,
+    com.google.android.exoplayer2.ext.rtmp,com.google.android.exoplayer2.source.dash,com.google.android.exoplayer2.source.hls,
+    com.google.android.exoplayer2.source.smoothstreaming,com.google.android.exoplayer2.core,com.shuyu.gsyvideoplayer.armv5,
+    com.shuyu.gsyvideoplayer.armv7a,com.shuyu.gsyvideoplayer.armv64,com.shuyu.gsyvideoplayer.x86_64,com.shuyu.gsyvideoplayer.x86,
+    com.shuyu.gsy.base,shuyu.com.androidvideocache,net.butterflytv.rtmp_client" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 安装apk所需权限 -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
@@ -46,10 +51,15 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mvp.view.activity.VideoListActivity"></activity>
+        <activity
+            android:name=".mvp.view.activity.PlayVideoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Full" />
+        <activity android:name=".mvp.view.activity.VideoListActivity" />
         <activity android:name=".mvp.view.activity.FolderListActivity" />
         <!--
-适配刘海屏：对Application生效，意味着该应用的所有页面，
+        适配刘海屏：对Application生效，意味着该应用的所有页面，
         系统都不会做竖屏场景的特殊下移或者是横屏场景的右移特殊处理：
         -->
         <!-- 适配华为（huawei）刘海屏 -->

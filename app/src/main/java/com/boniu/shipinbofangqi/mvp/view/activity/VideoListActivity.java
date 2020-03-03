@@ -1,5 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.activity;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -16,10 +17,12 @@ import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.VideoAdapter;
+import com.boniu.shipinbofangqi.permission.PermissionListener;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuFolderDao;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuVideoDao;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.FileSizeUtil;
+import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
@@ -100,7 +103,32 @@ public class VideoListActivity extends BaseActivity {
             public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
                 BoNiuVideoInfo boNiuVideoInfo = videoList.get(position);
                 switch (view.getId()) {
-                    case R.id.ll_item_videofrag_video_root://播放
+                    case R.id.ll_item_videofrag_video_root://播放视频
+                        requestEachCombined(new PermissionListener() {
+                            @Override
+                            public void onGranted(String permissionName) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("video_url", boNiuVideoInfo.getBoniu_video_url());
+                                bundle.putString("video_name", boNiuVideoInfo.getBoniu_video_name());
+                                startActivity(PlayVideoActivity.class, bundle);
+                            }
+
+                            @Override
+                            public void onDenied(String permissionName) {
+                                showToast("没获取到sd卡权限，无法播放本地视频哦");
+                            }
+
+                            @Override
+                            public void onDeniedWithNeverAsk(String permissionName) {
+                                MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                    @Override
+                                    public boolean onClick(BaseDialog baseDialog, View v) {
+                                        QMUIDeviceHelper.goToPermissionManager(mActivity);
+                                        return true;
+                                    }
+                                });
+                            }
+                        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
                         break;
                     case R.id.iv_item_videofrag_video_operation:
                         BottomMenu.show(mActivity, new String[]{"重命名", "移动", "移出", "删除"}, new OnMenuItemClickListener() {
@@ -144,7 +172,7 @@ public class VideoListActivity extends BaseActivity {
                                     boNiuVideoDao.updateVideoFolder(boniu_video_id, 0);
                                     double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
                                     String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
-                                    if(formatSize.equals("0.00M")){
+                                    if (formatSize.equals("0.00M")) {
                                         sizeByFolderId = 0.00;
                                     }
                                     boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
@@ -158,7 +186,7 @@ public class VideoListActivity extends BaseActivity {
                                             boNiuVideoDao.deleteById(boniu_video_id);
                                             double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
                                             String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
-                                            if(formatSize.equals("0.00M")){
+                                            if (formatSize.equals("0.00M")) {
                                                 sizeByFolderId = 0.00;
                                             }
                                             boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
