@@ -1,6 +1,8 @@
 buildscript {
     ext.kotlin_version = '1.3.41'
     repositories {
+        //友盟统计
+        maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url 'https://maven.google.com' }
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
@@ -27,6 +29,8 @@ allprojects {
         flatDir {
             dirs 'libs'
         }
+        //友盟统计
+        maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url "https://jitpack.io" }//jitpack仓库，BaseRecyclerViewAdapterHelper使用
         maven { url 'https://maven.google.com' }
         maven { url 'https://maven.aliyun.com/repository/google' }

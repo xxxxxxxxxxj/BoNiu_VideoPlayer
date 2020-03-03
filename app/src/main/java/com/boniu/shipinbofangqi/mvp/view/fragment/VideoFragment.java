@@ -45,6 +45,7 @@ import com.kongzue.dialog.v3.BottomMenu;
 import com.kongzue.dialog.v3.InputDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -390,5 +391,16 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                 getVideo(9);
                 break;
         }
+    }
+
+    // Fragment页面onResume函数重载
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("VideoFragment"); //统计页面("MainScreen"为页面名称，可自定义)
+    }
+    // Fragment页面onResume函数重载
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("VideoFragment");
     }
 }

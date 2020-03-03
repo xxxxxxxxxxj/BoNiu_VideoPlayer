@@ -19,6 +19,7 @@ import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.Global;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 
@@ -125,5 +126,16 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     @Override
     protected void loadData() {
 
+    }
+
+    // Fragment页面onResume函数重载
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("MyFragment"); //统计页面("MainScreen"为页面名称，可自定义)
+    }
+    // Fragment页面onResume函数重载
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("MyFragment");
     }
 }

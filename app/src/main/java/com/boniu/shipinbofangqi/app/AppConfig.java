@@ -10,7 +10,7 @@ package com.boniu.shipinbofangqi.app;
  */
 public class AppConfig {
     public static final String WX_SECRET = "4541b1896902768bafda8e717486e17a";
-    public static final String UMENG_APPKEY = "5b04ccf0a40fa37bb50001b7";
+    public static final String UMENG_APPKEY = "5e56419f895cca15a600002f";
     public static final int EXIT_USER_CODE = 9991;//用户登录状态被注销状态码
     public static final String URL = "http://www.sayiyinxiang.com";
     public static final String SHAREIMG_URL = "http://img.sayiyinxiang.com/api/charging/imgs/15382200559974283912.jpg";

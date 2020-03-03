@@ -20,6 +20,7 @@ import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.toast.CustomToastStyle;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.ChannelUtil;
 import com.kongzue.dialog.util.BaseDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
@@ -38,6 +39,8 @@ import com.scwang.smartrefresh.layout.util.SmartUtil;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.cache.converter.SerializableDiskConverter;
 import com.zhouyou.http.utils.HttpLog;
@@ -248,6 +251,15 @@ public class MApplication extends MultiDexApplication {
         //.addCommonHeaders(UrlConstants.getHeaders(this));//设置全局公共头
         //.addCommonParams(params);//设置全局公共参数
         //.addInterceptor(new HeTInterceptor());//处理自己业务的拦截器
+
+        //友盟设置
+        //设置LOG开关，默认为false
+        UMConfigure.setLogEnabled(true);
+        //设置是否对日志信息进行加密, 默认false(不加密).
+        UMConfigure.setEncryptEnabled(true);
+        UMConfigure.init(getApplicationContext(), AppConfig.UMENG_APPKEY, ChannelUtil.getChannel(getApplicationContext()), UMConfigure.DEVICE_TYPE_PHONE, "");
+        // 选用AUTO页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
     }
 
     public class UnSafeHostnameVerifier implements HostnameVerifier {

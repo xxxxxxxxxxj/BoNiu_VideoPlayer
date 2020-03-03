@@ -14,6 +14,7 @@ import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IResourcesFragView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -97,5 +98,16 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
                 getVideo(9);
                 break;
         }
+    }
+
+    // Fragment页面onResume函数重载
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("ResourcesFragment"); //统计页面("MainScreen"为页面名称，可自定义)
+    }
+    // Fragment页面onResume函数重载
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("ResourcesFragment");
     }
 }
