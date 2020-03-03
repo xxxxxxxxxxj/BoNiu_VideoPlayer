@@ -34,7 +34,7 @@ public class PlayVideoActivity extends BaseActivity {
     protected void initView(Bundle savedInstanceState) {
         RingLog.e("video_url = " + video_url);
         RingLog.e("video_name = " + video_name);
-        videoPlayer.setUp(video_url, false, video_name);
+        videoPlayer.setUp(video_url, true, video_name);
         //增加封面
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
