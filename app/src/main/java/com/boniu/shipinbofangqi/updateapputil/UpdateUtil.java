@@ -6,9 +6,16 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
-import androidx.core.content.FileProvider;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
+import com.boniu.shipinbofangqi.R;
+import com.kongzue.dialog.v3.CustomDialog;
 
 import java.io.File;
 
@@ -48,23 +55,31 @@ public class UpdateUtil {
         mDialog.show();
     }
 
-    public static void showForceUpgradeDialog(final Context context, String msg, final String path,
-                                              final String version, View.OnClickListener listener) {
-        InstallDialog mDialog = new InstallDialog.Builder(context)
-                .setTitle(version)
-                .setType(InstallDialog.DIALOGTYPE_ALERT).setMessage(msg)
-                .setCancelable(false).setOKStr("立即升级")
-                .positiveListener(listener).build();
-        mDialog.show();
-    }
-
-    public static void showUpgradeDialog(final Context context, String msg, final String path, final String version, View.OnClickListener listener) {
-        InstallDialog mDialog = new InstallDialog.Builder(context)
-                .setTitle(version)
-                .setType(InstallDialog.DIALOGTYPE_CONFIRM).setMessage(msg)
-                .setCancelStr("残忍拒绝").setOKStr("立即升级")
-                .positiveListener(listener).build();
-        mDialog.show();
+    public static void showUpgradeDialog(final AppCompatActivity mActivity, String msg, final int type,
+                                         final String version, View.OnClickListener listener) {
+        CustomDialog.build(mActivity, R.layout.layout_upgrade_dialog, new CustomDialog.OnBindView() {
+            @Override
+            public void onBind(final CustomDialog dialog, View v) {
+                ImageView iv_upgradedialog_close = v.findViewById(R.id.iv_upgradedialog_close);
+                TextView tv_upgradedialog_title = v.findViewById(R.id.tv_upgradedialog_title);
+                TextView tv_upgradedialog_content = v.findViewById(R.id.tv_upgradedialog_content);
+                TextView tv_upgradedialog_sub = v.findViewById(R.id.tv_upgradedialog_sub);
+                if (type == 1) {//强制升级
+                    iv_upgradedialog_close.setVisibility(View.INVISIBLE);
+                } else if (type == 2) {//非强制升级
+                    iv_upgradedialog_close.setVisibility(View.VISIBLE);
+                    iv_upgradedialog_close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.doDismiss();
+                        }
+                    });
+                }
+                tv_upgradedialog_sub.setOnClickListener(listener);
+                tv_upgradedialog_title.setText(version + " 新版上线");
+                tv_upgradedialog_content.setText(msg);
+            }
+        }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
     }
 
     /**

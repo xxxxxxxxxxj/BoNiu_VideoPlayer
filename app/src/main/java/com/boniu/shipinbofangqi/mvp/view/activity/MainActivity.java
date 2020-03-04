@@ -247,8 +247,8 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
             checkVersionBean.setCompulsory(0);
             if (checkVersionBean.getCompulsory() == 1) {
                 // 强制升级
-                UpdateUtil.showForceUpgradeDialog(mContext, checkVersionBean.getContent(),
-                        checkVersionBean.getUrl(), checkVersionBean.getVersion(), new View.OnClickListener() {
+                UpdateUtil.showUpgradeDialog(mActivity, checkVersionBean.getContent(),
+                        1, checkVersionBean.getVersion(), new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
@@ -279,8 +279,8 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
                         });
             } else if (checkVersionBean.getCompulsory() == 0) {
                 // 非强制升级
-                UpdateUtil.showUpgradeDialog(mContext, checkVersionBean.getContent(),
-                        checkVersionBean.getUrl(), checkVersionBean.getVersion(), new View.OnClickListener() {
+                UpdateUtil.showUpgradeDialog(mActivity, checkVersionBean.getContent(),
+                        2, checkVersionBean.getVersion(), new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
