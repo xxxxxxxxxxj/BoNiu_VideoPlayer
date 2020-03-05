@@ -3,11 +3,18 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
@@ -356,6 +363,46 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 TextView tv_privacydialog_msg = v.findViewById(R.id.tv_privacydialog_msg);
                 TextView tv_privacydialog_yes = v.findViewById(R.id.tv_privacydialog_yes);
                 TextView tv_privacydialog_no = v.findViewById(R.id.tv_privacydialog_no);
+                final String linkWord1 = "     您好，在您使用本应用前，请您认真阅读并了解";
+                final String linkWord2 = "《用户协议》";
+                final String linkWord3 = "和";
+                final String linkWord4 = "《隐私政策》";
+                final String linkWord5 = "。点击“同意”即表示已阅读并同意全部条款。";
+                String word = linkWord1 + linkWord2 + linkWord3 + linkWord4 + linkWord5;
+                SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(word);
+                int index2 = word.indexOf(linkWord2);
+                int index4 = word.indexOf(linkWord4);
+                spannableStringBuilder.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(WebViewActivity.URL_KEY, "file:///android_asset/network.html");
+                        startActivity(WebViewActivity.class, bundle);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setColor(ContextCompat.getColor(mActivity, R.color.a1b91ff));       //设置文件颜色
+                    }
+                }, index2, index2 + linkWord2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                spannableStringBuilder.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View widget) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(WebViewActivity.URL_KEY, "file:///android_asset/privacy.html");
+                        startActivity(WebViewActivity.class, bundle);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setColor(ContextCompat.getColor(mActivity, R.color.a1b91ff));       //设置文件颜色
+                    }
+                }, index4, index4 + linkWord4.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tv_privacydialog_msg.setText(spannableStringBuilder);
+                tv_privacydialog_msg.setMovementMethod(LinkMovementMethod.getInstance());
 
                 tv_privacydialog_yes.setOnClickListener(new View.OnClickListener() {
                     @Override

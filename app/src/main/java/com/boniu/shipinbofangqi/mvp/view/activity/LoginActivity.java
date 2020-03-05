@@ -9,6 +9,7 @@ import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.gyf.immersionbar.ImmersionBar;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -46,6 +47,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void setView(Bundle savedInstanceState) {
         tvToolbarTitle.setVisibility(View.GONE);
+        ImmersionBar.with(this).statusBarColor(R.color.a2D2D2D).init();
     }
 
     @Override

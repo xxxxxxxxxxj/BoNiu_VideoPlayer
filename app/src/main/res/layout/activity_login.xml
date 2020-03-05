@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/a2D2D2D"
     android:focusableInTouchMode="true"
+    android:paddingTop="20dip"
     android:orientation="vertical">
 
     <include layout="@layout/include_toolbar" />
