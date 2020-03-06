@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="275dip"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_white_round11"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dip"
+            android:layout_marginTop="47dip"
+            android:layout_marginRight="32dip"
+            android:layout_marginBottom="30dip"
+            android:gravity="center"
+            android:text="Wo～用的怎么样？如果还行，请为我点个赞！"
+            android:textColor="@color/a646464"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="@color/aE3E3E3" />
+
+        <TextView
+            android:id="@+id/tv_marketdialog_one"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:gravity="center"
+            android:text="喜欢，好评打赏"
+            android:textColor="@color/aFFB11B"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="@color/aE3E3E3" />
+
+        <TextView
+            android:id="@+id/tv_marketdialog_two"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:gravity="center"
+            android:text="继续逛逛"
+            android:textColor="@color/a383838"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="@color/aE3E3E3" />
+
+        <TextView
+            android:id="@+id/tv_marketdialog_three"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:gravity="center"
+            android:text="不喜欢，去吐槽"
+            android:textColor="@color/a383838"
+            android:textSize="16sp" />
+    </LinearLayout>
+</RelativeLayout>

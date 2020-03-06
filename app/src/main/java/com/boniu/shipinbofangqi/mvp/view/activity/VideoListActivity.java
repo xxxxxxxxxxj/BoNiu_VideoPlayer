@@ -3,7 +3,6 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,6 +33,7 @@ import com.kongzue.dialog.interfaces.OnInputDialogButtonClickListener;
 import com.kongzue.dialog.interfaces.OnMenuItemClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.BottomMenu;
+import com.kongzue.dialog.v3.CustomDialog;
 import com.kongzue.dialog.v3.InputDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -74,31 +74,40 @@ public class VideoListActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(MarketDialogEvent event) {
         if (event != null) {
-            MessageDialog.show(mActivity, "Wo～用的怎么样？如果还行，请为我点个赞！", "", "喜欢，好评打赏", "继续逛逛", "不喜欢，去吐槽")
-                    .setButtonOrientation(LinearLayout.VERTICAL).setCancelable(false).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+            CustomDialog.build(mActivity, R.layout.layout_market_dialog, new CustomDialog.OnBindView() {
                 @Override
-                public boolean onClick(BaseDialog baseDialog, View v) {
-                    spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 1);
-                    spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
-                    CommonUtil.goMarket(mContext);
-                    return false;
+                public void onBind(final CustomDialog dialog, View v) {
+                    TextView tv_marketdialog_one = v.findViewById(R.id.tv_marketdialog_one);
+                    TextView tv_marketdialog_two = v.findViewById(R.id.tv_marketdialog_two);
+                    TextView tv_marketdialog_three = v.findViewById(R.id.tv_marketdialog_three);
+                    tv_marketdialog_one.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 1);
+                            spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
+                            CommonUtil.goMarket(mActivity);
+                            dialog.doDismiss();
+                        }
+                    });
+                    tv_marketdialog_two.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 2);
+                            spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
+                            dialog.doDismiss();
+                        }
+                    });
+                    tv_marketdialog_three.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 3);
+                            spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
+                            startActivity(FeedBackActivity.class);
+                            dialog.doDismiss();
+                        }
+                    });
                 }
-            }).setOnCancelButtonClickListener(new OnDialogButtonClickListener() {
-                @Override
-                public boolean onClick(BaseDialog baseDialog, View v) {
-                    spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 2);
-                    spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
-                    return false;
-                }
-            }).setOnOtherButtonClickListener(new OnDialogButtonClickListener() {
-                @Override
-                public boolean onClick(BaseDialog baseDialog, View v) {
-                    spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 3);
-                    spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
-                    startActivity(FeedBackActivity.class);
-                    return false;
-                }
-            });
+            }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
         }
     }
 
