@@ -9,24 +9,24 @@
 
     <ImageView
         android:id="@+id/iv_toolbar_back"
-        android:layout_width="16dip"
-        android:layout_height="15dip"
+        android:layout_width="19dip"
+        android:layout_height="17dip"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        android:src="@mipmap/icon_appoint_close" />
+        android:src="@mipmap/icon_back" />
 
     <ImageView
         android:id="@+id/iv_toolbar_right"
-        android:layout_width="16dip"
-        android:layout_height="15dip"
+        android:layout_width="27dip"
+        android:layout_height="21dip"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         android:visibility="gone"
-        android:src="@mipmap/icon_appoint_close" />
+        android:src="@mipmap/icon_addfolder" />
 
     <TextView
         android:id="@+id/tv_toolbar_title"

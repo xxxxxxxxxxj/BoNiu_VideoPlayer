@@ -13,14 +13,14 @@
 
         <ImageView
             android:id="@+id/iv_upgradedialog_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dip"
+            android:layout_height="20dip"
             android:layout_gravity="right"
             android:layout_marginTop="10dip"
             android:layout_marginRight="10dip"
             android:layout_marginBottom="13dip"
             android:scaleType="fitXY"
-            android:src="@mipmap/icon_appoint_close" />
+            android:src="@mipmap/icon_vipdialog_close" />
 
         <TextView
             android:id="@+id/tv_upgradedialog_title"

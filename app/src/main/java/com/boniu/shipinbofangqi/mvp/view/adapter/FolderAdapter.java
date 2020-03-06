@@ -47,7 +47,7 @@ public class FolderAdapter extends BaseQuickAdapter<BoNiuFolderInfo, BaseViewHol
                 iv_item_videofrag_video_operation.setVisibility(View.GONE);
             }
             tv_item_videofrag_video_length.setVisibility(View.GONE);
-            iv_item_videofrag_video_img.setImageResource(R.mipmap.ic_image_load);
+            iv_item_videofrag_video_img.setImageResource(R.mipmap.icon_folder);
             StringUtil.setText(tv_item_videofrag_video_memory, item.getBoniu_folder_formatmemory(), "", View.VISIBLE, View.VISIBLE);
             StringUtil.setText(tv_item_videofrag_video_time, item.getBoniu_folder_createtime(), "", View.VISIBLE, View.VISIBLE);
             StringUtil.setText(tv_item_videofrag_video_name, item.getBoniu_folder_name(), "", View.VISIBLE, View.VISIBLE);

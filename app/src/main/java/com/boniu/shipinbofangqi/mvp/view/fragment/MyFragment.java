@@ -1,11 +1,9 @@
 package com.boniu.shipinbofangqi.mvp.view.fragment;
 
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -45,7 +43,9 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     @BindView(R.id.toolbar)
     RelativeLayout toolbar;
     @BindView(R.id.sh_fragmy)
-    Switch sh_fragmy;
+    ImageView sh_fragmy;
+    @BindView(R.id.ll_fragmy_folder)
+    LinearLayout ll_fragmy_folder;
     @BindView(R.id.ll_fragmy_finger)
     LinearLayout ll_fragmy_finger;
     @BindView(R.id.srl_fragmy)
@@ -55,7 +55,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     @BindView(R.id.tv_fragmy_senior_state)
     TextView tvFragmySeniorState;
     @BindView(R.id.sh_fragmy_folder)
-    Switch shFragmyFolder;
+    ImageView shFragmyFolder;
     private FingerprintCore mFingerprintCore;
 
     @Override
@@ -87,90 +87,32 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
 
         mFingerprintCore = new FingerprintCore(mActivity);
         if (mFingerprintCore.isSupport()) {
+            ll_fragmy_folder.setVisibility(View.VISIBLE);
             ll_fragmy_finger.setVisibility(View.VISIBLE);
             //判断设备是否录入指纹
             boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
             //判断是否开启指纹支付
             boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
             if (isFinger && hasEnrolledFingerprints) {
-                sh_fragmy.setSwitchTextAppearance(mActivity, R.style.s_true);
+                sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
             } else {
-                sh_fragmy.setSwitchTextAppearance(mActivity, R.style.s_false);
+                sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
             }
         } else {
             ll_fragmy_finger.setVisibility(View.GONE);
+            ll_fragmy_folder.setVisibility(View.GONE);
             spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
+            spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
         }
-        sh_fragmy.setChecked(spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false));
-        sh_fragmy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //控制开关字体颜色
-                if (b) {
-                    //判断设备是否录入指纹
-                    boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
-                    if (hasEnrolledFingerprints) {
-                        sh_fragmy.setSwitchTextAppearance(mActivity, R.style.s_true);
-                        spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, true);
-                    } else {
-                        RingToast.show("您还没有录制指纹，请录入！");
-                        FingerprintUtil.openFingerPrintSettingPage(mActivity);
-                    }
-                } else {
-                    sh_fragmy.setSwitchTextAppearance(mActivity, R.style.s_false);
-                    spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                }
-            }
-        });
-
         //判断是否开启加密文件夹
         boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
         if (ISOPENENCRYPTEDFOLDER) {
-            shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_true);
+            shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
         } else {
-            shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_false);
+            shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
         }
-        shFragmyFolder.setChecked(spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false));
-        shFragmyFolder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //控制开关字体颜色
-                if (b) {
-                    //判断是否开通高级版
-                    boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
-                    if (ISOPENENVIP) {
-                        shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_true);
-                        spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, true);
-                    } else {
-                        //弹出高级版开通弹窗
-                        CustomDialog.build(mActivity, R.layout.layout_openvip_dialog, new CustomDialog.OnBindView() {
-                            @Override
-                            public void onBind(final CustomDialog dialog, View v) {
-                                ImageView iv_openvipdialog_close = v.findViewById(R.id.iv_openvipdialog_close);
-                                TextView tv_openvipdialog_open = v.findViewById(R.id.tv_openvipdialog_open);
-                                iv_openvipdialog_close.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        dialog.doDismiss();
-                                    }
-                                });
-                                tv_openvipdialog_open.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        startActivity(MemberActivity.class);
-                                        dialog.doDismiss();
-                                    }
-                                });
-                            }
-                        }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
-                    }
-                } else {
-                    shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_false);
-                    spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
-                }
-            }
-        });
     }
 
     @Override
@@ -200,7 +142,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         MobclickAgent.onPageEnd("MyFragment");
     }
 
-    @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about})
+    @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about, R.id.sh_fragmy, R.id.sh_fragmy_folder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_fragmy_login:
@@ -214,6 +156,72 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                 break;
             case R.id.ll_fragmy_about:
                 startActivity(AboutActivity.class);
+                break;
+            case R.id.sh_fragmy:
+                boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                if (isFinger) {
+                    sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
+                    spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                } else {
+                    //判断设备是否录入指纹
+                    boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
+                    if (hasEnrolledFingerprints) {
+                        sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
+                        spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, true);
+                    } else {
+                        RingToast.show("您还没有录制指纹，请录入！");
+                        FingerprintUtil.openFingerPrintSettingPage(mActivity);
+                    }
+                }
+                break;
+            case R.id.sh_fragmy_folder:
+                boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                if (ISOPENENCRYPTEDFOLDER) {
+                    shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
+                    spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                } else {
+                    //判断是否开通高级版
+                    boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
+                    if (ISOPENENVIP) {
+                        //再判断是否录入指纹
+                        boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
+                        if (hasEnrolledFingerprints) {
+                            //再判断是否开启指纹识别
+                            boolean isFinger1 = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                            if (isFinger1) {
+                                shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
+                                spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, true);
+                            } else {
+                                RingToast.show("请先开启指纹识别！");
+                            }
+                        } else {
+                            RingToast.show("您还没有录制指纹，请录入！");
+                            FingerprintUtil.openFingerPrintSettingPage(mActivity);
+                        }
+                    } else {
+                        //弹出高级版开通弹窗
+                        CustomDialog.build(mActivity, R.layout.layout_openvip_dialog, new CustomDialog.OnBindView() {
+                            @Override
+                            public void onBind(final CustomDialog dialog, View v) {
+                                ImageView iv_openvipdialog_close = v.findViewById(R.id.iv_openvipdialog_close);
+                                TextView tv_openvipdialog_open = v.findViewById(R.id.tv_openvipdialog_open);
+                                iv_openvipdialog_close.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        dialog.doDismiss();
+                                    }
+                                });
+                                tv_openvipdialog_open.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(MemberActivity.class);
+                                        dialog.doDismiss();
+                                    }
+                                });
+                            }
+                        }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
+                    }
+                }
                 break;
         }
     }

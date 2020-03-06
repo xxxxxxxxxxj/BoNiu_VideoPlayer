@@ -92,14 +92,14 @@
 
         <ImageView
             android:id="@+id/iv_openvipdialog_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dip"
+            android:layout_height="20dip"
             android:layout_below="@id/ll_openvipdialog_info"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="18dip"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@mipmap/icon_appoint_close" />
+            android:src="@mipmap/icon_vipdialog_close" />
 
         <ImageView
             android:layout_width="match_parent"

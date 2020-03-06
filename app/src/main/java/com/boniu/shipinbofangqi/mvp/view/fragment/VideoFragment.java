@@ -3,6 +3,7 @@ package com.boniu.shipinbofangqi.mvp.view.fragment;
 import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintCore;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuFolderInfo;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
@@ -22,6 +24,7 @@ import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.VideoFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FolderListActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.PlayVideoActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.VideoListActivity;
@@ -91,6 +94,11 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     private List<BoNiuFolderInfo> folderList = new ArrayList<BoNiuFolderInfo>();
     private VideoAdapter videoAdapter;
     private FolderAdapter folderAdapter;
+    private FingerprintCore mFingerprintCore;
+    private CustomDialog startfingerDialog;
+    private MessageDialog startAgainfingerDialog;
+    private MessageDialog fingerFailDialog;
+    private int fingerNum;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(RefreshVideoEvent event) {
@@ -202,6 +210,9 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
 
     @Override
     protected void initView() {
+        mFingerprintCore = new FingerprintCore(mActivity);
+        mFingerprintCore.setFingerprintManager(mResultListener);
+
         srlFragvideo.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("视频");
         ivToolbarBack.setVisibility(View.GONE);
@@ -340,10 +351,21 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                 BoNiuFolderInfo boNiuFolderInfo = folderList.get(position);
                 switch (view.getId()) {
                     case R.id.ll_item_videofrag_video_root:
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("boniu_folder_id", boNiuFolderInfo.getBoniu_folder_id());
-                        bundle.putString("boniu_folder_name", boNiuFolderInfo.getBoniu_folder_name());
-                        startActivity(VideoListActivity.class, bundle);
+                        //判断是否开启加密文件夹
+                        boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                        if (ISOPENENCRYPTEDFOLDER) {
+                            fingerNum = 0;
+                            //开启指纹识别
+                            if (!mFingerprintCore.isAuthenticating()) {
+                                mFingerprintCore.startAuthenticate();
+                            }
+                            startFingerDialog();
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("boniu_folder_id", boNiuFolderInfo.getBoniu_folder_id());
+                            bundle.putString("boniu_folder_name", boNiuFolderInfo.getBoniu_folder_name());
+                            startActivity(VideoListActivity.class, bundle);
+                        }
                         break;
                     case R.id.iv_item_videofrag_video_operation:
                         BottomMenu.show(mActivity, new String[]{"重命名", "删除"}, new OnMenuItemClickListener() {
@@ -459,15 +481,118 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
         }
     }
 
+    private void startFingerDialog() {
+        startfingerDialog = CustomDialog.build(mActivity, R.layout.layout_startfinger_dialog, new CustomDialog.OnBindView() {
+            @Override
+            public void onBind(final CustomDialog dialog, View v) {
+            }
+        }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false);
+        startfingerDialog.show();
+    }
+
+    private void startAgainFingerDialog() {
+        startAgainfingerDialog = MessageDialog.show(mActivity, "", "", "取消")
+                .setButtonOrientation(LinearLayout.VERTICAL)
+                .setCustomView(R.layout.layout_startagainfinger_dialog, new MessageDialog.OnBindView() {
+                    @Override
+                    public void onBind(MessageDialog dialog, View v) {
+                    }
+                }).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+                        mFingerprintCore.cancelAuthenticate();
+                        return false;
+                    }
+                }).setCancelable(false);
+    }
+
+    private void showFingerFailDialog() {
+        fingerFailDialog = MessageDialog.show(mActivity, "", "", "取消")
+                .setCustomView(R.layout.layout_fingerfail_dialog, new MessageDialog.OnBindView() {
+                    @Override
+                    public void onBind(MessageDialog dialog, View v) {
+                    }
+                }).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+                        mFingerprintCore.cancelAuthenticate();
+                        return false;
+                    }
+                }).setCancelable(false);
+    }
+
+    private FingerprintCore.IFingerprintResultListener mResultListener = new FingerprintCore.IFingerprintResultListener() {
+        @Override
+        public void onAuthenticateSuccess() {
+            if (startfingerDialog != null) {
+                startfingerDialog.doDismiss();
+            }
+            startfingerDialog = null;
+            if (startAgainfingerDialog != null) {
+                startAgainfingerDialog.doDismiss();
+            }
+            startAgainfingerDialog = null;
+            if (fingerFailDialog != null) {
+                fingerFailDialog.doDismiss();
+            }
+            fingerFailDialog = null;
+            mFingerprintCore.cancelAuthenticate();
+            RingToast.show("验证成功");
+            //直接进入首页
+            startActivity(MainActivity.class, true);
+        }
+
+        @Override
+        public void onAuthenticateFailed(int helpId) {
+            Log.e("TAG", "onAuthenticateFailed");
+            fingerNum++;
+            if (startfingerDialog != null) {
+                startfingerDialog.doDismiss();
+            }
+            startfingerDialog = null;
+            if (startAgainfingerDialog != null) {
+                startAgainfingerDialog.doDismiss();
+            }
+            startAgainfingerDialog = null;
+            if (fingerFailDialog != null) {
+                fingerFailDialog.doDismiss();
+            }
+            fingerFailDialog = null;
+            if (fingerNum == 1) {//第一次验证失败
+                startAgainFingerDialog();
+            } else if (fingerNum == 2) {//第二次验证失败
+                showFingerFailDialog();
+            }
+        }
+
+        @Override
+        public void onAuthenticateError(int errMsgId) {
+            Log.e("TAG", "onAuthenticateError");
+        }
+
+        @Override
+        public void onStartAuthenticateResult(boolean isSuccess) {
+
+        }
+    };
+
     // Fragment页面onResume函数重载
+    @Override
     public void onResume() {
         super.onResume();
         MobclickAgent.onPageStart("VideoFragment"); //统计页面("MainScreen"为页面名称，可自定义)
     }
 
     // Fragment页面onResume函数重载
+    @Override
     public void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd("VideoFragment");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mFingerprintCore.onDestroy();
     }
 }
