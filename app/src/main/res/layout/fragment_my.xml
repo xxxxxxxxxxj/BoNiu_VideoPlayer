@@ -27,6 +27,220 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <RelativeLayout
+                    android:id="@+id/rl_fragmy_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="102dip"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip">
+
+                    <ImageView
+                        android:id="@+id/iv_fragmy_right1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/icon_appoint_close" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="10dip"
+                        android:layout_toLeftOf="@id/iv_fragmy_right1"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dip"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_appoint_close" />
+
+                        <TextView
+                            android:id="@+id/tv_fragmy_login"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="未登录"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_fragmy_senior"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <LinearLayout
+                            android:id="@+id/ll_fragmy_right2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical|right"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_fragmy_senior_state"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dip"
+                                android:text="未开通"
+                                android:textColor="@color/a979797"
+                                android:textSize="12sp" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/icon_appoint_close" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/ll_fragmy_right2"
+                            android:gravity="center_vertical">
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="20dip"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/icon_appoint_close" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="开通高级版"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_fragmy_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_fragmy_right2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_appoint_close" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_fragmy_right2"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="20dip"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/icon_appoint_close" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="帮助与反馈"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_fragmy_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_fragmy_right3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_appoint_close" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_fragmy_right3"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="20dip"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/icon_appoint_close" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="关于我们"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_fragmy_finger"
                     android:layout_width="match_parent"
@@ -58,7 +272,6 @@
                             android:layout_toLeftOf="@id/sh_fragmy"
                             android:gravity="center_vertical">
 
-
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -81,6 +294,74 @@
                         android:layout_height="1dip"
                         android:background="@color/a575757" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_fragmy_folder"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <Switch
+                            android:id="@+id/sh_fragmy_folder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:switchMinWidth="20dp"
+                            android:textOff="off"
+                            android:textOn="on"
+                            android:thumb="@drawable/thumb"
+                            android:track="@drawable/track" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/sh_fragmy_folder"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="20dip"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/icon_appoint_close" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="加密文件夹"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="41dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="33dip"
+                    android:layout_marginTop="112dip"
+                    android:layout_marginRight="33dip"
+                    android:layout_marginBottom="27dip"
+                    android:background="@drawable/bg_343434_round6"
+                    android:gravity="center"
+                    android:text="退出登录"
+                    android:textColor="@color/aFFE52C"
+                    android:textSize="16sp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>

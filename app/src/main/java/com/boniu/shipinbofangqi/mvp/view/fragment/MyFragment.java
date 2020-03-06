@@ -22,6 +22,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * <p>Title:${type_name}</p>
@@ -44,6 +45,12 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     LinearLayout ll_fragmy_finger;
     @BindView(R.id.srl_fragmy)
     SmartRefreshLayout srlFragMy;
+    @BindView(R.id.tv_fragmy_login)
+    TextView tvFragmyLogin;
+    @BindView(R.id.tv_fragmy_senior_state)
+    TextView tvFragmySeniorState;
+    @BindView(R.id.sh_fragmy_folder)
+    Switch shFragmyFolder;
     private FingerprintCore mFingerprintCore;
 
     @Override
@@ -133,9 +140,24 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         super.onResume();
         MobclickAgent.onPageStart("MyFragment"); //统计页面("MainScreen"为页面名称，可自定义)
     }
+
     // Fragment页面onResume函数重载
     public void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd("MyFragment");
+    }
+
+    @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.rl_fragmy_login:
+                break;
+            case R.id.ll_fragmy_senior:
+                break;
+            case R.id.ll_fragmy_feedback:
+                break;
+            case R.id.ll_fragmy_about:
+                break;
+        }
     }
 }

@@ -246,7 +246,6 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
 
         @Override
         public void onAuthenticateFailed(int helpId) {
-            mFingerprintCore.cancelAuthenticate();
             Log.e("TAG", "onAuthenticateFailed");
             fingerNum++;
             if (startfingerDialog != null) {
@@ -271,7 +270,6 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
         @Override
         public void onAuthenticateError(int errMsgId) {
             Log.e("TAG", "onAuthenticateError");
-            mFingerprintCore.cancelAuthenticate();
         }
 
         @Override
