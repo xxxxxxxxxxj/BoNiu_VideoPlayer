@@ -16,4 +16,8 @@ public class Global {
     public static final String SP_KEY_ISJUMPLOGIN = "SP_KEY_ISJUMPLOGIN";
     public static final String SP_KEY_ISLOGIN = "SP_KEY_ISLOGIN";
     public static final String SP_KEY_ISOPENFINGER = "SP_KEY_ISOPENFINGER";
+    public static final String SP_KEY_PLAYVIDEONUM_TODAY = "SP_KEY_PLAYVIDEONUM_TODAY";
+    public static final String SP_KEY_PLAYVIDEOTIME_TODAY = "SP_KEY_PLAYVIDEOTIME_TODAY";
+    public static final String SP_KEY_MARKETCLICKTIME = "SP_KEY_MARKETCLICKTIME";
+    public static final String SP_KEY_MARKETCLICKTYPE = "SP_KEY_MARKETCLICKTYPE";
 }

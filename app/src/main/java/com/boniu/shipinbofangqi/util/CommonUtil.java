@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
+import com.boniu.shipinbofangqi.toast.RingToast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
@@ -26,6 +27,7 @@ import com.lxj.xpopup.interfaces.XPopupImageLoader;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -195,5 +197,49 @@ public class CommonUtil {
         String sim = dateFormat.format(date);
         RingLog.e("md", "时间sim为： " + sim);
         return sim;
+    }
+
+    /**
+     * 获取当前时间
+     *
+     * @return
+     */
+    public static String getCurrentDate() {
+        Date date = new Date();
+        String time = date.toLocaleString();
+        RingLog.e("md", "时间time为： " + time);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String sim = dateFormat.format(date);
+        RingLog.e("md", "时间sim为： " + sim);
+        return sim;
+    }
+
+    public static long getTimeDays(String startDateStr, String endDateStr) {
+        long betweenDate = 0;
+        try {
+            //设置转换的日期格式
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = sdf.parse(startDateStr);
+            //结束时间
+            Date endDate = sdf.parse(endDateStr);
+            //得到相差的天数 betweenDate
+            betweenDate = (endDate.getTime() - startDate.getTime()) / (60 * 60 * 24 * 1000);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return betweenDate;
+    }
+
+    // 跳转到应用市场评价
+    public static void goMarket(Context context) {
+        try {
+            Uri uri = Uri.parse("market://details?id="
+                    + context.getPackageName());
+            Intent intentwx = new Intent(Intent.ACTION_VIEW, uri);
+            intentwx.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intentwx);
+        } catch (Exception e) {
+            RingToast.show("您没有安装应用市场");
+        }
     }
 }
