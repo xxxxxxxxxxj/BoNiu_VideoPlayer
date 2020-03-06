@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="276dip"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_openvipdialog_info"
+            android:layout_width="match_parent"
+            android:layout_marginRight="0.5dip"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dip"
+            android:background="@drawable/bg_white_bottom_round11"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="33dp"
+                android:layout_marginBottom="14dip"
+                android:gravity="center"
+                android:text="开通会员纵享优厚待遇"
+                android:textColor="@color/a3B3B3B"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dip"
+                android:gravity="center"
+                android:text="去除弹窗广告和条幅广告"
+                android:textColor="@color/a373737"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dip"
+                android:gravity="center"
+                android:text="新建文件夹分类储存高清视频"
+                android:textColor="@color/a373737"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dip"
+                android:gravity="center"
+                android:text="加密管理视频文件，私密观看"
+                android:textColor="@color/a373737"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dip"
+                android:gravity="center"
+                android:text="支持开启指纹或人脸开屏解锁"
+                android:textColor="@color/a373737"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dip"
+                android:gravity="center"
+                android:text="支持所有视频格式的高清播放"
+                android:textColor="@color/a373737"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_openvipdialog_open"
+                android:layout_width="match_parent"
+                android:layout_height="36dip"
+                android:layout_marginLeft="50dip"
+                android:layout_marginRight="50dip"
+                android:layout_marginBottom="25dip"
+                android:background="@drawable/bg_ffe52c_round5"
+                android:gravity="center"
+                android:text="立即开通"
+                android:textColor="@color/a2D2D2D"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_openvipdialog_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_openvipdialog_info"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dip"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/icon_appoint_close" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="92dip"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/bg_vipdialog_top" />
+    </RelativeLayout>
+</LinearLayout>

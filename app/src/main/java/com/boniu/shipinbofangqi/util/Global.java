@@ -20,4 +20,6 @@ public class Global {
     public static final String SP_KEY_PLAYVIDEOTIME_TODAY = "SP_KEY_PLAYVIDEOTIME_TODAY";
     public static final String SP_KEY_MARKETCLICKTIME = "SP_KEY_MARKETCLICKTIME";
     public static final String SP_KEY_MARKETCLICKTYPE = "SP_KEY_MARKETCLICKTYPE";
+    public static final String SP_KEY_ISOPENENCRYPTEDFOLDER = "SP_KEY_ISOPENENCRYPTEDFOLDER";
+    public static final String SP_KEY_ISOPENENVIP = "SP_KEY_ISOPENENVIP";
 }

@@ -14,10 +14,15 @@ import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintCore;
 import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintUtil;
 import com.boniu.shipinbofangqi.mvp.presenter.MyFragPresenter;
+import com.boniu.shipinbofangqi.mvp.view.activity.AboutActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.Global;
+import com.kongzue.dialog.v3.CustomDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.umeng.analytics.MobclickAgent;
 
@@ -118,6 +123,54 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                 }
             }
         });
+
+        //判断是否开启加密文件夹
+        boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+        if (ISOPENENCRYPTEDFOLDER) {
+            shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_true);
+        } else {
+            shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_false);
+        }
+        shFragmyFolder.setChecked(spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false));
+        shFragmyFolder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                //控制开关字体颜色
+                if (b) {
+                    //判断是否开通高级版
+                    boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
+                    if (ISOPENENVIP) {
+                        shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_true);
+                        spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, true);
+                    } else {
+                        //弹出高级版开通弹窗
+                        CustomDialog.build(mActivity, R.layout.layout_openvip_dialog, new CustomDialog.OnBindView() {
+                            @Override
+                            public void onBind(final CustomDialog dialog, View v) {
+                                ImageView iv_openvipdialog_close = v.findViewById(R.id.iv_openvipdialog_close);
+                                TextView tv_openvipdialog_open = v.findViewById(R.id.tv_openvipdialog_open);
+                                iv_openvipdialog_close.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        dialog.doDismiss();
+                                    }
+                                });
+                                tv_openvipdialog_open.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(MemberActivity.class);
+                                        dialog.doDismiss();
+                                    }
+                                });
+                            }
+                        }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
+                    }
+                } else {
+                    shFragmyFolder.setSwitchTextAppearance(mActivity, R.style.s_false);
+                    spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                }
+            }
+        });
     }
 
     @Override
@@ -151,12 +204,16 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_fragmy_login:
+                startActivity(LoginActivity.class);
                 break;
             case R.id.ll_fragmy_senior:
+                startActivity(MemberActivity.class);
                 break;
             case R.id.ll_fragmy_feedback:
+                startActivity(FeedBackActivity.class);
                 break;
             case R.id.ll_fragmy_about:
+                startActivity(AboutActivity.class);
                 break;
         }
     }

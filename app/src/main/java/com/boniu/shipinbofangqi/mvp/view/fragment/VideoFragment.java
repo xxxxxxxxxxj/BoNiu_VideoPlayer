@@ -22,6 +22,7 @@ import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.VideoFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FolderListActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.PlayVideoActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.VideoListActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.FolderAdapter;
@@ -43,7 +44,6 @@ import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.interfaces.OnInputDialogButtonClickListener;
 import com.kongzue.dialog.interfaces.OnMenuItemClickListener;
 import com.kongzue.dialog.util.BaseDialog;
-import com.kongzue.dialog.util.DialogSettings;
 import com.kongzue.dialog.v3.BottomMenu;
 import com.kongzue.dialog.v3.CustomDialog;
 import com.kongzue.dialog.v3.InputDialog;
@@ -401,35 +401,57 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     @OnClick({R.id.iv_toolbar_right, R.id.ll_fragvideo_input})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.iv_toolbar_right:
-                DialogSettings.style = DialogSettings.STYLE.STYLE_IOS;
-                DialogSettings.theme = DialogSettings.THEME.LIGHT;
-                DialogSettings.tipTheme = DialogSettings.THEME.DARK;
-                InputDialog.build(mActivity)
-                        .setTitle("新建文件夹").setMessage("")
-                        .setOkButton("确定", new OnInputDialogButtonClickListener() {
-                            @Override
-                            public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
-                                if (StringUtil.isNotEmpty(inputStr)) {
-                                    if (!boNiuFolderDao.isExists(inputStr)) {
-                                        boNiuFolderDao.add(new BoNiuFolderInfo(inputStr, CommonUtil.getCurrentTime()));
-                                        setData();
-                                        RingToast.show("文件夹创建成功");
-                                        return false;
+            case R.id.iv_toolbar_right://判断是否开通高级版
+                boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
+                if (ISOPENENVIP) {
+                    InputDialog.build(mActivity)
+                            .setTitle("新建文件夹").setMessage("")
+                            .setOkButton("确定", new OnInputDialogButtonClickListener() {
+                                @Override
+                                public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
+                                    if (StringUtil.isNotEmpty(inputStr)) {
+                                        if (!boNiuFolderDao.isExists(inputStr)) {
+                                            boNiuFolderDao.add(new BoNiuFolderInfo(inputStr, CommonUtil.getCurrentTime()));
+                                            setData();
+                                            RingToast.show("文件夹创建成功");
+                                            return false;
+                                        } else {
+                                            RingToast.show("文件夹已存在");
+                                            return true;
+                                        }
                                     } else {
-                                        RingToast.show("文件夹已存在");
+                                        RingToast.show("请输入文件夹名称");
                                         return true;
                                     }
-                                } else {
-                                    RingToast.show("请输入文件夹名称");
-                                    return true;
                                 }
-                            }
-                        })
-                        .setCancelButton("取消")
-                        .setHintText("请输入文件夹名称")
-                        .setCancelable(false)
-                        .show();
+                            })
+                            .setCancelButton("取消")
+                            .setHintText("请输入文件夹名称")
+                            .setCancelable(false)
+                            .show();
+                } else {
+                    //弹出高级版开通弹窗
+                    CustomDialog.build(mActivity, R.layout.layout_openvip_dialog, new CustomDialog.OnBindView() {
+                        @Override
+                        public void onBind(final CustomDialog dialog, View v) {
+                            ImageView iv_openvipdialog_close = v.findViewById(R.id.iv_openvipdialog_close);
+                            TextView tv_openvipdialog_open = v.findViewById(R.id.tv_openvipdialog_open);
+                            iv_openvipdialog_close.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    dialog.doDismiss();
+                                }
+                            });
+                            tv_openvipdialog_open.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivity(MemberActivity.class);
+                                    dialog.doDismiss();
+                                }
+                            });
+                        }
+                    }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
+                }
                 break;
             case R.id.ll_fragvideo_input:
                 getVideo(9);
