@@ -4,21 +4,20 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
+import com.boniu.shipinbofangqi.mvp.model.event.MarketDialogEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
-import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
-import com.kongzue.dialog.util.BaseDialog;
-import com.kongzue.dialog.v3.MessageDialog;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 
@@ -82,9 +81,13 @@ public class PlayVideoActivity extends BaseActivity {
         RingLog.e("initData");
         String PLAYVIDEOTIME_TODAY = spUtil.getString(Global.SP_KEY_PLAYVIDEOTIME_TODAY, "");
         int PLAYVIDEONUM_TODAY = spUtil.getInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, 0);
+        RingLog.e("PLAYVIDEOTIME_TODAY = " + PLAYVIDEOTIME_TODAY);
+        RingLog.e("PLAYVIDEONUM_TODAY = " + PLAYVIDEONUM_TODAY);
+        RingLog.e("CommonUtil.getCurrentDate() = " + CommonUtil.getCurrentDate());
+        RingLog.e("initData");
         if (StringUtil.isNotEmpty(PLAYVIDEOTIME_TODAY)) {
             if (PLAYVIDEOTIME_TODAY.equals(CommonUtil.getCurrentDate())) {
-                spUtil.saveInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, PLAYVIDEONUM_TODAY++);
+                spUtil.saveInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, (PLAYVIDEONUM_TODAY + 1));
             } else {
                 spUtil.saveString(Global.SP_KEY_PLAYVIDEOTIME_TODAY, CommonUtil.getCurrentDate());
                 spUtil.saveInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, 1);
@@ -144,6 +147,7 @@ public class PlayVideoActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        RingLog.e("onBackPressed");
         //先返回正常状态
         if (orientationUtils.getScreenType() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             videoPlayer.getFullscreenButton().performClick();
@@ -152,11 +156,16 @@ public class PlayVideoActivity extends BaseActivity {
         //释放所有
         videoPlayer.setVideoAllCallBack(null);
         int PLAYVIDEONUM_TODAY = spUtil.getInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, 0);
+        String PLAYVIDEOTIME_TODAY = spUtil.getString(Global.SP_KEY_PLAYVIDEOTIME_TODAY, "");
+        RingLog.e("PLAYVIDEONUM_TODAY = " + PLAYVIDEONUM_TODAY);
+        RingLog.e("PLAYVIDEOTIME_TODAY = " + PLAYVIDEOTIME_TODAY);
         if (PLAYVIDEONUM_TODAY >= 2) {
             boolean isBounced = false;
             String MARKETCLICKTIME = spUtil.getString(Global.SP_KEY_MARKETCLICKTIME, "");
             int MARKETCLICKTYPE = spUtil.getInt(Global.SP_KEY_MARKETCLICKTYPE, 0);
             String currentDate = CommonUtil.getCurrentDate();
+            long timeDays = CommonUtil.getTimeDays(MARKETCLICKTIME, currentDate);
+            RingLog.e("timeDays = " + timeDays);
             if (MARKETCLICKTYPE == 1) {//6个月每次
                 if (CommonUtil.getTimeDays(MARKETCLICKTIME, currentDate) > 180) {
                     isBounced = true;
@@ -173,31 +182,7 @@ public class PlayVideoActivity extends BaseActivity {
                 isBounced = true;
             }
             if (isBounced) {
-                MessageDialog.show(mActivity, "Wo～用的怎么样？如果还行，请为我点个赞！", "", "喜欢，好评打赏", "继续逛逛", "不喜欢，去吐槽")
-                        .setButtonOrientation(LinearLayout.VERTICAL).setCancelable(false).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
-                    @Override
-                    public boolean onClick(BaseDialog baseDialog, View v) {
-                        spUtil.getInt(Global.SP_KEY_MARKETCLICKTYPE, 1);
-                        spUtil.getString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
-                        CommonUtil.goMarket(mContext);
-                        return false;
-                    }
-                }).setOnCancelButtonClickListener(new OnDialogButtonClickListener() {
-                    @Override
-                    public boolean onClick(BaseDialog baseDialog, View v) {
-                        spUtil.getInt(Global.SP_KEY_MARKETCLICKTYPE, 2);
-                        spUtil.getString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
-                        return false;
-                    }
-                }).setOnOtherButtonClickListener(new OnDialogButtonClickListener() {
-                    @Override
-                    public boolean onClick(BaseDialog baseDialog, View v) {
-                        spUtil.getInt(Global.SP_KEY_MARKETCLICKTYPE, 3);
-                        spUtil.getString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
-                        startActivity(FeedBackActivity.class);
-                        return false;
-                    }
-                });
+                EventBus.getDefault().post(new MarketDialogEvent());
             }
         }
         super.onBackPressed();

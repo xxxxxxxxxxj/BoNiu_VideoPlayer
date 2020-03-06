@@ -3,6 +3,7 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
+import com.boniu.shipinbofangqi.mvp.model.event.MarketDialogEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
@@ -21,7 +23,9 @@ import com.boniu.shipinbofangqi.permission.PermissionListener;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuFolderDao;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuVideoDao;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.FileSizeUtil;
+import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -64,6 +68,37 @@ public class VideoListActivity extends BaseActivity {
     public void getUpdateAppState(RefreshVideoEvent event) {
         if (event != null) {
             setData();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(MarketDialogEvent event) {
+        if (event != null) {
+            MessageDialog.show(mActivity, "Wo～用的怎么样？如果还行，请为我点个赞！", "", "喜欢，好评打赏", "继续逛逛", "不喜欢，去吐槽")
+                    .setButtonOrientation(LinearLayout.VERTICAL).setCancelable(false).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                @Override
+                public boolean onClick(BaseDialog baseDialog, View v) {
+                    spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 1);
+                    spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
+                    CommonUtil.goMarket(mContext);
+                    return false;
+                }
+            }).setOnCancelButtonClickListener(new OnDialogButtonClickListener() {
+                @Override
+                public boolean onClick(BaseDialog baseDialog, View v) {
+                    spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 2);
+                    spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
+                    return false;
+                }
+            }).setOnOtherButtonClickListener(new OnDialogButtonClickListener() {
+                @Override
+                public boolean onClick(BaseDialog baseDialog, View v) {
+                    spUtil.saveInt(Global.SP_KEY_MARKETCLICKTYPE, 3);
+                    spUtil.saveString(Global.SP_KEY_MARKETCLICKTIME, CommonUtil.getCurrentDate());
+                    startActivity(FeedBackActivity.class);
+                    return false;
+                }
+            });
         }
     }
 
