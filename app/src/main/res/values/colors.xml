@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="a4E4E4E">#4E4E4E</color>
+    <color name="aB3B3B3">#B3B3B3</color>
     <color name="a3C97FF">#3C97FF</color>
     <color name="a373737">#373737</color>
     <color name="a3B3B3B">#3B3B3B</color>

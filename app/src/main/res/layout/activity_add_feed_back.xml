@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/a2D2D2D"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_toolbar" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/srl_addfeedback"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dip">
+
+            <TextView
+                android:id="@+id/tv_addfeedback_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="13dip"
+                android:paddingLeft="20dip"
+                android:text="TextView"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/et_addfeedback_name"
+                android:layout_width="match_parent"
+                android:layout_height="187dip"
+                android:layout_marginBottom="34dip"
+                android:background="@drawable/bg_4e4e4e_round7" />
+
+            <requestFocus />
+
+            <TextView
+                android:id="@+id/tv_addfeedback_sub"
+                android:layout_width="match_parent"
+                android:layout_height="41dip"
+                android:background="@drawable/bg_ffe52c_round3"
+                android:gravity="center"
+                android:text="提交"
+                android:textColor="@color/a2D2D2D"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</LinearLayout>

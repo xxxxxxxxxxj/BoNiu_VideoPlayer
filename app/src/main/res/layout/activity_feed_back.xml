@@ -1,9 +1,322 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mvp.view.activity.FeedBackActivity">
+    android:background="@color/a2D2D2D"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/include_toolbar" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/srl_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbarSize="7dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_track">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dip"
+                    android:text="请选择以下其中一项："
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_feedback_jmwt"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_feedback_right"
+                            android:layout_width="13dip"
+                            android:layout_height="22dip"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_feedback_right"
+                            android:text="界面问题"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_feedback_gnwt"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_feedback_right1"
+                            android:layout_width="13dip"
+                            android:layout_height="22dip"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_feedback_right1"
+                            android:text="功能问题"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_feedback_nrwt"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_feedback_right2"
+                            android:layout_width="13dip"
+                            android:layout_height="22dip"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_feedback_right2"
+                            android:text="内容问题"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_feedback_qtwt"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_feedback_right3"
+                            android:layout_width="13dip"
+                            android:layout_height="22dip"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_feedback_right3"
+                            android:text="其他问题"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_feedback_cpjy"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_feedback_right4"
+                            android:layout_width="13dip"
+                            android:layout_height="22dip"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_feedback_right4"
+                            android:text="产品建议"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_feedback_lxkf"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <LinearLayout
+                            android:id="@+id/ll_feedback_right5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical|right"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dip"
+                                android:text="1404556846"
+                                android:textColor="@color/aB3B3B3"
+                                android:textSize="14sp" />
+
+                            <ImageView
+                                android:layout_width="13dip"
+                                android:layout_height="22dip"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:src="@mipmap/icon_right" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/ll_feedback_right5"
+                            android:text="联系客服QQ"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_feedback_zhzx"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dip">
+
+                        <ImageView
+                            android:id="@+id/iv_feedback_right6"
+                            android:layout_width="13dip"
+                            android:layout_height="22dip"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@mipmap/icon_right" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dip"
+                            android:layout_toLeftOf="@id/iv_feedback_right6"
+                            android:text="账号注销 "
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dip"
+                        android:background="@color/a575757" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</LinearLayout>
