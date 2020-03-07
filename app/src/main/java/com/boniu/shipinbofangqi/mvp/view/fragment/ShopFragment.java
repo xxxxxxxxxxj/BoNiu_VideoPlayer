@@ -722,7 +722,7 @@ public class ShopFragment extends BaseFragment<ShopFragPresenter> implements ISh
                         RingLog.e("支付成功");
                         RingToast.show("支付成功");
                     } else {
-                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+                        // 该笔订单真实的支付结果，需要依赖服务端的异@S步通知。
                         RingLog.e("支付失败");
                         RingToast.show("支付失败");
                     }
