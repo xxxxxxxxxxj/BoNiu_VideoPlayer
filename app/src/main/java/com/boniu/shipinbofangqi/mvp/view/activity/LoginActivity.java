@@ -2,7 +2,10 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
@@ -33,6 +36,8 @@ public class LoginActivity extends BaseActivity {
     TextView tvLoginYzm;
     @BindView(R.id.tv_login_sub)
     TextView tvLoginSub;
+    @BindView(R.id.toolbar)
+    RelativeLayout toolbar;
 
     @Override
     protected int getLayoutResID() {
@@ -41,7 +46,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-
+        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.a2D2D2D));
     }
 
     @Override

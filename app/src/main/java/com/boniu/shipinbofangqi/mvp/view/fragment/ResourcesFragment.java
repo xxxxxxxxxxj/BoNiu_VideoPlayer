@@ -2,17 +2,16 @@ package com.boniu.shipinbofangqi.mvp.view.fragment;
 
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.ResourcesFragPresenter;
+import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IResourcesFragView;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.umeng.analytics.MobclickAgent;
 
@@ -35,15 +34,13 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
     TextView tvToolbarTitle;
     @BindView(R.id.iv_toolbar_back)
     ImageView ivToolbarBack;
-    @BindView(R.id.toolbar)
-    RelativeLayout toolbar;
     @BindView(R.id.srl_fragresources)
     SmartRefreshLayout srlFragResources;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(MatisseDataEvent event) {
         if (event != null) {
-            MainActivity mainActivity = (MainActivity)mActivity;
+            MainActivity mainActivity = (MainActivity) mActivity;
             mainActivity.setFragMentIndex(0);
         }
     }
@@ -73,7 +70,6 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
         srlFragResources.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("资源");
         ivToolbarBack.setVisibility(View.GONE);
-        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.colorPrimary));
     }
 
     @Override
@@ -95,7 +91,11 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_fragresources_input:
-                getVideo(9);
+                if (CommonUtil.isLogin(mActivity)) {
+                    getVideo(9);
+                } else {
+                    startActivity(LoginActivity.class);
+                }
                 break;
         }
     }
@@ -105,6 +105,7 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
         super.onResume();
         MobclickAgent.onPageStart("ResourcesFragment"); //统计页面("MainScreen"为页面名称，可自定义)
     }
+
     // Fragment页面onResume函数重载
     public void onPause() {
         super.onPause();

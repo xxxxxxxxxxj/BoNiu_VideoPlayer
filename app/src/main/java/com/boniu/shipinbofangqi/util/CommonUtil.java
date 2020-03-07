@@ -242,4 +242,12 @@ public class CommonUtil {
             RingToast.show("您没有安装应用市场");
         }
     }
+
+    public static boolean isLogin(Activity mActivity) {
+        return SharedPreferenceUtil.getInstance(mActivity).getBoolean(Global.SP_KEY_ISLOGIN, false);
+    }
+
+    public static String getCellPhone(Activity mActivity) {
+        return SharedPreferenceUtil.getInstance(mActivity).getString(Global.SP_KEY_CELLPHONE, "");
+    }
 }

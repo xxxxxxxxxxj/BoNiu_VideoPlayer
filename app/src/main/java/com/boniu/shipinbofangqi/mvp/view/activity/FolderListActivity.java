@@ -2,10 +2,8 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +16,7 @@ import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.FolderAdapter;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuFolderDao;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuVideoDao;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.FileSizeUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -36,8 +35,6 @@ import butterknife.OnClick;
 public class FolderListActivity extends BaseActivity {
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
-    @BindView(R.id.toolbar)
-    RelativeLayout toolbar;
     @BindView(R.id.rv_choosefolder)
     RecyclerView rvChoosefolder;
     @BindView(R.id.srl_choosefolder)
@@ -58,7 +55,6 @@ public class FolderListActivity extends BaseActivity {
     protected void initView(Bundle savedInstanceState) {
         srlChoosefolder.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("文件夹列表");
-        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.colorPrimary));
     }
 
     @Override
@@ -86,22 +82,26 @@ public class FolderListActivity extends BaseActivity {
                 BoNiuFolderInfo boNiuFolderInfo = folderList.get(position);
                 switch (view.getId()) {
                     case R.id.ll_item_videofrag_video_root:
-                        boNiuVideoDao.updateVideoFolder(boniu_video_id, boNiuFolderInfo.getBoniu_folder_id());
-                        double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boNiuFolderInfo.getBoniu_folder_id());
-                        String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
-                        if(formatSize.equals("0.00M")){
-                            sizeByFolderId = 0.00;
-                        }
-                        boNiuFolderDao.updateFolderSize(boNiuFolderInfo.getBoniu_folder_id(), sizeByFolderId, formatSize);
+                        if (CommonUtil.isLogin(mActivity)) {
+                            boNiuVideoDao.updateVideoFolder(boniu_video_id, boNiuFolderInfo.getBoniu_folder_id());
+                            double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boNiuFolderInfo.getBoniu_folder_id());
+                            String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
+                            if (formatSize.equals("0.00M")) {
+                                sizeByFolderId = 0.00;
+                            }
+                            boNiuFolderDao.updateFolderSize(boNiuFolderInfo.getBoniu_folder_id(), sizeByFolderId, formatSize);
 
-                        double sizeByFolderId1 = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
-                        String formatSize1 = FileSizeUtil.formatFileSize((long) sizeByFolderId1, false);
-                        if(formatSize1.equals("0.00M")){
-                            sizeByFolderId1 = 0.00;
+                            double sizeByFolderId1 = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
+                            String formatSize1 = FileSizeUtil.formatFileSize((long) sizeByFolderId1, false);
+                            if (formatSize1.equals("0.00M")) {
+                                sizeByFolderId1 = 0.00;
+                            }
+                            boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId1, formatSize1);
+                            EventBus.getDefault().post(new RefreshVideoEvent());
+                            finish();
+                        } else {
+                            startActivity(LoginActivity.class);
                         }
-                        boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId1, formatSize1);
-                        EventBus.getDefault().post(new RefreshVideoEvent());
-                        finish();
                         break;
                 }
             }

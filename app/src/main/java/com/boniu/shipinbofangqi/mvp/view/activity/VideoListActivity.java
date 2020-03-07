@@ -3,10 +3,8 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,8 +49,6 @@ import butterknife.OnClick;
 public class VideoListActivity extends BaseActivity {
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
-    @BindView(R.id.toolbar)
-    RelativeLayout toolbar;
     @BindView(R.id.rv_videolist)
     RecyclerView rvVideolist;
     @BindView(R.id.srl_videolist)
@@ -120,7 +116,6 @@ public class VideoListActivity extends BaseActivity {
     protected void initView(Bundle savedInstanceState) {
         srlVideolist.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText(boniu_folder_name);
-        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.colorPrimary));
     }
 
     @Override
@@ -148,101 +143,109 @@ public class VideoListActivity extends BaseActivity {
                 BoNiuVideoInfo boNiuVideoInfo = videoList.get(position);
                 switch (view.getId()) {
                     case R.id.ll_item_videofrag_video_root://播放视频
-                        requestEachCombined(new PermissionListener() {
-                            @Override
-                            public void onGranted(String permissionName) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("video_url", boNiuVideoInfo.getBoniu_video_url());
-                                bundle.putString("video_name", boNiuVideoInfo.getBoniu_video_name());
-                                startActivity(PlayVideoActivity.class, bundle);
-                            }
-
-                            @Override
-                            public void onDenied(String permissionName) {
-                                showToast("没获取到sd卡权限，无法播放本地视频哦");
-                            }
-
-                            @Override
-                            public void onDeniedWithNeverAsk(String permissionName) {
-                                MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
-                                    @Override
-                                    public boolean onClick(BaseDialog baseDialog, View v) {
-                                        QMUIDeviceHelper.goToPermissionManager(mActivity);
-                                        return true;
-                                    }
-                                });
-                            }
-                        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
-                        break;
-                    case R.id.iv_item_videofrag_video_operation:
-                        BottomMenu.show(mActivity, new String[]{"重命名", "移动", "移出", "删除"}, new OnMenuItemClickListener() {
-                            @Override
-                            public void onClick(String text, int index) {
-                                int boniu_video_id = boNiuVideoInfo.getBoniu_video_id();
-                                String boniu_video_name = boNiuVideoInfo.getBoniu_video_name();
-                                if (index == 0) {
-                                    String[] split = boniu_video_name.split("\\.");
-                                    RingLog.e("boniu_video_name = " + boniu_video_name);
-                                    RingLog.e("split = " + split.length);
-                                    RingLog.e("split = " + split.toString());
-                                    InputDialog.build(mActivity)
-                                            .setTitle("重命名").setMessage("")
-                                            .setOkButton("确定", new OnInputDialogButtonClickListener() {
-                                                @Override
-                                                public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
-                                                    if (StringUtil.isNotEmpty(inputStr)) {
-                                                        boNiuVideoDao.updateVideoName(boniu_video_id, inputStr + "." + split[1]);
-                                                        setData();
-                                                        RingToast.show("视频名称修改成功");
-                                                        EventBus.getDefault().post(new RefreshVideoEvent());
-                                                        return false;
-                                                    } else {
-                                                        RingToast.show("请输入视频名称");
-                                                        return true;
-                                                    }
-                                                }
-                                            })
-                                            .setCancelButton("取消")
-                                            .setHintText("请输入视频名称")
-                                            .setInputText(split[0])
-                                            .setCancelable(false)
-                                            .show();
-                                } else if (index == 1) {
+                        if (CommonUtil.isLogin(mActivity)) {
+                            requestEachCombined(new PermissionListener() {
+                                @Override
+                                public void onGranted(String permissionName) {
                                     Bundle bundle = new Bundle();
-                                    bundle.putInt("boniu_video_id", boniu_video_id);
-                                    bundle.putInt("boniu_folder_id", boniu_folder_id);
-                                    startActivity(FolderListActivity.class, bundle);
-                                } else if (index == 2) {
-                                    boNiuVideoDao.updateVideoFolder(boniu_video_id, 0);
-                                    double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
-                                    String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
-                                    if (formatSize.equals("0.00M")) {
-                                        sizeByFolderId = 0.00;
-                                    }
-                                    boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
-                                    setData();
-                                    RingToast.show("视频移出成功");
-                                    EventBus.getDefault().post(new RefreshVideoEvent());
-                                } else if (index == 3) {
-                                    MessageDialog.show(mActivity, "删除视频", "确定删除视频吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                    bundle.putString("video_url", boNiuVideoInfo.getBoniu_video_url());
+                                    bundle.putString("video_name", boNiuVideoInfo.getBoniu_video_name());
+                                    startActivity(PlayVideoActivity.class, bundle);
+                                }
+
+                                @Override
+                                public void onDenied(String permissionName) {
+                                    showToast("没获取到sd卡权限，无法播放本地视频哦");
+                                }
+
+                                @Override
+                                public void onDeniedWithNeverAsk(String permissionName) {
+                                    MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
                                         @Override
                                         public boolean onClick(BaseDialog baseDialog, View v) {
-                                            boNiuVideoDao.deleteById(boniu_video_id);
-                                            double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
-                                            String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
-                                            if (formatSize.equals("0.00M")) {
-                                                sizeByFolderId = 0.00;
-                                            }
-                                            boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
-                                            setData();
-                                            RingToast.show("视频删除成功");
-                                            EventBus.getDefault().post(new RefreshVideoEvent());
-                                            return false;
+                                            QMUIDeviceHelper.goToPermissionManager(mActivity);
+                                            return true;
                                         }
                                     });
                                 }
-                            }
-                        });
+                            }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
+                            break;
+                        } else {
+                            startActivity(LoginActivity.class);
+                        }
+                    case R.id.iv_item_videofrag_video_operation:
+                        if (CommonUtil.isLogin(mActivity)) {
+                            BottomMenu.show(mActivity, new String[]{"重命名", "移动", "移出", "删除"}, new OnMenuItemClickListener() {
+                                @Override
+                                public void onClick(String text, int index) {
+                                    int boniu_video_id = boNiuVideoInfo.getBoniu_video_id();
+                                    String boniu_video_name = boNiuVideoInfo.getBoniu_video_name();
+                                    if (index == 0) {
+                                        String[] split = boniu_video_name.split("\\.");
+                                        RingLog.e("boniu_video_name = " + boniu_video_name);
+                                        RingLog.e("split = " + split.length);
+                                        RingLog.e("split = " + split.toString());
+                                        InputDialog.build(mActivity)
+                                                .setTitle("重命名").setMessage("")
+                                                .setOkButton("确定", new OnInputDialogButtonClickListener() {
+                                                    @Override
+                                                    public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
+                                                        if (StringUtil.isNotEmpty(inputStr)) {
+                                                            boNiuVideoDao.updateVideoName(boniu_video_id, inputStr + "." + split[1]);
+                                                            setData();
+                                                            RingToast.show("视频名称修改成功");
+                                                            EventBus.getDefault().post(new RefreshVideoEvent());
+                                                            return false;
+                                                        } else {
+                                                            RingToast.show("请输入视频名称");
+                                                            return true;
+                                                        }
+                                                    }
+                                                })
+                                                .setCancelButton("取消")
+                                                .setHintText("请输入视频名称")
+                                                .setInputText(split[0])
+                                                .setCancelable(false)
+                                                .show();
+                                    } else if (index == 1) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt("boniu_video_id", boniu_video_id);
+                                        bundle.putInt("boniu_folder_id", boniu_folder_id);
+                                        startActivity(FolderListActivity.class, bundle);
+                                    } else if (index == 2) {
+                                        boNiuVideoDao.updateVideoFolder(boniu_video_id, 0);
+                                        double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
+                                        String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
+                                        if (formatSize.equals("0.00M")) {
+                                            sizeByFolderId = 0.00;
+                                        }
+                                        boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
+                                        setData();
+                                        RingToast.show("视频移出成功");
+                                        EventBus.getDefault().post(new RefreshVideoEvent());
+                                    } else if (index == 3) {
+                                        MessageDialog.show(mActivity, "删除视频", "确定删除视频吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                            @Override
+                                            public boolean onClick(BaseDialog baseDialog, View v) {
+                                                boNiuVideoDao.deleteById(boniu_video_id);
+                                                double sizeByFolderId = boNiuVideoDao.getSizeByFolderId(boniu_folder_id);
+                                                String formatSize = FileSizeUtil.formatFileSize((long) sizeByFolderId, false);
+                                                if (formatSize.equals("0.00M")) {
+                                                    sizeByFolderId = 0.00;
+                                                }
+                                                boNiuFolderDao.updateFolderSize(boniu_folder_id, sizeByFolderId, formatSize);
+                                                setData();
+                                                RingToast.show("视频删除成功");
+                                                EventBus.getDefault().post(new RefreshVideoEvent());
+                                                return false;
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        } else {
+                            startActivity(LoginActivity.class);
+                        }
                         break;
                 }
             }

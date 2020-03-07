@@ -3,14 +3,12 @@ package com.boniu.shipinbofangqi.mvp.view.fragment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintCore;
 import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintUtil;
+import com.boniu.shipinbofangqi.mvp.model.event.LoginEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MyFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.AboutActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
@@ -19,10 +17,14 @@ import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.kongzue.dialog.v3.CustomDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -40,8 +42,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     TextView tvToolbarTitle;
     @BindView(R.id.iv_toolbar_back)
     ImageView ivToolbarBack;
-    @BindView(R.id.toolbar)
-    RelativeLayout toolbar;
     @BindView(R.id.sh_fragmy)
     ImageView sh_fragmy;
     @BindView(R.id.ll_fragmy_folder)
@@ -57,6 +57,24 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     @BindView(R.id.sh_fragmy_folder)
     ImageView shFragmyFolder;
     private FingerprintCore mFingerprintCore;
+    private String validityTime;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(LoginEvent event) {
+        if (event != null) {
+            setData();
+        }
+    }
+
+    private void setData() {
+        if (CommonUtil.isLogin(mActivity)) {
+            tvFragmySeniorState.setText(validityTime);
+            tvFragmyLogin.setText(CommonUtil.getCellPhone(mActivity));
+        } else {
+            tvFragmySeniorState.setText("未开通");
+            tvFragmyLogin.setText("未登录");
+        }
+    }
 
     @Override
     protected MyFragPresenter createPresenter() {
@@ -65,7 +83,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
 
     @Override
     protected boolean isUseEventBus() {
-        return false;
+        return true;
     }
 
     @Override
@@ -83,7 +101,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         srlFragMy.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("我的");
         ivToolbarBack.setVisibility(View.GONE);
-        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.colorPrimary));
 
         mFingerprintCore = new FingerprintCore(mActivity);
         if (mFingerprintCore.isSupport()) {
@@ -146,81 +163,99 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rl_fragmy_login:
-                startActivity(LoginActivity.class);
+                if (!CommonUtil.isLogin(mActivity)) {
+                    startActivity(LoginActivity.class);
+                }
                 break;
             case R.id.ll_fragmy_senior:
-                startActivity(MemberActivity.class);
+                if (CommonUtil.isLogin(mActivity)) {
+                    startActivity(MemberActivity.class);
+                } else {
+                    startActivity(LoginActivity.class);
+                }
                 break;
             case R.id.ll_fragmy_feedback:
-                startActivity(FeedBackActivity.class);
+                if (CommonUtil.isLogin(mActivity)) {
+                    startActivity(FeedBackActivity.class);
+                } else {
+                    startActivity(LoginActivity.class);
+                }
                 break;
             case R.id.ll_fragmy_about:
                 startActivity(AboutActivity.class);
                 break;
             case R.id.sh_fragmy:
-                boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                if (isFinger) {
-                    sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
-                    spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                } else {
-                    //判断设备是否录入指纹
-                    boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
-                    if (hasEnrolledFingerprints) {
-                        sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
-                        spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, true);
+                if (CommonUtil.isLogin(mActivity)) {
+                    boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                    if (isFinger) {
+                        sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
+                        spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
                     } else {
-                        RingToast.show("您还没有录制指纹，请录入！");
-                        FingerprintUtil.openFingerPrintSettingPage(mActivity);
-                    }
-                }
-                break;
-            case R.id.sh_fragmy_folder:
-                boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
-                if (ISOPENENCRYPTEDFOLDER) {
-                    shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
-                    spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
-                } else {
-                    //判断是否开通高级版
-                    boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
-                    if (ISOPENENVIP) {
-                        //再判断是否录入指纹
+                        //判断设备是否录入指纹
                         boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
                         if (hasEnrolledFingerprints) {
-                            //再判断是否开启指纹识别
-                            boolean isFinger1 = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                            if (isFinger1) {
-                                shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
-                                spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, true);
-                            } else {
-                                RingToast.show("请先开启指纹识别！");
-                            }
+                            sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
+                            spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, true);
                         } else {
                             RingToast.show("您还没有录制指纹，请录入！");
                             FingerprintUtil.openFingerPrintSettingPage(mActivity);
                         }
-                    } else {
-                        //弹出高级版开通弹窗
-                        CustomDialog.build(mActivity, R.layout.layout_openvip_dialog, new CustomDialog.OnBindView() {
-                            @Override
-                            public void onBind(final CustomDialog dialog, View v) {
-                                ImageView iv_openvipdialog_close = v.findViewById(R.id.iv_openvipdialog_close);
-                                TextView tv_openvipdialog_open = v.findViewById(R.id.tv_openvipdialog_open);
-                                iv_openvipdialog_close.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        dialog.doDismiss();
-                                    }
-                                });
-                                tv_openvipdialog_open.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        startActivity(MemberActivity.class);
-                                        dialog.doDismiss();
-                                    }
-                                });
-                            }
-                        }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
                     }
+                } else {
+                    startActivity(LoginActivity.class);
+                }
+                break;
+            case R.id.sh_fragmy_folder:
+                if (CommonUtil.isLogin(mActivity)) {
+                    boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                    if (ISOPENENCRYPTEDFOLDER) {
+                        shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
+                        spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                    } else {
+                        //判断是否开通高级版
+                        boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
+                        if (ISOPENENVIP) {
+                            //再判断是否录入指纹
+                            boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
+                            if (hasEnrolledFingerprints) {
+                                //再判断是否开启指纹识别
+                                boolean isFinger1 = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                                if (isFinger1) {
+                                    shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
+                                    spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, true);
+                                } else {
+                                    RingToast.show("请先开启指纹识别！");
+                                }
+                            } else {
+                                RingToast.show("您还没有录制指纹，请录入！");
+                                FingerprintUtil.openFingerPrintSettingPage(mActivity);
+                            }
+                        } else {
+                            //弹出高级版开通弹窗
+                            CustomDialog.build(mActivity, R.layout.layout_openvip_dialog, new CustomDialog.OnBindView() {
+                                @Override
+                                public void onBind(final CustomDialog dialog, View v) {
+                                    ImageView iv_openvipdialog_close = v.findViewById(R.id.iv_openvipdialog_close);
+                                    TextView tv_openvipdialog_open = v.findViewById(R.id.tv_openvipdialog_open);
+                                    iv_openvipdialog_close.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            dialog.doDismiss();
+                                        }
+                                    });
+                                    tv_openvipdialog_open.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            startActivity(MemberActivity.class);
+                                            dialog.doDismiss();
+                                        }
+                                    });
+                                }
+                            }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
+                        }
+                    }
+                } else {
+                    startActivity(LoginActivity.class);
                 }
                 break;
         }
