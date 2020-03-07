@@ -1,9 +1,302 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mvp.view.activity.MemberActivity">
+    android:background="@color/a2D2D2D"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:paddingTop="20dip">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/include_toolbar" />
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/srl_member"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbarSize="7dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_track">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="278dip"
+                    android:layout_height="89dip"
+                    android:layout_marginTop="10dip"
+                    android:layout_marginBottom="22dip"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/icon_member_top" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dip"
+                    android:text="升级到专业版可以享有以下高级功能："
+                    android:textColor="@color/aFFE52C"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dip"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="8dip"
+                        android:layout_height="8dip"
+                        android:layout_marginLeft="-15dip"
+                        android:layout_marginRight="44dip"
+                        android:background="@drawable/bg_oval_d8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="去除弹窗广告和条幅广告"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dip"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="8dip"
+                        android:layout_height="8dip"
+                        android:layout_marginRight="29dip"
+                        android:background="@drawable/bg_oval_d8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="新建文件夹分类储存高清视频"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dip"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="8dip"
+                        android:layout_height="8dip"
+                        android:layout_marginRight="29dip"
+                        android:background="@drawable/bg_oval_d8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="加密管理视频文件，私密观看"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dip"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="8dip"
+                        android:layout_height="8dip"
+                        android:layout_marginRight="29dip"
+                        android:background="@drawable/bg_oval_d8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="支持开启指纹或人脸开屏解锁"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="21dip"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="8dip"
+                        android:layout_height="8dip"
+                        android:layout_marginRight="29dip"
+                        android:background="@drawable/bg_oval_d8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="支持所有视频格式的高清播放"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="17dip"
+                    android:gravity="center_horizontal|bottom"
+                    android:orientation="horizontal"
+                    android:paddingLeft="15dip"
+                    android:paddingRight="15dip">
+
+                    <LinearLayout
+                        android:layout_width="106dip"
+                        android:layout_height="121dip"
+                        android:background="@mipmap/bg_member_hui"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="11dip"
+                            android:text="最基础"
+                            android:textColor="@color/white"
+                            android:textSize="8sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="11dip"
+                            android:text="一个月"
+                            android:textColor="@color/white"
+                            android:textSize="8sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="¥8.00"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="104dip"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="104dip"
+                            android:layout_height="139dip"
+                            android:layout_marginTop="14dip"
+                            android:background="@mipmap/bg_member_light"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="11dip"
+                                android:text="最优惠"
+                                android:textColor="@color/white"
+                                android:textSize="8sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="11dip"
+                                android:text="一年"
+                                android:textColor="@color/white"
+                                android:textSize="8sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="17dip"
+                                android:text="¥18.00"
+                                android:textColor="@color/white"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/tv_member_validitytime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2020-2-2到期"
+                                android:textColor="@color/aFDFAFA"
+                                android:textSize="10sp"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="87dip"
+                            android:layout_height="28dip"
+                            android:layout_centerHorizontal="true"
+                            android:background="@mipmap/bg_member_gj"
+                            android:gravity="center"
+                            android:paddingLeft="10dip"
+                            android:paddingBottom="3dip"
+                            android:text="解锁高级功能"
+                            android:textColor="@color/aFFD353"
+                            android:textSize="8sp" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="106dip"
+                        android:layout_height="121dip"
+                        android:background="@mipmap/bg_member_hui"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="11dip"
+                            android:text="最值得"
+                            android:textColor="@color/white"
+                            android:textSize="8sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="11dip"
+                            android:text="一个季度"
+                            android:textColor="@color/white"
+                            android:textSize="8sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="¥30.00"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_member_sub"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dip"
+                    android:layout_marginLeft="20dip"
+                    android:layout_marginRight="20dip"
+                    android:background="@drawable/bg_ffe52c_round5"
+                    android:gravity="center"
+                    android:text="立即支付 "
+                    android:textColor="@color/a2D2D2D"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</LinearLayout>

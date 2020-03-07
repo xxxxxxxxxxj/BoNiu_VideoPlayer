@@ -2,6 +2,7 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.gyf.immersionbar.ImmersionBar;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -38,6 +40,10 @@ public class LoginActivity extends BaseActivity {
     TextView tvLoginSub;
     @BindView(R.id.toolbar)
     RelativeLayout toolbar;
+    @BindView(R.id.iv_toolbar_back)
+    ImageView iv_toolbar_back;
+    @BindView(R.id.srl_login)
+    SmartRefreshLayout srlLogin;
 
     @Override
     protected int getLayoutResID() {
@@ -46,11 +52,13 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.a2D2D2D));
     }
 
     @Override
     protected void setView(Bundle savedInstanceState) {
+        srlLogin.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
+        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.a2D2D2D));
+        iv_toolbar_back.setImageResource(R.mipmap.icon_title_close);
         tvToolbarTitle.setVisibility(View.GONE);
         ImmersionBar.with(this).statusBarColor(R.color.a2D2D2D).init();
     }
