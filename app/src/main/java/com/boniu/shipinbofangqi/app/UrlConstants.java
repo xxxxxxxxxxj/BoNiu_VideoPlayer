@@ -7,6 +7,7 @@ import com.boniu.shipinbofangqi.util.ChannelUtil;
 import com.boniu.shipinbofangqi.util.GetDeviceId;
 import com.boniu.shipinbofangqi.util.QMUIPackageHelper;
 import com.zhouyou.http.model.HttpHeaders;
+import com.zhouyou.http.model.HttpParams;
 
 /**
  * <p>Title:${type_name}</p>
@@ -22,9 +23,13 @@ public class UrlConstants {
      */
     public static final String GETACCOUNTINFO = "standard/account/getAccountInfo";
     /**
-     * 20.广告
+     * 2.获取验证码
      */
-    public static final String ADVERTISEMENT = "util/ad/list";
+    public static final String SENDVERIFYCODE = "/standard/account/sendVerifyCode";
+    /**
+     * 3.登录
+     */
+    public static final String LOGIN = "/standard/account/login";
     /**
      * 23.最新帖子列表
      */
@@ -49,6 +54,7 @@ public class UrlConstants {
      * 72.获取瀑布流内容
      */
     public static final String GET_ENCYCLOPEDIAS = "encyclopedia/queryEncyclopediaList";
+    public static final String ADVERTISEMENT = "";
 
     private static int getEnvironmental() {
         return AppConfig.environmental;//1.test环境---2.demo环境---3.线上环境
@@ -63,7 +69,7 @@ public class UrlConstants {
         String url = "";
         switch (getEnvironmental()) {
             case 1://test环境
-                url = "http://test99.rhinox.cn/";
+                url = "https://test99.rhinox.cn/";
                 break;
             case 2://demo环境
                 url = "https://demo.dzztrip.cn/api/";
@@ -86,7 +92,7 @@ public class UrlConstants {
         String url = "";
         switch (getEnvironmental()) {
             case 1://test环境
-                url = "http://test99.rhinox.cn/";
+                url = "https://test99.rhinox.cn/";
                 break;
             case 2://demo环境
                 url = "https://demo.cwjia.cn/pet-api/";
@@ -133,5 +139,18 @@ public class UrlConstants {
         RingLog.e("headers = " + headers.toString());
         RingLog.e("toJSONString = " + headers.toJSONString());
         return headers;
+    }
+
+    public static HttpParams getParams(Context mContext) {
+        HttpParams params = new HttpParams();
+        params.put("uuid", GetDeviceId.readDeviceID(mContext));
+        params.put("appName", "SHIPINBOFANGQI_BONIU");
+        params.put("brand", android.os.Build.BRAND);
+        params.put("channel", ChannelUtil.getChannel(mContext));
+        params.put("deviceModel", android.os.Build.MODEL);
+        params.put("deviceType", "Android");
+        params.put("version", QMUIPackageHelper.getAppVersion(mContext));
+        RingLog.e("params = " + params.toString());
+        return params;
     }
 }

@@ -346,6 +346,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tv_fragmy_loginout"
                     android:layout_width="match_parent"
                     android:layout_height="41dip"
                     android:layout_alignParentBottom="true"

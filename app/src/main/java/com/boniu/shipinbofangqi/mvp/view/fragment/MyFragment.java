@@ -19,7 +19,10 @@ import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.CustomDialog;
+import com.kongzue.dialog.v3.MessageDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.umeng.analytics.MobclickAgent;
 
@@ -56,6 +59,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     TextView tvFragmySeniorState;
     @BindView(R.id.sh_fragmy_folder)
     ImageView shFragmyFolder;
+    @BindView(R.id.tv_fragmy_loginout)
+    TextView tv_fragmy_loginout;
     private FingerprintCore mFingerprintCore;
     private String validityTime;
 
@@ -68,9 +73,11 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
 
     private void setData() {
         if (CommonUtil.isLogin(mActivity)) {
+            tv_fragmy_loginout.setVisibility(View.VISIBLE);
             tvFragmySeniorState.setText(validityTime);
             tvFragmyLogin.setText(CommonUtil.getCellPhone(mActivity));
         } else {
+            tv_fragmy_loginout.setVisibility(View.GONE);
             tvFragmySeniorState.setText("未开通");
             tvFragmyLogin.setText("未登录");
         }
@@ -98,6 +105,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
 
     @Override
     protected void initView() {
+        setData();
         srlFragMy.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("我的");
         ivToolbarBack.setVisibility(View.GONE);
@@ -159,9 +167,19 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         MobclickAgent.onPageEnd("MyFragment");
     }
 
-    @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about, R.id.sh_fragmy, R.id.sh_fragmy_folder})
+    @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about, R.id.sh_fragmy,
+            R.id.sh_fragmy_folder, R.id.tv_fragmy_loginout})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.tv_fragmy_loginout:
+                MessageDialog.show(mActivity, "退出登录", "确定退出登录吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+
+                        return false;
+                    }
+                });
+                break;
             case R.id.rl_fragmy_login:
                 if (!CommonUtil.isLogin(mActivity)) {
                     startActivity(LoginActivity.class);

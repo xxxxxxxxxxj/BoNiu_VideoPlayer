@@ -298,7 +298,12 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
         hideLoadDialog();
         RingLog.e("getAccountInfoFail() status = " + status + "---desc = " + desc);
         if (status == AppConfig.EXIT_USER_CODE) {
-            spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, false);
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+        } else if (status == AppConfig.CLEARACCOUNTID_CODE) {
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
         }
         setJumpLogic();
     }

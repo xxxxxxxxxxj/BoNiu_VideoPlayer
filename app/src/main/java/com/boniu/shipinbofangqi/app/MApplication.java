@@ -230,25 +230,24 @@ public class MApplication extends MultiDexApplication {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         Request request = chain.request()
-                                .newBuilder()
-                                .addHeader(HttpHeaders.HEAD_KEY_CONTENT_TYPE, "application/json; charset=UTF-8")
-                                .addHeader("uuid", GetDeviceId.readDeviceID(getApplicationContext()))
-                                .addHeader("appName", "SHIPINBOFANGQI_BONIU")
-                                .addHeader("brand", android.os.Build.BRAND)
-                                .addHeader("channel", ChannelUtil.getChannel(getApplicationContext()))
-                                .addHeader("deviceModel", android.os.Build.MODEL)
-                                .addHeader("deviceType", "Android")
-                                .addHeader("version", QMUIPackageHelper.getAppVersion(getApplicationContext()))
-                                .addHeader("phoneSystemVersion", "Android "
-                                        + android.os.Build.VERSION.RELEASE)
-                                .addHeader("petTimeStamp", String.valueOf(System.currentTimeMillis())).build();
+                                .newBuilder().post(new RequestBody() {
+                                    @Override
+                                    public MediaType contentType() {
+                                        return MediaType.parse("application/json");
+                                    }
+
+                                    @Override
+                                    public void writeTo(BufferedSink sink) throws IOException {
+
+                                    }
+                                }).build();
                         return chain.proceed(request);
                     }
                 })*/
                 //.setHostnameVerifier(new UnSafeHostnameVerifier(UrlConstants.getServiceBaseUrl()))//全局访问规则
                 .setCertificates()//信任所有证书
-        //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
-        .addCommonHeaders(UrlConstants.getHeadersNouuid(this));//设置全局公共头
+                //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
+                .addCommonHeaders(UrlConstants.getHeadersNouuid(this));//设置全局公共头
         //.addCommonParams(params);//设置全局公共参数
         //.addInterceptor(new HeTInterceptor());//处理自己业务的拦截器
 

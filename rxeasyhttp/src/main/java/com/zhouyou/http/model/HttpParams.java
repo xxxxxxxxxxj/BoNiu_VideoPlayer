@@ -17,6 +17,10 @@
 package com.zhouyou.http.model;
 
 import com.zhouyou.http.body.ProgressResponseCallBack;
+import com.zhouyou.http.utils.HttpLog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.InputStream;
@@ -185,6 +189,18 @@ public class HttpParams implements Serializable {
         public String toString() {
             return "FileWrapper{" + "countent=" + file + ", fileName='" + fileName + ", contentType=" + contentType + ", fileSize=" + fileSize + '}';
         }
+    }
+
+    public final String toJSONString() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            for (Map.Entry<String, String> entry : urlParamsMap.entrySet()) {
+                jsonObject.put(entry.getKey(), entry.getValue());
+            }
+        } catch (JSONException e) {
+            HttpLog.e(e);
+        }
+        return jsonObject.toString();
     }
 
     @Override
