@@ -183,7 +183,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                 MessageDialog.show(mActivity, "退出登录", "确定退出登录吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
                     @Override
                     public boolean onClick(BaseDialog baseDialog, View v) {
-
+                        showLoadDialog();
+                        mPresenter.logout();
                         return false;
                     }
                 });
@@ -293,9 +294,9 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         RingLog.e("getAccountInfoSuccess() response = " + response);
         spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
         spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
-        if(StringUtil.isNotEmpty(response.getApplyCancelTime())){
+        if (StringUtil.isNotEmpty(response.getApplyCancelTime())) {
             spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
-        }else{
+        } else {
             spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, false);
         }
         if (response != null) {
@@ -323,6 +324,31 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         }
+        setData();
+    }
+
+    @Override
+    public void logoutFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("logoutFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        }
+    }
+
+    @Override
+    public void logoutSuccess(Boolean response) {
+        hideLoadDialog();
+        RingLog.e("logoutSuccess() response = " + response);
+        spUtil.removeData(Global.SP_KEY_ISLOGIN);
+        spUtil.removeData(Global.SP_KEY_CELLPHONE);
+        spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+        spUtil.removeData(Global.SP_KEY_TOKEN);
         setData();
     }
 }

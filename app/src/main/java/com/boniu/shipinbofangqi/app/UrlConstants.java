@@ -43,6 +43,14 @@ public class UrlConstants {
      */
     public static final String ADDFEEDBACK = "/standard/common/addFeedback";
     /**
+     * 7.注销账号
+     */
+    public static final String CANCELACCOUNT = "/standard/account/cancelAccount";
+    /**
+     * 8.退出当前已登录账户
+     */
+    public static final String LOGOUT = "/standard/account/logout";
+    /**
      * 23.最新帖子列表
      */
     public static final String NEWEST_POINT = "article/info/new";

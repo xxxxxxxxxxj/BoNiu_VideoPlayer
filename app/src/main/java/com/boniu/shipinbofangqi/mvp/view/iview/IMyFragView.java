@@ -15,4 +15,8 @@ public interface IMyFragView extends IBaseView {
     void getAccountInfoSuccess(AccountInfoBean response);
 
     void getAccountInfoFail(int code, String message);
+
+    void logoutFail(int code, String message);
+
+    void logoutSuccess(Boolean response);
 }

@@ -161,11 +161,11 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
         hideLoadDialog();
         RingLog.e("loginSuccess() response = " + response);
         RingToast.show("登录成功");
-        EventBus.getDefault().post(new LoginEvent());
         spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
         spUtil.saveString(Global.SP_KEY_CELLPHONE, StringUtil.checkEditText(tilLoginMobile.getEditText()));
         spUtil.saveString(Global.SP_KEY_ACCOUNTIUD, response.getAccountId());
         spUtil.saveString(Global.SP_KEY_TOKEN, response.getToken());
+        EventBus.getDefault().post(new LoginEvent());
         finish();
     }
 

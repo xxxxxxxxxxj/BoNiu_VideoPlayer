@@ -51,4 +51,28 @@ public class MyFragPresenter extends BasePresenter<IMyFragView> {
                     }
                 });
     }
+
+    /**
+     * 退出当前已登录账户
+     */
+    public void logout() {
+        HttpParams params = new UrlConstants().getParams(mContext);
+        params.put("accountId", CommonUtil.getAccountId(mContext));
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
+        EasyHttp.post(UrlConstants.LOGOUT)
+                .requestBody(requestBody)
+                .sign(true)
+                .execute(new SimpleCallBack<Boolean>() {
+                    @Override
+                    public void onError(ApiException e) {
+                        RingLog.e("onError() e = " + e.toString());
+                        mIView.logoutFail(e.getCode(), e.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean response) {
+                        mIView.logoutSuccess(response);
+                    }
+                });
+    }
 }

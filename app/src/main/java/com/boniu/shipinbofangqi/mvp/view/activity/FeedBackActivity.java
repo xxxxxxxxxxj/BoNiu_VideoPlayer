@@ -5,9 +5,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.boniu.shipinbofangqi.R;
-import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
+import com.boniu.shipinbofangqi.app.AppConfig;
+import com.boniu.shipinbofangqi.log.RingLog;
+import com.boniu.shipinbofangqi.mvp.model.entity.CancelAccountBean;
+import com.boniu.shipinbofangqi.mvp.presenter.FeedBackActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
+import com.boniu.shipinbofangqi.mvp.view.iview.IFeedBackActivityView;
+import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.Global;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.util.BaseDialog;
+import com.kongzue.dialog.v3.MessageDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import butterknife.BindView;
@@ -16,7 +25,7 @@ import butterknife.OnClick;
 /**
  * 帮助反馈界面
  */
-public class FeedBackActivity extends BaseActivity {
+public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> implements IFeedBackActivityView {
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
     @BindView(R.id.srl_feedback)
@@ -30,7 +39,7 @@ public class FeedBackActivity extends BaseActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         srlFeedback.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
-        tvToolbarTitle.setText("帮助与反馈");
+        tvToolbarTitle.setText("账号注销");
     }
 
     @Override
@@ -59,8 +68,8 @@ public class FeedBackActivity extends BaseActivity {
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected FeedBackActivityPresenter createPresenter() {
+        return new FeedBackActivityPresenter(this, this);
     }
 
     @Override
@@ -108,8 +117,47 @@ public class FeedBackActivity extends BaseActivity {
                 CommonUtil.copy(mActivity, "1404556846");
                 break;
             case R.id.ll_feedback_zhzx:
-
+                boolean ISCANCEL = spUtil.getBoolean(Global.SP_KEY_ISCANCEL, false);
+                if (ISCANCEL) {
+                    RingToast.show("账号已注销");
+                } else {
+                    MessageDialog.show(mActivity, "注销账号", "确定注销账号吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                        @Override
+                        public boolean onClick(BaseDialog baseDialog, View v) {
+                            showLoadDialog();
+                            mPresenter.cancelAccount();
+                            return false;
+                        }
+                    });
+                }
                 break;
+        }
+    }
+
+    @Override
+    public void cancelAccountSuccess(CancelAccountBean response) {
+        RingLog.e("cancelAccountSuccess() response = " + response);
+        hideLoadDialog();
+        spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
+        if (response != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("applyTime", response.getApplyTime());
+            startActivity(CancelAccountActivity.class, bundle);
+        }
+    }
+
+    @Override
+    public void cancelAccountFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("cancelAccountFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
         }
     }
 }
