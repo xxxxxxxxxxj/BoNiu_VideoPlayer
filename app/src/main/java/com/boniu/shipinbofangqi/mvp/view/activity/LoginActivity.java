@@ -71,7 +71,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
         iv_toolbar_back.setImageResource(R.mipmap.icon_title_close);
         tvToolbarTitle.setVisibility(View.GONE);
         ImmersionBar.with(this).statusBarColor(R.color.a2D2D2D).init();
-        tietLoginMobile.requestFocus();
+        CommonUtil.showSoftInputFromWindow(mActivity, tietLoginMobile);
     }
 
     @Override

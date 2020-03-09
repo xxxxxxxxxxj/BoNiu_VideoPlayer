@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import butterknife.BindView;
@@ -75,37 +76,39 @@ public class FeedBackActivity extends BaseActivity {
                 break;
             case R.id.ll_feedback_jmwt:
                 Bundle bundle = new Bundle();
-                bundle.putInt("type", 1);
+                bundle.putString("type", "UI");
                 bundle.putString("name", "界面问题");
                 startActivity(AddFeedBackActivity.class, bundle);
                 break;
             case R.id.ll_feedback_gnwt:
                 Bundle bundle1 = new Bundle();
-                bundle1.putInt("type", 2);
+                bundle1.putString("type", "FUNCTION");
                 bundle1.putString("name", "功能问题");
                 startActivity(AddFeedBackActivity.class, bundle1);
                 break;
             case R.id.ll_feedback_nrwt:
                 Bundle bundle2 = new Bundle();
-                bundle2.putInt("type", 3);
+                bundle2.putString("type", "CONTENT");
                 bundle2.putString("name", "内容问题");
                 startActivity(AddFeedBackActivity.class, bundle2);
                 break;
             case R.id.ll_feedback_qtwt:
                 Bundle bundle3 = new Bundle();
-                bundle3.putInt("type", 4);
+                bundle3.putString("type", "OTHER");
                 bundle3.putString("name", "其他问题");
                 startActivity(AddFeedBackActivity.class, bundle3);
                 break;
             case R.id.ll_feedback_cpjy:
                 Bundle bundle4 = new Bundle();
-                bundle4.putInt("type", 5);
+                bundle4.putString("type", "PROD_SUGGEST");
                 bundle4.putString("name", "产品建议");
                 startActivity(AddFeedBackActivity.class, bundle4);
                 break;
             case R.id.ll_feedback_lxkf:
+                CommonUtil.copy(mActivity, "1404556846");
                 break;
             case R.id.ll_feedback_zhzx:
+
                 break;
         }
     }

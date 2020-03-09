@@ -113,9 +113,9 @@ public class PayBottomPopup extends BottomPopupView {
         tv_paypop_sub.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (type == 1) {
+                if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
                     PayUtils.weChatPayment(mActivity, appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, tipDialog);
-                } else if (type == 2) {
+                } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {
                     PayUtils.payByAliPay(mActivity, payStr, mHandler);
                 } else {
                     RingToast.show("请先选择支付方式");

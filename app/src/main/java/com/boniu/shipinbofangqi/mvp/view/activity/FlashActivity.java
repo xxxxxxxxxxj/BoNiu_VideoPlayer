@@ -293,6 +293,11 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
         hideLoadDialog();
         spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
         spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
+        if (StringUtil.isNotEmpty(response.getApplyCancelTime())) {
+            spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
+        } else {
+            spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, false);
+        }
         if (response != null) {
             if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);

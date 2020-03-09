@@ -20,6 +20,7 @@ import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.widget.popup.PayBottomPopup;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.Global;
 import com.gyf.immersionbar.ImmersionBar;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -40,6 +41,8 @@ public class MemberActivity extends BaseActivity {
     TextView tvToolbarTitle;
     @BindView(R.id.tv_member_validitytime)
     TextView tvMemberValiditytime;
+    @BindView(R.id.tv_member_sub)
+    TextView tv_member_sub;
     @BindView(R.id.srl_member)
     SmartRefreshLayout srlMember;
     @BindView(R.id.iv_toolbar_back)
@@ -47,6 +50,7 @@ public class MemberActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     RelativeLayout toolbar;
     private String appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, payStr;
+    private String validityTime;
 
     private Handler mHandler = new Handler() {
         @SuppressWarnings("unused")
@@ -101,12 +105,20 @@ public class MemberActivity extends BaseActivity {
 
     @Override
     protected void setView(Bundle savedInstanceState) {
-
+        boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
+        if (ISOPENENVIP) {
+            tv_member_sub.setText("立即续费");
+            tvMemberValiditytime.setVisibility(View.VISIBLE);
+            tvMemberValiditytime.setText(validityTime + "到期");
+        } else {
+            tv_member_sub.setText("立即支付");
+            tvMemberValiditytime.setVisibility(View.GONE);
+        }
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-
+        validityTime = getIntent().getStringExtra("validityTime");
     }
 
     @Override

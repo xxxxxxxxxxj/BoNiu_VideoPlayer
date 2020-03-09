@@ -293,7 +293,13 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         RingLog.e("getAccountInfoSuccess() response = " + response);
         spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
         spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
+        if(StringUtil.isNotEmpty(response.getApplyCancelTime())){
+            spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
+        }else{
+            spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, false);
+        }
         if (response != null) {
+            spUtil.saveString(Global.SP_KEY_ISOPENENVIP, response.getApplyCancelTime());
             if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
                 validityTime = response.getVipExpireTime();
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);

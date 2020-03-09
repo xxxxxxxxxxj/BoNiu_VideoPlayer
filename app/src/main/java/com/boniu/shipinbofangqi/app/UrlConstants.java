@@ -39,6 +39,10 @@ public class UrlConstants {
      */
     public static final String CHECKVERSION = "/standard/common/base";
     /**
+     * 6.用户信息反馈接口
+     */
+    public static final String ADDFEEDBACK = "/standard/common/addFeedback";
+    /**
      * 23.最新帖子列表
      */
     public static final String NEWEST_POINT = "article/info/new";

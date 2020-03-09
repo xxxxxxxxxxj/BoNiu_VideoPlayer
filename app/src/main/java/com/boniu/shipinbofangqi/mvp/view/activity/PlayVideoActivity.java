@@ -7,7 +7,6 @@ import android.widget.ImageView;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
-import com.boniu.shipinbofangqi.mvp.model.event.MarketDialogEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.util.CommonUtil;
@@ -16,8 +15,6 @@ import com.boniu.shipinbofangqi.util.StringUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 
@@ -182,7 +179,7 @@ public class PlayVideoActivity extends BaseActivity {
                 isBounced = true;
             }
             if (isBounced) {
-                EventBus.getDefault().post(new MarketDialogEvent());
+                //EventBus.getDefault().post(new MarketDialogEvent());
             }
         }
         super.onBackPressed();

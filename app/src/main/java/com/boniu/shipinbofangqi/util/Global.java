@@ -27,4 +27,6 @@ public class Global {
     public static final String SP_KEY_TOKEN = "SP_KEY_TOKEN";
     public static final String SP_KEY_ISLOGIN = "SP_KEY_ISLOGIN";
     public static final String SP_KEY_CELLPHONE = "SP_KEY_CELLPHONE";
+
+    public static final String SP_KEY_ISCANCEL = "SP_KEY_ISCANCEL";
 }
