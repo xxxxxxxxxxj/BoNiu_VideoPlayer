@@ -177,6 +177,7 @@
                             android:textSize="8sp" />
 
                         <TextView
+                            android:id="@+id/tv_member_dayone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="11dip"
@@ -214,6 +215,7 @@
                                 android:textSize="8sp" />
 
                             <TextView
+                                android:id="@+id/tv_member_daytwo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="11dip"

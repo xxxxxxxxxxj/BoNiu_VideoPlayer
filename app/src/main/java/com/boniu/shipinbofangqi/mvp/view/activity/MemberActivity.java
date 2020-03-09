@@ -15,11 +15,17 @@ import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.ALiPayResult;
+import com.boniu.shipinbofangqi.mvp.model.entity.PayChannel;
+import com.boniu.shipinbofangqi.mvp.model.entity.PayInfo;
+import com.boniu.shipinbofangqi.mvp.model.entity.PayResult;
+import com.boniu.shipinbofangqi.mvp.model.entity.ProductInfo;
 import com.boniu.shipinbofangqi.mvp.model.event.WXPayResultEvent;
-import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
+import com.boniu.shipinbofangqi.mvp.presenter.MemberActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
+import com.boniu.shipinbofangqi.mvp.view.iview.IMemberActivityView;
 import com.boniu.shipinbofangqi.mvp.view.widget.popup.PayBottomPopup;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.gyf.immersionbar.ImmersionBar;
 import com.lxj.xpopup.XPopup;
@@ -27,6 +33,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -35,7 +42,7 @@ import butterknife.OnClick;
 /**
  * 开通高级页面
  */
-public class MemberActivity extends BaseActivity {
+public class MemberActivity extends BaseActivity<MemberActivityPresenter> implements IMemberActivityView {
 
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
@@ -51,6 +58,8 @@ public class MemberActivity extends BaseActivity {
     RelativeLayout toolbar;
     private String appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, payStr;
     private String validityTime;
+    private List<ProductInfo> productInfoList;
+    private List<PayChannel> payChannelList;
 
     private Handler mHandler = new Handler() {
         @SuppressWarnings("unused")
@@ -128,7 +137,9 @@ public class MemberActivity extends BaseActivity {
 
     @Override
     protected void loadData() {
-
+        showLoadDialog();
+        mPresenter.getProductList();
+        mPresenter.getPayChannel();
     }
 
     @Override
@@ -137,8 +148,8 @@ public class MemberActivity extends BaseActivity {
     }
 
     @Override
-    protected BasePresenter createPresenter() {
-        return null;
+    protected MemberActivityPresenter createPresenter() {
+        return new MemberActivityPresenter(this, this);
     }
 
     @Override
@@ -158,6 +169,113 @@ public class MemberActivity extends BaseActivity {
                         .asCustom(new PayBottomPopup(mActivity, mActivity, tipDialog, mHandler, appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, payStr, 18.0)/*.enableDrag(false)*/)
                         .show();
                 break;
+        }
+    }
+
+    @Override
+    public void productListSuccess(List<ProductInfo> response) {
+        RingLog.e("productListSuccess() response = " + response);
+        hideLoadDialog();
+        productInfoList = response;
+    }
+
+    @Override
+    public void productListFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("productListFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        }
+    }
+
+    @Override
+    public void payChannelFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("payChannelFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        }
+    }
+
+    @Override
+    public void payChannelSuccess(List<PayChannel> response) {
+        RingLog.e("payChannelSuccess() response = " + response);
+        hideLoadDialog();
+        payChannelList = response;
+    }
+
+    @Override
+    public void orderCreateSuccess(String response) {
+        RingLog.e("orderCreateSuccess() response = " + response);
+        hideLoadDialog();
+    }
+
+    @Override
+    public void orderCreateFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("orderCreateFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        }
+    }
+
+    @Override
+    public void submitOrderFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("submitOrderFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        }
+    }
+
+    @Override
+    public void submitOrderSuccess(PayInfo response) {
+        RingLog.e("PayInfo() response = " + response);
+        hideLoadDialog();
+    }
+
+    @Override
+    public void queryPayOrderSuccess(PayResult response) {
+        RingLog.e("queryPayOrderSuccess() response = " + response);
+        hideLoadDialog();
+    }
+
+    @Override
+    public void queryPayOrderFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("queryPayOrderFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
         }
     }
 }

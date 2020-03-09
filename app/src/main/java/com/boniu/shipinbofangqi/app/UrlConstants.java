@@ -51,6 +51,26 @@ public class UrlConstants {
      */
     public static final String LOGOUT = "/standard/account/logout";
     /**
+     * 8.产品信息查询接口
+     */
+    public static final String PRODUCTLIST = "/standard/product/productList";
+    /**
+     * 9.APP支付方式查询接口
+     */
+    public static final String PAYCHANNEL = "/standard/product/payChannel";
+    /**
+     * 10.创建订单
+     */
+    public static final String ORDERCREATE = "/standard/order/create";
+    /**
+     * 11.下单
+     */
+    public static final String SUBMITORDER = "/standard/order/submitOrder";
+    /**
+     * 12.查询支付结果
+     */
+    public static final String QUERYPAYORDER = "/standard/order/queryPayOrder";
+    /**
      * 23.最新帖子列表
      */
     public static final String NEWEST_POINT = "article/info/new";
