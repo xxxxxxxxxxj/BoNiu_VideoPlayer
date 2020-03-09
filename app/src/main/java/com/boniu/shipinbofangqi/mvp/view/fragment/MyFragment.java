@@ -292,14 +292,14 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     public void getAccountInfoSuccess(AccountInfoBean response) {
         hideLoadDialog();
         RingLog.e("getAccountInfoSuccess() response = " + response);
-        spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
-        spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
-        if (StringUtil.isNotEmpty(response.getApplyCancelTime())) {
-            spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
-        } else {
-            spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, false);
-        }
         if (response != null) {
+            spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
+            spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
+            if (StringUtil.isNotEmpty(response.getApplyCancelTime())) {
+                spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
+            } else {
+                spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, false);
+            }
             spUtil.saveString(Global.SP_KEY_ISOPENENVIP, response.getApplyCancelTime());
             if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
                 validityTime = response.getVipExpireTime();
@@ -345,10 +345,12 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     public void logoutSuccess(Boolean response) {
         hideLoadDialog();
         RingLog.e("logoutSuccess() response = " + response);
-        spUtil.removeData(Global.SP_KEY_ISLOGIN);
-        spUtil.removeData(Global.SP_KEY_CELLPHONE);
-        spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
-        spUtil.removeData(Global.SP_KEY_TOKEN);
-        setData();
+        if(response){
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            setData();
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.widget.popup;
 
 import android.content.Context;
-import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -10,11 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.boniu.shipinbofangqi.R;
-import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
-import com.boniu.shipinbofangqi.mvp.view.widget.dialog.QMUITipDialog;
-import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.Global;
-import com.boniu.shipinbofangqi.util.PayUtils;
 import com.boniu.shipinbofangqi.util.SharedPreferenceUtil;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.lxj.xpopup.util.XPopupUtils;
@@ -35,32 +30,28 @@ public class PayBottomPopup extends BottomPopupView {
     private RelativeLayout rl_paypop_zfb;
     private ImageView iv_paypop_zfbselect;
     private TextView tv_paypop_sub;
-    private int type;
     private SharedPreferenceUtil spUtil;
     private double price;
-    private String appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, payStr;
-    /**
-     * 加载提示框
-     */
-    private QMUITipDialog tipDialog;
-    private Handler mHandler;
-    private BaseActivity mActivity;
+    public OnPayInfoListener onPayInfoListener = null;
 
-    public PayBottomPopup(@NonNull Context context, BaseActivity mActivity, QMUITipDialog tipDialog, Handler mHandler, String appId
-            , String partnerId, String prepayId, String packageValue, String nonceStr, String timeStamp, String sign, String payStr, double price) {
-        super(context);
-        this.mActivity = mActivity;
-        this.tipDialog = tipDialog;
-        this.mHandler = mHandler;
-        this.appId = appId;
-        this.partnerId = partnerId;
-        this.prepayId = prepayId;
-        this.packageValue = packageValue;
-        this.nonceStr = nonceStr;
-        this.timeStamp = timeStamp;
-        this.sign = sign;
-        this.payStr = payStr;
+    public interface OnPayInfoListener {
+        public void OnPayInfo();
+    }
+
+    public void setOnPayInfoListener(OnPayInfoListener onPayInfoListener) {
+        this.onPayInfoListener = onPayInfoListener;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
         this.price = price;
+    }
+
+    public PayBottomPopup(@NonNull Context context) {
+        super(context);
     }
 
     @Override
@@ -71,8 +62,7 @@ public class PayBottomPopup extends BottomPopupView {
     @Override
     protected void onCreate() {
         super.onCreate();
-        spUtil = SharedPreferenceUtil.getInstance(mActivity);
-        type = spUtil.getInt(Global.SP_KEY_PAYWAY, 0);
+        spUtil = SharedPreferenceUtil.getInstance(getContext());
         iv_paypop_close = findViewById(R.id.iv_paypop_close);
         tv_paypop_price = findViewById(R.id.tv_paypop_price);
         rl_paypop_wx = findViewById(R.id.rl_paypop_wx);
@@ -81,10 +71,10 @@ public class PayBottomPopup extends BottomPopupView {
         iv_paypop_zfbselect = findViewById(R.id.iv_paypop_zfbselect);
         tv_paypop_sub = findViewById(R.id.tv_paypop_sub);
         tv_paypop_price.setText("支付金额：¥" + price);
-        if (type == 1) {//微信支付
+        if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {//微信支付
             iv_paypop_wxselect.setImageResource(R.mipmap.icon_select);
             iv_paypop_zfbselect.setImageResource(R.mipmap.icon_unselect);
-        } else if (type == 1) {//支付宝支付
+        } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {//支付宝支付
             iv_paypop_wxselect.setImageResource(R.mipmap.icon_unselect);
             iv_paypop_zfbselect.setImageResource(R.mipmap.icon_select);
         }
@@ -113,12 +103,8 @@ public class PayBottomPopup extends BottomPopupView {
         tv_paypop_sub.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
-                    PayUtils.weChatPayment(mActivity, appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, tipDialog);
-                } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {
-                    PayUtils.payByAliPay(mActivity, payStr, mHandler);
-                } else {
-                    RingToast.show("请先选择支付方式");
+                if (onPayInfoListener != null) {
+                    onPayInfoListener.OnPayInfo();
                 }
             }
         });
@@ -138,6 +124,6 @@ public class PayBottomPopup extends BottomPopupView {
 
     @Override
     protected int getMaxHeight() {
-        return (int) (XPopupUtils.getWindowHeight(mActivity) * .85f);
+        return (int) (XPopupUtils.getWindowHeight(getContext()) * .85f);
     }
 }

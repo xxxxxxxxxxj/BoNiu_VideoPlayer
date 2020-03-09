@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,9 +28,11 @@ import com.boniu.shipinbofangqi.mvp.view.widget.popup.PayBottomPopup;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
+import com.boniu.shipinbofangqi.util.PayUtils;
 import com.gyf.immersionbar.ImmersionBar;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.tencent.mm.opensdk.modelbase.BaseResp;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -60,6 +63,11 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     private String validityTime;
     private List<ProductInfo> productInfoList;
     private List<PayChannel> payChannelList;
+    private double price;
+    private PayBottomPopup payBottomPopup;
+    private String productId;
+    private String orderId;
+    private String payChannel;
 
     private Handler mHandler = new Handler() {
         @SuppressWarnings("unused")
@@ -76,13 +84,11 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-                        RingLog.e("支付成功");
-                        RingToast.show("支付成功");
                     } else {
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-                        RingLog.e("支付失败");
-                        RingToast.show("支付失败");
                     }
+                    showLoadDialog();
+                    mPresenter.queryPayOrder(orderId);
                     break;
                 }
                 default:
@@ -94,7 +100,16 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     @Subscribe
     public void onWXPayResult(WXPayResultEvent event) {
         if (event != null) {
-
+            BaseResp resp = event.getResp();
+            if (resp != null) {
+                Log.e("TAG", "resp.errCode = " + resp.errCode);
+                Log.e("TAG", "resp.errStr = " + resp.errStr);
+                showLoadDialog();
+                mPresenter.queryPayOrder(orderId);
+                if (resp.errCode == 0) {
+                } else {
+                }
+            }
         }
     }
 
@@ -164,9 +179,24 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                 finish();
                 break;
             case R.id.tv_member_sub:
+                if (payBottomPopup == null) {
+                    payBottomPopup = new PayBottomPopup(mActivity);
+                }
+                payBottomPopup.setPrice(price);
+                payBottomPopup.setOnPayInfoListener(new PayBottomPopup.OnPayInfoListener() {
+                    @Override
+                    public void OnPayInfo() {
+                        if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) > 0) {
+                            showLoadDialog();
+                            mPresenter.orderCreate(productId);
+                        } else {
+                            RingToast.show("请先选择支付方式");
+                        }
+                    }
+                });
                 new XPopup.Builder(mActivity)
                         .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
-                        .asCustom(new PayBottomPopup(mActivity, mActivity, tipDialog, mHandler, appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, payStr, 18.0)/*.enableDrag(false)*/)
+                        .asCustom(payBottomPopup)
                         .show();
                 break;
         }
@@ -220,6 +250,14 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     public void orderCreateSuccess(String response) {
         RingLog.e("orderCreateSuccess() response = " + response);
         hideLoadDialog();
+        orderId = response;
+        if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {//微信支付
+            payChannel = "WECHAT_PAY";
+        } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {//支付宝支付
+            payChannel = "ALIPAY";
+        }
+        showLoadDialog();
+        mPresenter.submitOrder(orderId, payChannel);
     }
 
     @Override
@@ -256,6 +294,14 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     public void submitOrderSuccess(PayInfo response) {
         RingLog.e("PayInfo() response = " + response);
         hideLoadDialog();
+        if (response != null) {
+            payStr = response.getPayInfo();
+            if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
+                PayUtils.weChatPayment(mActivity, appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, tipDialog);
+            } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {
+                PayUtils.payByAliPay(mActivity, payStr, mHandler);
+            }
+        }
     }
 
     @Override

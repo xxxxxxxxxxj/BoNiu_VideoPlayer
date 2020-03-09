@@ -137,8 +137,10 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     public void sendVerifyCodeSuccess(Boolean response) {
         hideLoadDialog();
         RingLog.e("sendVerifyCodeSuccess() response = " + response);
-        RingToast.show("验证码获取成功");
-        tietLoginYzm.requestFocus();
+        if(response){
+            RingToast.show("验证码获取成功");
+            tietLoginYzm.requestFocus();
+        }
     }
 
     @Override
@@ -160,13 +162,15 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     public void loginSuccess(LoginBean response) {
         hideLoadDialog();
         RingLog.e("loginSuccess() response = " + response);
-        RingToast.show("登录成功");
-        spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
-        spUtil.saveString(Global.SP_KEY_CELLPHONE, StringUtil.checkEditText(tilLoginMobile.getEditText()));
-        spUtil.saveString(Global.SP_KEY_ACCOUNTIUD, response.getAccountId());
-        spUtil.saveString(Global.SP_KEY_TOKEN, response.getToken());
-        EventBus.getDefault().post(new LoginEvent());
-        finish();
+        if(response!=null){
+            RingToast.show("登录成功");
+            spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
+            spUtil.saveString(Global.SP_KEY_CELLPHONE, StringUtil.checkEditText(tilLoginMobile.getEditText()));
+            spUtil.saveString(Global.SP_KEY_ACCOUNTIUD, response.getAccountId());
+            spUtil.saveString(Global.SP_KEY_TOKEN, response.getToken());
+            EventBus.getDefault().post(new LoginEvent());
+            finish();
+        }
     }
 
     @Override
