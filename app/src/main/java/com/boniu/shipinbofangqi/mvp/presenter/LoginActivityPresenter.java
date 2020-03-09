@@ -30,7 +30,7 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> {
     /**
      * 获取验证码
      */
-    public void sendVerifyCode(Context mContext, String mobile) {
+    public void sendVerifyCode(String mobile) {
         HttpParams params = new HttpParams();
         params.put("appName", "SHIPINBOFANGQI_BONIU");
         params.put("mobile", mobile);
@@ -54,12 +54,8 @@ public class LoginActivityPresenter extends BasePresenter<ILoginActivityView> {
 
     /**
      * 登录
-     *
-     * @param mContext
-     * @param mobile
-     * @param verifyCode
      */
-    public void login(Context mContext, String mobile, String verifyCode) {
+    public void login(String mobile, String verifyCode) {
         HttpParams params = new UrlConstants().getParams(mContext);
         params.put("mobile", mobile);
         params.put("verifyCode", verifyCode);

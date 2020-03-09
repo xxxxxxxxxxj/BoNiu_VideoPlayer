@@ -6,8 +6,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintCore;
 import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintUtil;
+import com.boniu.shipinbofangqi.log.RingLog;
+import com.boniu.shipinbofangqi.mvp.model.entity.AccountInfoBean;
 import com.boniu.shipinbofangqi.mvp.model.event.LoginEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MyFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.AboutActivity;
@@ -19,6 +22,7 @@ import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
+import com.boniu.shipinbofangqi.util.StringUtil;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.CustomDialog;
@@ -74,7 +78,12 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     private void setData() {
         if (CommonUtil.isLogin(mActivity)) {
             tv_fragmy_loginout.setVisibility(View.VISIBLE);
-            tvFragmySeniorState.setText(validityTime);
+            boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
+            if (ISOPENENVIP) {
+                tvFragmySeniorState.setText(validityTime + "到期");
+            } else {
+                tvFragmySeniorState.setText("未开通");
+            }
             tvFragmyLogin.setText(CommonUtil.getCellPhone(mActivity));
         } else {
             tv_fragmy_loginout.setVisibility(View.GONE);
@@ -123,13 +132,11 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             } else {
                 sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
             }
         } else {
             ll_fragmy_finger.setVisibility(View.GONE);
             ll_fragmy_folder.setVisibility(View.GONE);
             spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
-            spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
         }
         //判断是否开启加密文件夹
         boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
@@ -152,7 +159,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
 
     @Override
     protected void loadData() {
-
+        showLoadDialog();
+        mPresenter.getAccountInfo();
     }
 
     // Fragment页面onResume函数重载
@@ -277,5 +285,38 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                 }
                 break;
         }
+    }
+
+    @Override
+    public void getAccountInfoSuccess(AccountInfoBean response) {
+        hideLoadDialog();
+        RingLog.e("getAccountInfoSuccess() response = " + response);
+        spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
+        spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
+        if (response != null) {
+            if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
+                validityTime = response.getVipExpireTime();
+                spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);
+            } else if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("NORMAL")) {
+                spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
+            }
+        }
+        setData();
+    }
+
+    @Override
+    public void getAccountInfoFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("getAccountInfoFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        }
+        setData();
     }
 }

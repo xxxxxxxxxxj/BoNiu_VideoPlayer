@@ -25,9 +25,11 @@ import com.boniu.shipinbofangqi.mvp.presenter.FlashActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.iview.IFlashActivityView;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.CountdownUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.JumpToUtil;
+import com.boniu.shipinbofangqi.util.StringUtil;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.util.DialogSettings;
@@ -286,10 +288,18 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     }
 
     @Override
-    public void getAccountInfoSuccess(AccountInfoBean accountInfoBean) {
-        RingLog.e("getAccountInfoSuccess() accountInfoBean = " + accountInfoBean);
+    public void getAccountInfoSuccess(AccountInfoBean response) {
+        RingLog.e("getAccountInfoSuccess() response = " + response);
         hideLoadDialog();
         spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
+        spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
+        if (response != null) {
+            if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
+                spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);
+            } else if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("NORMAL")) {
+                spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
+            }
+        }
         setJumpLogic();
     }
 
@@ -303,7 +313,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
             spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
             spUtil.removeData(Global.SP_KEY_TOKEN);
         } else if (status == AppConfig.CLEARACCOUNTID_CODE) {
-            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            CommonUtil.getNewAccountId(mActivity);
         }
         setJumpLogic();
     }
@@ -312,9 +322,8 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
         boolean ISAGREEPRIVACY = spUtil.getBoolean(Global.SP_KEY_ISAGREEPRIVACY, false);
         //判断是否同意隐私政策
         if (ISAGREEPRIVACY) {
-            boolean ISLOGIN = spUtil.getBoolean(Global.SP_KEY_ISLOGIN, false);
             //判断是否登录
-            if (ISLOGIN) {
+            if (CommonUtil.isLogin(mActivity)) {
                 //判断是否开启指纹识别
                 boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
                 if (ISOPENFINGER) {

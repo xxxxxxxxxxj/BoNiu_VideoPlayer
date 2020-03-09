@@ -17,6 +17,7 @@ import com.boniu.shipinbofangqi.mvp.presenter.LoginActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.iview.ILoginActivityView;
 import com.boniu.shipinbofangqi.toast.RingToast;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.google.android.material.textfield.TextInputEditText;
@@ -115,7 +116,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
                     return;
                 }
                 showLoadDialog();
-                mPresenter.sendVerifyCode(mContext, StringUtil.checkEditText(tilLoginMobile.getEditText()));
+                mPresenter.sendVerifyCode(StringUtil.checkEditText(tilLoginMobile.getEditText()));
                 break;
             case R.id.tv_login_sub:
                 if (StringUtil.isEmpty(StringUtil.checkEditText(tilLoginMobile.getEditText()))) {
@@ -127,7 +128,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
                     return;
                 }
                 showLoadDialog();
-                mPresenter.login(mContext, StringUtil.checkEditText(tilLoginMobile.getEditText()), StringUtil.checkEditText(tilLoginYzm.getEditText()));
+                mPresenter.login(StringUtil.checkEditText(tilLoginMobile.getEditText()), StringUtil.checkEditText(tilLoginYzm.getEditText()));
                 break;
         }
     }
@@ -150,6 +151,8 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
             spUtil.removeData(Global.SP_KEY_CELLPHONE);
             spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
             spUtil.removeData(Global.SP_KEY_TOKEN);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
         }
     }
 
@@ -177,7 +180,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
             spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
             spUtil.removeData(Global.SP_KEY_TOKEN);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
-            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            CommonUtil.getNewAccountId(mActivity);
         }
     }
 }

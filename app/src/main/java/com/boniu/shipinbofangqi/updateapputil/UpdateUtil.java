@@ -55,8 +55,7 @@ public class UpdateUtil {
         mDialog.show();
     }
 
-    public static void showUpgradeDialog(final AppCompatActivity mActivity, String msg, final int type,
-                                         final String version, View.OnClickListener listener) {
+    public static void showUpgradeDialog(final AppCompatActivity mActivity, String title, String msg, final boolean forceUp, View.OnClickListener listener) {
         CustomDialog.build(mActivity, R.layout.layout_upgrade_dialog, new CustomDialog.OnBindView() {
             @Override
             public void onBind(final CustomDialog dialog, View v) {
@@ -64,9 +63,9 @@ public class UpdateUtil {
                 TextView tv_upgradedialog_title = v.findViewById(R.id.tv_upgradedialog_title);
                 TextView tv_upgradedialog_content = v.findViewById(R.id.tv_upgradedialog_content);
                 TextView tv_upgradedialog_sub = v.findViewById(R.id.tv_upgradedialog_sub);
-                if (type == 1) {//强制升级
+                if (forceUp) {//强制升级
                     iv_upgradedialog_close.setVisibility(View.INVISIBLE);
-                } else if (type == 2) {//非强制升级
+                } else {//非强制升级
                     iv_upgradedialog_close.setVisibility(View.VISIBLE);
                     iv_upgradedialog_close.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -76,7 +75,7 @@ public class UpdateUtil {
                     });
                 }
                 tv_upgradedialog_sub.setOnClickListener(listener);
-                tv_upgradedialog_title.setText(version + " 新版上线");
+                tv_upgradedialog_title.setText(title);
                 tv_upgradedialog_content.setText(msg);
             }
         }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();

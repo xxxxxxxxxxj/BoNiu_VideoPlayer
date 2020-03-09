@@ -12,6 +12,14 @@ public class LoginBean {
     private String accountId;
     private String token;
 
+    @Override
+    public String toString() {
+        return "LoginBean{" +
+                "accountId='" + accountId + '\'' +
+                ", token='" + token + '\'' +
+                '}';
+    }
+
     public String getAccountId() {
         return accountId;
     }

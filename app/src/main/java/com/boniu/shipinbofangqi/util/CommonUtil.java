@@ -15,6 +15,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.bumptech.glide.Glide;
@@ -24,6 +25,10 @@ import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.ImageViewerPopupView;
 import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener;
 import com.lxj.xpopup.interfaces.XPopupImageLoader;
+import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.callback.SimpleCallBack;
+import com.zhouyou.http.exception.ApiException;
+import com.zhouyou.http.model.HttpParams;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -33,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import okhttp3.RequestBody;
 
 /**
  * author：   zp
@@ -243,11 +250,35 @@ public class CommonUtil {
         }
     }
 
-    public static boolean isLogin(Activity mActivity) {
-        return SharedPreferenceUtil.getInstance(mActivity).getBoolean(Global.SP_KEY_ISLOGIN, false);
+    public static boolean isLogin(Context mContext) {
+        return SharedPreferenceUtil.getInstance(mContext).getBoolean(Global.SP_KEY_ISLOGIN, false);
     }
 
-    public static String getCellPhone(Activity mActivity) {
-        return SharedPreferenceUtil.getInstance(mActivity).getString(Global.SP_KEY_CELLPHONE, "");
+    public static String getCellPhone(Context mContext) {
+        return SharedPreferenceUtil.getInstance(mContext).getString(Global.SP_KEY_CELLPHONE, "");
+    }
+
+    public static String getAccountId(Context mContext) {
+        return SharedPreferenceUtil.getInstance(mContext).getString(Global.SP_KEY_ACCOUNTIUD, "");
+    }
+
+    public static void getNewAccountId(Context mContext) {
+        HttpParams params = new UrlConstants().getParams(mContext);
+        params.put("accountId", CommonUtil.getAccountId(mContext));
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
+        EasyHttp.post(UrlConstants.GETNEWACCOUNTID)
+                .requestBody(requestBody)
+                .sign(true)
+                .execute(new SimpleCallBack<String>() {
+                    @Override
+                    public void onError(ApiException e) {
+                        RingLog.e("onError() e = " + e.toString());
+                    }
+
+                    @Override
+                    public void onSuccess(String response) {
+                        SharedPreferenceUtil.getInstance(mContext).saveString(Global.SP_KEY_ACCOUNTIUD, response);
+                    }
+                });
     }
 }

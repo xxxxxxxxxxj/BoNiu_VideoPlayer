@@ -31,6 +31,14 @@ public class UrlConstants {
      */
     public static final String LOGIN = "/standard/account/login";
     /**
+     * 4.设备或用户登录之后产生token值,当accountId失效之后，需调用此接口获取最新的accountId的值
+     */
+    public static final String GETNEWACCOUNTID = "/standard/account/getNewAccountId";
+    /**
+     * 5.获取APP基础信息
+     */
+    public static final String CHECKVERSION = "/standard/common/base";
+    /**
      * 23.最新帖子列表
      */
     public static final String NEWEST_POINT = "article/info/new";

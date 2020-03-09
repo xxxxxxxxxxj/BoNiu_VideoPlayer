@@ -13,9 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
-import com.boniu.shipinbofangqi.mvp.model.entity.CheckVersionBean;
+import com.boniu.shipinbofangqi.mvp.model.entity.AppInfoBean;
 import com.boniu.shipinbofangqi.mvp.model.entity.TabEntity;
 import com.boniu.shipinbofangqi.mvp.model.event.CaptureEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
@@ -33,7 +34,9 @@ import com.boniu.shipinbofangqi.updateapputil.DownloadAppUtils;
 import com.boniu.shipinbofangqi.updateapputil.DownloadProgressDialog;
 import com.boniu.shipinbofangqi.updateapputil.UpdateAppEvent;
 import com.boniu.shipinbofangqi.updateapputil.UpdateUtil;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.GetDeviceId;
+import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.PathUtils;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
@@ -239,24 +242,29 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
     }
 
     @Override
-    public void checkVersionSuccess(CheckVersionBean checkVersionBean) {
-        RingLog.e("checkVersionSuccess() checkVersionBean = " + checkVersionBean);
+    public void checkVersionSuccess(AppInfoBean response) {
+        RingLog.e("checkVersionSuccess() response = " + response);
         hideLoadDialog();
-        if (checkVersionBean != null) {
-            checkVersionBean.setUrl("http://3g.163.com/links/4636");
-            checkVersionBean.setCompulsory(0);
-            if (checkVersionBean.getCompulsory() == 1) {
+        if (response != null) {
+            AppInfoBean.VersionInfoVo versionInfoVo = response.getVersionInfoVo();
+            if (versionInfoVo != null) {
                 // 强制升级
-                UpdateUtil.showUpgradeDialog(mActivity, checkVersionBean.getContent(),
-                        1, checkVersionBean.getVersion(), new View.OnClickListener() {
+                UpdateUtil.showUpgradeDialog(mActivity, versionInfoVo.getTitle(), versionInfoVo.getContent(),
+                        versionInfoVo.isForceUp(), new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
                                 requestEachCombined(new PermissionListener() {
                                     @Override
                                     public void onGranted(String permissionName) {
+                                        int isUpgrade = 0;
+                                        if (versionInfoVo.isForceUp()) {
+                                            isUpgrade = 1;
+                                        } else {
+                                            isUpgrade = 0;
+                                        }
                                         UpdateUtil.updateApk(mContext,
-                                                checkVersionBean.getUrl(), checkVersionBean.getVersion(), UpdateUtil.UPDATEFORNOTIFICATION, checkVersionBean.getCompulsory());
+                                                versionInfoVo.getLinkUrl(), versionInfoVo.getVersion(), UpdateUtil.UPDATEFORNOTIFICATION, isUpgrade);
                                     }
 
                                     @Override
@@ -277,38 +285,6 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
                                 }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
                             }
                         });
-            } else if (checkVersionBean.getCompulsory() == 0) {
-                // 非强制升级
-                UpdateUtil.showUpgradeDialog(mActivity, checkVersionBean.getContent(),
-                        2, checkVersionBean.getVersion(), new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                requestEachCombined(new PermissionListener() {
-                                    @Override
-                                    public void onGranted(String permissionName) {
-                                        UpdateUtil.updateApk(mContext,
-                                                checkVersionBean.getUrl(), checkVersionBean.getVersion(), UpdateUtil.UPDATEFORNOTIFICATION, checkVersionBean.getCompulsory());
-                                    }
-
-                                    @Override
-                                    public void onDenied(String permissionName) {
-                                        showToast("请打开存储权限");
-                                    }
-
-                                    @Override
-                                    public void onDeniedWithNeverAsk(String permissionName) {
-                                        MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
-                                            @Override
-                                            public boolean onClick(BaseDialog baseDialog, View v) {
-                                                QMUIDeviceHelper.goToPermissionManager(mActivity);
-                                                return false;
-                                            }
-                                        });
-                                    }
-                                }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
-                            }
-                        });
             }
         }
     }
@@ -316,7 +292,16 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
     @Override
     public void checkVersionFail(int status, String desc) {
         hideLoadDialog();
-        RingLog.e("checkVersionFail() status = " + status + "---desc = " + desc);
+        RingLog.e("getAccountInfoFail() status = " + status + "---desc = " + desc);
+        if (status == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            startActivity(LoginActivity.class);
+        } else if (status == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        }
     }
 
     @Override

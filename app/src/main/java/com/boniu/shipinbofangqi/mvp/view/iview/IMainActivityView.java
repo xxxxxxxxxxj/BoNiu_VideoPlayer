@@ -1,6 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.iview;
 
-import com.boniu.shipinbofangqi.mvp.model.entity.CheckVersionBean;
+import com.boniu.shipinbofangqi.mvp.model.entity.AppInfoBean;
 import com.boniu.shipinbofangqi.mvp.view.iview.base.IBaseView;
 
 /**
@@ -12,7 +12,7 @@ import com.boniu.shipinbofangqi.mvp.view.iview.base.IBaseView;
  * @date zhoujunxia on 2019-10-14 10:16
  */
 public interface IMainActivityView extends IBaseView {
-    void checkVersionSuccess(CheckVersionBean checkVersionBean);
+    void checkVersionSuccess(AppInfoBean response);
 
     void checkVersionFail(int status, String desc);
 }

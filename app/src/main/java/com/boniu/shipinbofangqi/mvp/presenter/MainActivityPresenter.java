@@ -4,12 +4,15 @@ import android.content.Context;
 
 import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
-import com.boniu.shipinbofangqi.mvp.model.entity.CheckVersionBean;
+import com.boniu.shipinbofangqi.mvp.model.entity.AppInfoBean;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMainActivityView;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
+import com.zhouyou.http.model.HttpParams;
+
+import okhttp3.RequestBody;
 
 /**
  * <p>Title:${type_name}</p>
@@ -28,8 +31,12 @@ public class MainActivityPresenter extends BasePresenter<IMainActivityView> {
      * 获取最新版本
      */
     public void checkVersion() {
-        EasyHttp.post(UrlConstants.CHECK_VERSION)
-                .execute(new SimpleCallBack<CheckVersionBean>() {
+        HttpParams params = new UrlConstants().getParams(mContext);
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
+        EasyHttp.post(UrlConstants.CHECKVERSION)
+                .requestBody(requestBody)
+                .sign(true)
+                .execute(new SimpleCallBack<AppInfoBean>() {
                     @Override
                     public void onError(ApiException e) {
                         RingLog.e("onError() e = " + e.toString());
@@ -37,7 +44,7 @@ public class MainActivityPresenter extends BasePresenter<IMainActivityView> {
                     }
 
                     @Override
-                    public void onSuccess(CheckVersionBean response) {
+                    public void onSuccess(AppInfoBean response) {
                         mIView.checkVersionSuccess(response);
                     }
                 });
