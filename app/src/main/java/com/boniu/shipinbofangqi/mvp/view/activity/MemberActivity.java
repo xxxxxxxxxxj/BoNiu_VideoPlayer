@@ -94,12 +94,17 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-                    } else {
+                        pollingNum = 1;
+                        showLoadDialog();
+                        PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
+                    } else if(TextUtils.equals(resultStatus, "8000")){//支付结果确认中
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+                        pollingNum = 1;
+                        showLoadDialog();
+                        PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
+                    }else{//支付失败
+                        RingToast.show("支付失败");
                     }
-                    pollingNum = 1;
-                    showLoadDialog();
-                    PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
                     break;
                 }
                 default:
@@ -115,9 +120,17 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             if (resp != null) {
                 Log.e("TAG", "resp.errCode = " + resp.errCode);
                 Log.e("TAG", "resp.errStr = " + resp.errStr);
-                pollingNum = 1;
-                showLoadDialog();
-                PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
+                if (resp.errCode == 0) {
+                    pollingNum = 1;
+                    showLoadDialog();
+                    PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
+                } else {
+                    if (StringUtil.isNotEmpty(resp.errStr)) {
+                        RingToast.show(resp.errStr);
+                    } else {
+                        RingToast.show("支付失败");
+                    }
+                }
             }
         }
     }
@@ -136,11 +149,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                     if (StringUtil.isNotEmpty(resultCode)) {
                         if (resultCode.equals("RETRY")) {
                             pollingNum = pollingNum + 1;
-                            PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
+                            PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
                         } else if (resultCode.equals("SUCCESS")) {
                             RingToast.show("支付成功");
                             hideLoadDialog();
                             PollingUtils.stopPollingService(mActivity, PayResultService.class, PayResultService.ACTION);
+                            spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);
                         } else if (resultCode.equals("FAIL")) {
                             RingToast.show(payResult.getResultMsg());
                             hideLoadDialog();
@@ -149,7 +163,7 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                     }
                 } else {
                     pollingNum = pollingNum + 1;
-                    PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
+                    PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
                 }
             }
         }

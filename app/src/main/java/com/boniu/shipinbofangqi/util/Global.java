@@ -12,22 +12,22 @@ public class Global {
     public static final int H5_TO_LOGIN = 1;
     public static int WXPAYCODE = -1;
 
-    public static final String SP_KEY_ISAGREEPRIVACY = "SP_KEY_ISAGREEPRIVACY";
-    public static final String SP_KEY_ISJUMPLOGIN = "SP_KEY_ISJUMPLOGIN";
-    public static final String SP_KEY_ISOPENFINGER = "SP_KEY_ISOPENFINGER";
-    public static final String SP_KEY_PLAYVIDEONUM_TODAY = "SP_KEY_PLAYVIDEONUM_TODAY";
-    public static final String SP_KEY_PLAYVIDEOTIME_TODAY = "SP_KEY_PLAYVIDEOTIME_TODAY";
-    public static final String SP_KEY_MARKETCLICKTIME = "SP_KEY_MARKETCLICKTIME";
-    public static final String SP_KEY_MARKETCLICKTYPE = "SP_KEY_MARKETCLICKTYPE";
-    public static final String SP_KEY_ISOPENENCRYPTEDFOLDER = "SP_KEY_ISOPENENCRYPTEDFOLDER";
-    public static final String SP_KEY_ISOPENENVIP = "SP_KEY_ISOPENENVIP";
-    public static final String SP_KEY_PAYWAY = "SP_KEY_PAYWAY";
+    public static final String SP_KEY_ISAGREEPRIVACY = "SP_KEY_ISAGREEPRIVACY";//用户协议是否弹框
+    public static final String SP_KEY_ISJUMPLOGIN = "SP_KEY_ISJUMPLOGIN";//是否跳转登录
+    public static final String SP_KEY_ISOPENFINGER = "SP_KEY_ISOPENFINGER";//是否开启指纹识别
+    public static final String SP_KEY_PLAYVIDEONUM_TODAY = "SP_KEY_PLAYVIDEONUM_TODAY";//当天播放视频次数
+    public static final String SP_KEY_PLAYVIDEOTIME_TODAY = "SP_KEY_PLAYVIDEOTIME_TODAY";//播放视频日期
+    public static final String SP_KEY_MARKETCLICKTIME = "SP_KEY_MARKETCLICKTIME";//应用市场弹框点击时间
+    public static final String SP_KEY_MARKETCLICKTYPE = "SP_KEY_MARKETCLICKTYPE";//应用市场弹框点击类型
+    public static final String SP_KEY_ISOPENENCRYPTEDFOLDER = "SP_KEY_ISOPENENCRYPTEDFOLDER";//是否开通加密文件夹功能
+    public static final String SP_KEY_ISOPENENVIP = "SP_KEY_ISOPENENVIP";//是否是VIP
+    public static final String SP_KEY_PAYWAY = "SP_KEY_PAYWAY";//支付方式
     //登录相关
-    public static final String SP_KEY_ACCOUNTIUD = "SP_KEY_ACCOUNTIUD";
-    public static final String SP_KEY_TOKEN = "SP_KEY_TOKEN";
-    public static final String SP_KEY_ISLOGIN = "SP_KEY_ISLOGIN";
-    public static final String SP_KEY_CELLPHONE = "SP_KEY_CELLPHONE";
+    public static final String SP_KEY_ACCOUNTIUD = "SP_KEY_ACCOUNTIUD";//账户AccountId
+    public static final String SP_KEY_TOKEN = "SP_KEY_TOKEN";//账户token
+    public static final String SP_KEY_ISLOGIN = "SP_KEY_ISLOGIN";//是否登录
+    public static final String SP_KEY_CELLPHONE = "SP_KEY_CELLPHONE";//登录手机号码
 
-    public static final String SP_KEY_ISCANCEL = "SP_KEY_ISCANCEL";
-    public static final String SP_KEY_VALIDITYTIME = "SP_KEY_VALIDITYTIME";
+    public static final String SP_KEY_ISCANCEL = "SP_KEY_ISCANCEL";//账户是否注销
+    public static final String SP_KEY_VALIDITYTIME = "SP_KEY_VALIDITYTIME";//VIP到期时间
 }

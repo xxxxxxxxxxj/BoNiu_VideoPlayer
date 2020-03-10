@@ -300,7 +300,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             } else {
                 spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, false);
             }
-            spUtil.saveString(Global.SP_KEY_ISOPENENVIP, response.getApplyCancelTime());
             if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
                 validityTime = response.getVipExpireTime();
                 spUtil.saveString(Global.SP_KEY_VALIDITYTIME, validityTime);
