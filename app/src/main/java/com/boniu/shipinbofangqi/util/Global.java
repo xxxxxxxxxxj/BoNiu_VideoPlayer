@@ -29,4 +29,5 @@ public class Global {
     public static final String SP_KEY_CELLPHONE = "SP_KEY_CELLPHONE";
 
     public static final String SP_KEY_ISCANCEL = "SP_KEY_ISCANCEL";
+    public static final String SP_KEY_VALIDITYTIME = "SP_KEY_VALIDITYTIME";
 }

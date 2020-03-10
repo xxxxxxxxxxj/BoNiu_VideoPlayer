@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip">
+
+        <ImageView
+            android:id="@+id/iv_paypop_payway"
+            android:layout_width="32dip"
+            android:layout_height="32dip"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/icon_wx" />
+
+        <ImageView
+            android:id="@+id/iv_paypop_select"
+            android:layout_width="22dip"
+            android:layout_height="22dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/icon_unselect" />
+
+        <TextView
+            android:id="@+id/tv_paypop_payway"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_toLeftOf="@id/iv_paypop_select"
+            android:layout_toRightOf="@id/iv_paypop_payway"
+            android:text="微信支付"
+            android:textColor="@color/a272727"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/vw_paypop_payway"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@color/aE3E3E3" />
+</LinearLayout>

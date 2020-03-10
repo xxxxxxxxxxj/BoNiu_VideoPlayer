@@ -10,15 +10,19 @@ package com.boniu.shipinbofangqi.mvp.model.entity;
  */
 public class ProductInfo {
     private double discountPrice;
-    private String tag;
-    private int days;
+    private String desc;
+    private boolean isSelect;
+    private String productId;
+    private String productName;
 
     @Override
     public String toString() {
         return "ProductInfo{" +
                 "discountPrice=" + discountPrice +
-                ", tag='" + tag + '\'' +
-                ", days=" + days +
+                ", desc='" + desc + '\'' +
+                ", isSelect=" + isSelect +
+                ", productId='" + productId + '\'' +
+                ", productName='" + productName + '\'' +
                 '}';
     }
 
@@ -30,19 +34,35 @@ public class ProductInfo {
         this.discountPrice = discountPrice;
     }
 
-    public String getTag() {
-        return tag;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
-    public int getDays() {
-        return days;
+    public boolean isSelect() {
+        return isSelect;
     }
 
-    public void setDays(int days) {
-        this.days = days;
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }

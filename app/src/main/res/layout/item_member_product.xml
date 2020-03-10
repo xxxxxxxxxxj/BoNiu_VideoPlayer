@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="106dip"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_item_memberproduct_unselect"
+        android:layout_width="match_parent"
+        android:layout_height="121dip"
+        android:layout_alignParentBottom="true"
+        android:background="@mipmap/bg_member_hui"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_item_memberproduct_desc_unselect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11dip"
+            android:text="最基础"
+            android:textColor="@color/white"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/tv_item_memberproduct_days_unselect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="11dip"
+            android:text="一个月"
+            android:textColor="@color/white"
+            android:textSize="8sp" />
+
+        <TextView
+            android:id="@+id/tv_item_memberproduct_price_unselect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¥8.00"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_item_memberproduct_select"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="14dip"
+            android:background="@mipmap/bg_member_light"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_item_memberproduct_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="11dip"
+                android:text="最优惠"
+                android:textColor="@color/white"
+                android:textSize="8sp" />
+
+            <TextView
+                android:id="@+id/tv_item_memberproduct_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="11dip"
+                android:text="一年"
+                android:textColor="@color/white"
+                android:textSize="8sp" />
+
+            <TextView
+                android:id="@+id/tv_item_memberproduct_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="17dip"
+                android:text="¥18.00"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_item_memberproduct_validitytime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2020-2-2到期"
+                android:textColor="@color/aFDFAFA"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="87dip"
+            android:layout_height="28dip"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/bg_member_gj"
+            android:gravity="center"
+            android:paddingLeft="10dip"
+            android:paddingBottom="3dip"
+            android:text="解锁高级功能"
+            android:textColor="@color/aFFD353"
+            android:textSize="8sp" />
+    </RelativeLayout>
+</RelativeLayout>

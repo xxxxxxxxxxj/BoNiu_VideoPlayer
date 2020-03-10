@@ -6,7 +6,6 @@ import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayChannel;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayInfo;
-import com.boniu.shipinbofangqi.mvp.model.entity.PayResult;
 import com.boniu.shipinbofangqi.mvp.model.entity.ProductInfo;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMemberActivityView;
@@ -110,9 +109,10 @@ public class MemberActivityPresenter extends BasePresenter<IMemberActivityView> 
      * 下单
      */
     public void submitOrder(String orderId, String payChannel) {
-        HttpParams params = UrlConstants.getParams(mContext);
+        HttpParams params = new HttpParams();
         params.put("orderId", orderId);
         params.put("payChannel", payChannel);
+        params.put("appName", "SHIPINBOFANGQI_BONIU");
         params.put("accountId", CommonUtil.getAccountId(mContext));
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.SUBMITORDER)
@@ -128,31 +128,6 @@ public class MemberActivityPresenter extends BasePresenter<IMemberActivityView> 
                     @Override
                     public void onSuccess(PayInfo response) {
                         mIView.submitOrderSuccess(response);
-                    }
-                });
-    }
-
-    /**
-     * 查询本地支付结果入口，返回状态SUCCESS-成功，FAIL-失败，RETRY-请重试
-     */
-    public void queryPayOrder(String orderId) {
-        HttpParams params = UrlConstants.getParams(mContext);
-        params.put("orderId", orderId);
-        params.put("accountId", CommonUtil.getAccountId(mContext));
-        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
-        EasyHttp.post(UrlConstants.QUERYPAYORDER)
-                .requestBody(requestBody)
-                .sign(true)
-                .execute(new SimpleCallBack<PayResult>() {
-                    @Override
-                    public void onError(ApiException e) {
-                        RingLog.e("onError() e = " + e.toString());
-                        mIView.queryPayOrderFail(e.getCode(), e.getMessage());
-                    }
-
-                    @Override
-                    public void onSuccess(PayResult response) {
-                        mIView.queryPayOrderSuccess(response);
                     }
                 });
     }

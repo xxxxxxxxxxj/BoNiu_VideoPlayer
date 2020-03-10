@@ -11,24 +11,34 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.ALiPayResult;
+import com.boniu.shipinbofangqi.mvp.model.entity.OrderCreateBean;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayChannel;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayInfo;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayResult;
 import com.boniu.shipinbofangqi.mvp.model.entity.ProductInfo;
+import com.boniu.shipinbofangqi.mvp.model.event.PayResultEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.WXPayResultEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MemberActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
+import com.boniu.shipinbofangqi.mvp.view.adapter.MemberProductAdapter;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMemberActivityView;
 import com.boniu.shipinbofangqi.mvp.view.widget.popup.PayBottomPopup;
+import com.boniu.shipinbofangqi.services.PayResultService;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.PayUtils;
+import com.boniu.shipinbofangqi.util.PollingUtils;
+import com.boniu.shipinbofangqi.util.StringUtil;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.google.gson.Gson;
 import com.gyf.immersionbar.ImmersionBar;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -36,6 +46,7 @@ import com.tencent.mm.opensdk.modelbase.BaseResp;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,11 +57,8 @@ import butterknife.OnClick;
  * 开通高级页面
  */
 public class MemberActivity extends BaseActivity<MemberActivityPresenter> implements IMemberActivityView {
-
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
-    @BindView(R.id.tv_member_validitytime)
-    TextView tvMemberValiditytime;
     @BindView(R.id.tv_member_sub)
     TextView tv_member_sub;
     @BindView(R.id.srl_member)
@@ -59,15 +67,17 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     ImageView ivToolbarBack;
     @BindView(R.id.toolbar)
     RelativeLayout toolbar;
-    private String appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, payStr;
-    private String validityTime;
-    private List<ProductInfo> productInfoList;
-    private List<PayChannel> payChannelList;
+    @BindView(R.id.rv_member_product)
+    RecyclerView rv_member_product;
+    private List<ProductInfo> productInfoList = new ArrayList<ProductInfo>();
+    private List<PayChannel> payChannelList = new ArrayList<PayChannel>();
     private double price;
     private PayBottomPopup payBottomPopup;
     private String productId;
     private String orderId;
     private String payChannel;
+    private int pollingNum;//轮询次数
+    private MemberProductAdapter memberProductAdapter;
 
     private Handler mHandler = new Handler() {
         @SuppressWarnings("unused")
@@ -87,8 +97,9 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                     } else {
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                     }
+                    pollingNum = 1;
                     showLoadDialog();
-                    mPresenter.queryPayOrder(orderId);
+                    PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
                     break;
                 }
                 default:
@@ -104,10 +115,41 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             if (resp != null) {
                 Log.e("TAG", "resp.errCode = " + resp.errCode);
                 Log.e("TAG", "resp.errStr = " + resp.errStr);
+                pollingNum = 1;
                 showLoadDialog();
-                mPresenter.queryPayOrder(orderId);
-                if (resp.errCode == 0) {
+                PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
+            }
+        }
+    }
+
+    @Subscribe
+    public void onPayResult(PayResultEvent event) {
+        if (event != null) {
+            if (pollingNum >= 3) {
+                RingToast.show("支付失败,请联系客服");
+                hideLoadDialog();
+                PollingUtils.stopPollingService(mActivity, PayResultService.class, PayResultService.ACTION);
+            } else {
+                PayResult payResult = event.getPayResult();
+                if (payResult != null) {
+                    String resultCode = payResult.getResultCode();
+                    if (StringUtil.isNotEmpty(resultCode)) {
+                        if (resultCode.equals("RETRY")) {
+                            pollingNum = pollingNum + 1;
+                            PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
+                        } else if (resultCode.equals("SUCCESS")) {
+                            RingToast.show("支付成功");
+                            hideLoadDialog();
+                            PollingUtils.stopPollingService(mActivity, PayResultService.class, PayResultService.ACTION);
+                        } else if (resultCode.equals("FAIL")) {
+                            RingToast.show(payResult.getResultMsg());
+                            hideLoadDialog();
+                            PollingUtils.stopPollingService(mActivity, PayResultService.class, PayResultService.ACTION);
+                        }
+                    }
                 } else {
+                    pollingNum = pollingNum + 1;
+                    PollingUtils.startPollingService(mActivity, 2, PayResultService.class, PayResultService.ACTION, orderId);
                 }
             }
         }
@@ -125,6 +167,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         ivToolbarBack.setImageResource(R.mipmap.icon_title_close);
         tvToolbarTitle.setVisibility(View.GONE);
         ImmersionBar.with(this).statusBarColor(R.color.a2D2D2D).init();
+        rv_member_product.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rv_member_product.setLayoutManager(linearLayoutManager);
+        memberProductAdapter = new MemberProductAdapter(R.layout.item_member_product, productInfoList);
+        rv_member_product.setAdapter(memberProductAdapter);
     }
 
     @Override
@@ -132,22 +180,29 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
         if (ISOPENENVIP) {
             tv_member_sub.setText("立即续费");
-            tvMemberValiditytime.setVisibility(View.VISIBLE);
-            tvMemberValiditytime.setText(validityTime + "到期");
         } else {
             tv_member_sub.setText("立即支付");
-            tvMemberValiditytime.setVisibility(View.GONE);
         }
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        validityTime = getIntent().getStringExtra("validityTime");
     }
 
     @Override
     protected void initEvent() {
-
+        memberProductAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                for (int i = 0; i < productInfoList.size(); i++) {
+                    productInfoList.get(i).setSelect(false);
+                }
+                productInfoList.get(position).setSelect(true);
+                price = productInfoList.get(position).getDiscountPrice();
+                productId = productInfoList.get(position).getProductId();
+                memberProductAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -179,10 +234,15 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                 finish();
                 break;
             case R.id.tv_member_sub:
+                if (StringUtil.isEmpty(productId)) {
+                    RingToast.show("请先选择产品");
+                    return;
+                }
                 if (payBottomPopup == null) {
                     payBottomPopup = new PayBottomPopup(mActivity);
                 }
                 payBottomPopup.setPrice(price);
+                payBottomPopup.setPayChannel(payChannelList);
                 payBottomPopup.setOnPayInfoListener(new PayBottomPopup.OnPayInfoListener() {
                     @Override
                     public void OnPayInfo() {
@@ -206,7 +266,29 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     public void productListSuccess(List<ProductInfo> response) {
         RingLog.e("productListSuccess() response = " + response);
         hideLoadDialog();
-        productInfoList = response;
+        productInfoList.clear();
+        if (response != null && response.size() > 0) {
+            productInfoList.addAll(response);
+            for (int i = 0; i < productInfoList.size(); i++) {
+                productInfoList.get(i).setSelect(false);
+                if (i == 0) {
+                    productInfoList.get(i).setDesc("最基础");
+                } else if (i == 1) {
+                    productInfoList.get(i).setDesc("最优惠");
+                } else if (i == 2) {
+                    productInfoList.get(i).setDesc("最值得");
+                }
+            }
+            for (int i = 0; i < productInfoList.size(); i++) {
+                if (i == 1) {
+                    productInfoList.get(i).setSelect(true);
+                    price = productInfoList.get(i).getDiscountPrice();
+                    productId = productInfoList.get(i).getProductId();
+                    break;
+                }
+            }
+        }
+        memberProductAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -243,21 +325,29 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     public void payChannelSuccess(List<PayChannel> response) {
         RingLog.e("payChannelSuccess() response = " + response);
         hideLoadDialog();
-        payChannelList = response;
+        if (response != null && response.size() > 0) {
+            payChannelList.addAll(response);
+        }
     }
 
     @Override
     public void orderCreateSuccess(String response) {
         RingLog.e("orderCreateSuccess() response = " + response);
         hideLoadDialog();
-        orderId = response;
-        if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {//微信支付
-            payChannel = "WECHAT_PAY";
-        } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {//支付宝支付
-            payChannel = "ALIPAY";
+        if (StringUtil.isNotEmpty(response)) {
+            Gson gson = new Gson();
+            OrderCreateBean orderCreateBean = gson.fromJson(response, OrderCreateBean.class);
+            if (orderCreateBean != null) {
+                orderId = orderCreateBean.getResult();
+                if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {//微信支付
+                    payChannel = "WECHAT_PAY";
+                } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {//支付宝支付
+                    payChannel = "ALIPAY";
+                }
+                showLoadDialog();
+                mPresenter.submitOrder(orderId, payChannel);
+            }
         }
-        showLoadDialog();
-        mPresenter.submitOrder(orderId, payChannel);
     }
 
     @Override
@@ -295,33 +385,11 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         RingLog.e("PayInfo() response = " + response);
         hideLoadDialog();
         if (response != null) {
-            payStr = response.getPayInfo();
             if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
-                PayUtils.weChatPayment(mActivity, appId, partnerId, prepayId, packageValue, nonceStr, timeStamp, sign, tipDialog);
+                PayUtils.weChatPayment(mActivity, response.getAppId(), response.getPartnerId(), response.getPrepayId(), response.getPackageValue(), response.getNonceStr(), response.getTimeStamp(), response.getSign(), tipDialog);
             } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {
-                PayUtils.payByAliPay(mActivity, payStr, mHandler);
+                PayUtils.payByAliPay(mActivity, response.getPayInfo(), mHandler);
             }
-        }
-    }
-
-    @Override
-    public void queryPayOrderSuccess(PayResult response) {
-        RingLog.e("queryPayOrderSuccess() response = " + response);
-        hideLoadDialog();
-    }
-
-    @Override
-    public void queryPayOrderFail(int errorCode, String errorMsg) {
-        hideLoadDialog();
-        RingLog.e("queryPayOrderFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
-        if (errorCode == AppConfig.EXIT_USER_CODE) {
-            spUtil.removeData(Global.SP_KEY_ISLOGIN);
-            spUtil.removeData(Global.SP_KEY_CELLPHONE);
-            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
-            spUtil.removeData(Global.SP_KEY_TOKEN);
-            startActivity(LoginActivity.class);
-        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
-            CommonUtil.getNewAccountId(mActivity);
         }
     }
 }

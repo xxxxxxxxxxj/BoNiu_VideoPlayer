@@ -11,13 +11,23 @@ package com.boniu.shipinbofangqi.mvp.model.entity;
 public class PayChannel {
     private String desc;
     private String type;
+    private boolean isSelect;
 
     @Override
     public String toString() {
         return "PayChannel{" +
                 "desc='" + desc + '\'' +
                 ", type='" + type + '\'' +
+                ", isSelect=" + isSelect +
                 '}';
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 
     public String getDesc() {

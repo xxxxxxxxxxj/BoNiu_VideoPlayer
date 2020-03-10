@@ -154,7 +154,7 @@ public class UrlConstants {
         headers.put("brand", android.os.Build.BRAND);
         headers.put("channel", ChannelUtil.getChannel(mContext));
         headers.put("deviceModel", android.os.Build.MODEL);
-        headers.put("deviceType", "Android");
+        headers.put("deviceType", "ANDROID");
         headers.put("version", QMUIPackageHelper.getAppVersion(mContext));
         headers.put("phoneSystemVersion", "Android "
                 + android.os.Build.VERSION.RELEASE);
@@ -171,7 +171,7 @@ public class UrlConstants {
         headers.put("brand", android.os.Build.BRAND);
         headers.put("channel", ChannelUtil.getChannel(mContext));
         headers.put("deviceModel", android.os.Build.MODEL);
-        headers.put("deviceType", "Android");
+        headers.put("deviceType", "ANDROID");
         headers.put("version", QMUIPackageHelper.getAppVersion(mContext));
         headers.put("phoneSystemVersion", "Android "
                 + android.os.Build.VERSION.RELEASE);
@@ -188,7 +188,7 @@ public class UrlConstants {
         params.put("brand", android.os.Build.BRAND);
         params.put("channel", ChannelUtil.getChannel(mContext));
         params.put("deviceModel", android.os.Build.MODEL);
-        params.put("deviceType", "Android");
+        params.put("deviceType", "ANDROID");
         params.put("version", QMUIPackageHelper.getAppVersion(mContext));
         RingLog.e("params = " + params.toString());
         return params;

@@ -303,6 +303,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             spUtil.saveString(Global.SP_KEY_ISOPENENVIP, response.getApplyCancelTime());
             if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
                 validityTime = response.getVipExpireTime();
+                spUtil.saveString(Global.SP_KEY_VALIDITYTIME, validityTime);
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);
             } else if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("NORMAL")) {
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
@@ -345,7 +346,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     public void logoutSuccess(Boolean response) {
         hideLoadDialog();
         RingLog.e("logoutSuccess() response = " + response);
-        if(response){
+        if (response) {
             spUtil.removeData(Global.SP_KEY_ISLOGIN);
             spUtil.removeData(Global.SP_KEY_CELLPHONE);
             spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);

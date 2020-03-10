@@ -301,6 +301,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
             }
             if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);
+                spUtil.saveString(Global.SP_KEY_VALIDITYTIME, response.getVipExpireTime());
             } else if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("NORMAL")) {
                 spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, false);
             }
