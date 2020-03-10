@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <color android:color="@android:color/black" />
+        <color android:color="@color/white" />
     </item>
     <!--
         @dimen/hj_dp_45 是 logo 距离底部的 margin，
@@ -11,10 +11,10 @@
         @drawable/splash_logo 是公司 logo
     -->
     <item
-        android:bottom="@dimen/dp_45"
-        android:gravity="bottom">
+        android:top="@dimen/dp_120"
+        android:gravity="top">
         <bitmap
-            android:gravity="bottom|center_horizontal"
+            android:gravity="top|center_horizontal"
             android:src="@mipmap/logo" />
     </item>
 </layer-list>

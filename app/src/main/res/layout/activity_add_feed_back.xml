@@ -17,6 +17,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical"
             android:padding="20dip">
 
@@ -34,13 +36,13 @@
                 android:id="@+id/et_addfeedback_name"
                 android:layout_width="match_parent"
                 android:layout_height="187dip"
-                android:gravity="top|left"
-                android:textSize="12sp"
-                android:textColor="@color/white"
-                android:padding="10dip"
-                android:textCursorDrawable="@drawable/color_cursor"
                 android:layout_marginBottom="34dip"
-                android:background="@drawable/bg_4e4e4e_round7" />
+                android:background="@drawable/bg_4e4e4e_round7"
+                android:gravity="top|left"
+                android:padding="10dip"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="12sp" />
 
             <requestFocus />
 
