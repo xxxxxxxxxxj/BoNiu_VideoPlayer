@@ -1,5 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,23 +19,28 @@ import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
+import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintCore;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.AccountInfoBean;
 import com.boniu.shipinbofangqi.mvp.presenter.FlashActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.iview.IFlashActivityView;
+import com.boniu.shipinbofangqi.permission.PermissionListener;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.CountdownUtil;
+import com.boniu.shipinbofangqi.util.GetDeviceId;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.JumpToUtil;
+import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.util.DialogSettings;
 import com.kongzue.dialog.v3.CustomDialog;
 import com.kongzue.dialog.v3.MessageDialog;
+import com.zhouyou.http.EasyHttp;
 
 import java.util.List;
 
@@ -134,7 +140,31 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
 
     @Override
     protected void initEvent() {
+        requestEachCombined(new PermissionListener() {
+            @Override
+            public void onGranted(String permissionName) {
+                if (StringUtil.isEmpty(GetDeviceId.readDeviceID(mContext))) {
+                    GetDeviceId.saveDeviceID(mContext);
+                    EasyHttp.getInstance().addCommonHeaders(UrlConstants.getHeaders(mActivity));//设置全局公共头
+                }
+            }
 
+            @Override
+            public void onDenied(String permissionName) {
+                showToast("请打开存储权限");
+            }
+
+            @Override
+            public void onDeniedWithNeverAsk(String permissionName) {
+                MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+                        QMUIDeviceHelper.goToPermissionManager(mActivity);
+                        return true;
+                    }
+                });
+            }
+        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
     }
 
     @Override

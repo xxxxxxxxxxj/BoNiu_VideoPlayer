@@ -2,6 +2,7 @@ package com.boniu.shipinbofangqi.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Environment;
 
 import com.boniu.shipinbofangqi.app.AppConfig;
@@ -69,8 +70,13 @@ public class FileUtil {
         if (externalMemoryAvailable()) {//判断sd卡在手机上是否是正常使用状态
             if (isPublic) {
                 //external storage外部存储,路径是:SD根目录:/mnt/sdcard/ (6.0后写入需要用户授权)
-                storageDir = Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES);
+                if (Build.VERSION.SDK_INT >= 29) {
+                    //步骤二：Android 10.0及以上操作文件夹
+                    storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                } else {
+                    storageDir = Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES);
+                }
                 if (!storageDir.exists()) storageDir.mkdirs();
             } else {
                 //external storage外部存储,路径为:/mnt/sdcard/Android/data/< package name >/files/…
@@ -102,7 +108,12 @@ public class FileUtil {
         File tempFile = null;
         if (externalMemoryAvailable()) {//判断sd卡在手机上是否是正常使用状态
             //external storage外部存储,路径是:SD根目录:/mnt/sdcard/ (6.0后写入需要用户授权)
-            tempFile = Environment.getExternalStorageDirectory();
+            if (Build.VERSION.SDK_INT >= 29) {
+                //步骤二：Android 10.0及以上操作文件夹
+                tempFile = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            } else {
+                tempFile = Environment.getExternalStorageDirectory();
+            }
         } else {
             //internal storage内部存储,路径是:/data/data/< package name >/files/…
             tempFile = mContext.getFilesDir();
@@ -117,7 +128,12 @@ public class FileUtil {
         File tempFile = null;
         if (externalMemoryAvailable()) {//判断sd卡在手机上是否是正常使用状态
             //external storage外部存储,路径是:SD根目录:/mnt/sdcard/ (6.0后写入需要用户授权)
-            tempFile = Environment.getExternalStorageDirectory();
+            if (Build.VERSION.SDK_INT >= 29) {
+                //步骤二：Android 10.0及以上操作文件夹
+                tempFile = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            } else {
+                tempFile = Environment.getExternalStorageDirectory();
+            }
         } else {
             //internal storage内部存储,路径是:/data/data/< package name >/files/…
             tempFile = mContext.getFilesDir();
@@ -138,8 +154,13 @@ public class FileUtil {
         if (externalMemoryAvailable()) {//判断sd卡在手机上是否是正常使用状态
             if (isPublic) {
                 //external storage外部存储,路径是:SD根目录:/mnt/sdcard/ (6.0后写入需要用户授权)
-                storageDir = Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_MOVIES);
+                if (Build.VERSION.SDK_INT >= 29) {
+                    //步骤二：Android 10.0及以上操作文件夹
+                    storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+                } else {
+                    storageDir = Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_MOVIES);
+                }
                 if (!storageDir.exists()) storageDir.mkdirs();
             } else {
                 //external storage外部存储,路径为:/mnt/sdcard/Android/data/< package name >/files/…
@@ -175,8 +196,13 @@ public class FileUtil {
         if (externalMemoryAvailable()) {//判断sd卡在手机上是否是正常使用状态
             if (isPublic) {
                 //external storage外部存储,路径是:SD根目录:/mnt/sdcard/ (6.0后写入需要用户授权)
-                storageDir = Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES);
+                if (Build.VERSION.SDK_INT >= 29) {
+                    //步骤二：Android 10.0及以上操作文件夹
+                    storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                } else {
+                    storageDir = Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES);
+                }
                 if (!storageDir.exists()) storageDir.mkdirs();
             } else {
                 //external storage外部存储,路径为:/mnt/sdcard/Android/data/< package name >/files/…
