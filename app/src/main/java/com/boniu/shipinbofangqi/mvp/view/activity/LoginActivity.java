@@ -66,7 +66,14 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
         iv_toolbar_back.setImageResource(R.mipmap.icon_title_close);
         tvToolbarTitle.setVisibility(View.GONE);
         ImmersionBar.with(this).statusBarColor(R.color.a2D2D2D).init();
-        CommonUtil.showSoftInputFromWindow(mActivity, et_login_mobile);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {//界面加载完毕
+            CommonUtil.showSoftInputFromWindow(mActivity, et_login_mobile);
+        }
     }
 
     @Override

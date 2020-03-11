@@ -54,7 +54,14 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
 
     @Override
     protected void setView(Bundle savedInstanceState) {
-        CommonUtil.showSoftInputFromWindow(mActivity, etAddfeedbackName);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {//界面加载完毕
+            CommonUtil.showSoftInputFromWindow(mActivity, etAddfeedbackName);
+        }
     }
 
     @Override
