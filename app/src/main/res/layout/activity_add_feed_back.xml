@@ -32,19 +32,37 @@
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/et_addfeedback_name"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="187dip"
-                android:layout_marginBottom="34dip"
-                android:background="@drawable/bg_4e4e4e_round7"
-                android:gravity="top|left"
-                android:padding="10dip"
-                android:textColor="@color/white"
-                android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="12sp" />
+                android:layout_marginBottom="34dip">
 
-            <requestFocus />
+                <EditText
+                    android:id="@+id/et_addfeedback_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_4e4e4e_round7"
+                    android:gravity="top|left"
+                    android:hint="请输入..."
+                    android:maxLength="400"
+                    android:padding="10dip"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/aCACACA"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/showtext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginBottom="10dip"
+                    android:text="0/400"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_addfeedback_sub"

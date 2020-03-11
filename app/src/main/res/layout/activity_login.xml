@@ -39,30 +39,13 @@
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dip"
                 android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_login_mobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tiet_login_mobile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:hint="请输入手机号"
-                        android:inputType="number"
-                        android:paddingLeft="50dip"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/aCACACA"
-                        android:textSize="16sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginRight="@dimen/dp_20"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -72,33 +55,36 @@
                     android:text="+86"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
-            </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/et_login_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="请输入手机号码"
+                    android:inputType="phone"
+                    android:maxLength="11"
+                    android:paddingLeft="20dip"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/aCACACA"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@color/aE3E3E3" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dip"
                 android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_40">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_login_yzm"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:passwordToggleEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tiet_login_yzm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:hint="请输入验证码"
-                        android:inputType="number"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/aCACACA"
-                        android:textSize="14sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginRight="@dimen/dp_20">
 
                 <TextView
                     android:id="@+id/tv_login_yzm"
@@ -106,11 +92,35 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="5dip"
                     android:text="获取验证码"
                     android:textColor="@color/aFFE52C"
                     android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_login_yzm"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dip"
+                    android:layout_toLeftOf="@id/tv_login_yzm"
+                    android:background="@color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="请输入验证码"
+                    android:inputType="number"
+                    android:paddingLeft="5dip"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/aCACACA"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="16sp" />
+
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="43dip"
+                android:background="@color/aE3E3E3" />
 
             <TextView
                 android:id="@+id/tv_login_sub"

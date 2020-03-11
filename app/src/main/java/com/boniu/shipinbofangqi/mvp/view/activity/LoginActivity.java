@@ -2,6 +2,7 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,8 +21,6 @@ import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.gyf.immersionbar.ImmersionBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -36,14 +35,10 @@ import butterknife.OnClick;
 public class LoginActivity extends BaseActivity<LoginActivityPresenter> implements ILoginActivityView {
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
-    @BindView(R.id.tiet_login_mobile)
-    TextInputEditText tietLoginMobile;
-    @BindView(R.id.til_login_mobile)
-    TextInputLayout tilLoginMobile;
-    @BindView(R.id.tiet_login_yzm)
-    TextInputEditText tietLoginYzm;
-    @BindView(R.id.til_login_yzm)
-    TextInputLayout tilLoginYzm;
+    @BindView(R.id.et_login_mobile)
+    EditText et_login_mobile;
+    @BindView(R.id.et_login_yzm)
+    EditText et_login_yzm;
     @BindView(R.id.tv_login_yzm)
     TextView tvLoginYzm;
     @BindView(R.id.tv_login_sub)
@@ -71,7 +66,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
         iv_toolbar_back.setImageResource(R.mipmap.icon_title_close);
         tvToolbarTitle.setVisibility(View.GONE);
         ImmersionBar.with(this).statusBarColor(R.color.a2D2D2D).init();
-        CommonUtil.showSoftInputFromWindow(mActivity, tietLoginMobile);
+        CommonUtil.showSoftInputFromWindow(mActivity, et_login_mobile);
     }
 
     @Override
@@ -111,24 +106,24 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
                 finish();
                 break;
             case R.id.tv_login_yzm:
-                if (StringUtil.isEmpty(StringUtil.checkEditText(tilLoginMobile.getEditText()))) {
+                if (StringUtil.isEmpty(StringUtil.checkEditText(et_login_mobile))) {
                     RingToast.show("请输入电话号码");
                     return;
                 }
                 showLoadDialog();
-                mPresenter.sendVerifyCode(StringUtil.checkEditText(tilLoginMobile.getEditText()));
+                mPresenter.sendVerifyCode(StringUtil.checkEditText(et_login_mobile));
                 break;
             case R.id.tv_login_sub:
-                if (StringUtil.isEmpty(StringUtil.checkEditText(tilLoginMobile.getEditText()))) {
+                if (StringUtil.isEmpty(StringUtil.checkEditText(et_login_mobile))) {
                     RingToast.show("请输入电话号码");
                     return;
                 }
-                if (StringUtil.isEmpty(StringUtil.checkEditText(tilLoginYzm.getEditText()))) {
+                if (StringUtil.isEmpty(StringUtil.checkEditText(et_login_yzm))) {
                     RingToast.show("请输入验证码");
                     return;
                 }
                 showLoadDialog();
-                mPresenter.login(StringUtil.checkEditText(tilLoginMobile.getEditText()), StringUtil.checkEditText(tilLoginYzm.getEditText()));
+                mPresenter.login(StringUtil.checkEditText(et_login_mobile), StringUtil.checkEditText(et_login_yzm));
                 break;
         }
     }
@@ -139,7 +134,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
         RingLog.e("sendVerifyCodeSuccess() response = " + response);
         if(response){
             RingToast.show("验证码获取成功");
-            tietLoginYzm.requestFocus();
+            et_login_yzm.requestFocus();
         }
     }
 
@@ -165,7 +160,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
         if(response!=null){
             RingToast.show("登录成功");
             spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
-            spUtil.saveString(Global.SP_KEY_CELLPHONE, StringUtil.checkEditText(tilLoginMobile.getEditText()));
+            spUtil.saveString(Global.SP_KEY_CELLPHONE, StringUtil.checkEditText(et_login_mobile));
             spUtil.saveString(Global.SP_KEY_ACCOUNTIUD, response.getAccountId());
             spUtil.saveString(Global.SP_KEY_TOKEN, response.getToken());
             EventBus.getDefault().post(new LoginEvent());

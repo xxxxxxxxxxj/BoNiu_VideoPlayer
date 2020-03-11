@@ -1,6 +1,8 @@
 package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,6 +35,8 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
     EditText etAddfeedbackName;
     @BindView(R.id.srl_addfeedback)
     SmartRefreshLayout srlAddfeedback;
+    @BindView(R.id.showtext)
+    TextView showtext;
     private String name;
     private String type;
 
@@ -61,7 +65,27 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
 
     @Override
     protected void initEvent() {
+        etAddfeedbackName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (s.length() == 400) {
+                    RingToast.show("至少输入400个字符～");
+                } else {
+                    showtext.setText(s.length() + "/400");
+                }
+            }
 
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     @Override
@@ -92,7 +116,11 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
                 break;
             case R.id.tv_addfeedback_sub:
                 if (StringUtil.isEmpty(StringUtil.checkEditText(etAddfeedbackName))) {
-                    RingToast.show("请输入内容");
+                    RingToast.show("不能为空～");
+                    return;
+                }
+                if (StringUtil.checkEditText(etAddfeedbackName).length() < 4) {
+                    RingToast.show("至少输入4个字符～");
                     return;
                 }
                 showLoadDialog();
