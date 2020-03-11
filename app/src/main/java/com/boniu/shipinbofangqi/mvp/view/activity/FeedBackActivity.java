@@ -115,6 +115,7 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
                 break;
             case R.id.ll_feedback_lxkf:
                 CommonUtil.copy(mActivity, "1404556846");
+                CommonUtil.goToQQ(mActivity, "1404556846");
                 break;
             case R.id.ll_feedback_zhzx:
                 boolean ISCANCEL = spUtil.getBoolean(Global.SP_KEY_ISCANCEL, false);

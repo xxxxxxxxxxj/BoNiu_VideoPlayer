@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -305,5 +307,29 @@ public class CommonUtil {
         // 将文本内容放到系统剪贴板里。
         cm.setText(content);
         RingToast.show("复制成功");
+    }
+
+    public static boolean isQQInstall(Context context) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                //通过遍历应用所有包名进行判断
+                if (pn.equals("com.tencent.mobileqq")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void goToQQ(Context mContext, String qq) {
+        if (isQQInstall(mContext)) {
+            final String qqUrl = "mqqwpa://im/chat?chat_type=wpa&uin=" + qq;
+            mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(qqUrl)));
+        } else {
+            RingToast.show("请安装QQ");
+        }
     }
 }
