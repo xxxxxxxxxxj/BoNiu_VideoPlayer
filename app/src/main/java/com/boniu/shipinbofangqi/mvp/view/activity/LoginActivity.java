@@ -64,6 +64,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     LinearLayout ll_login_mobile;
     @BindView(R.id.rl_login_yzm)
     RelativeLayout rl_login_yzm;
+    private boolean isRequestFocus;
 
     @Override
     protected int getLayoutResID() {
@@ -86,14 +87,16 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {//界面加载完毕
+        if (hasFocus && !isRequestFocus) {//界面加载完毕
+            isRequestFocus = true;
+            RingLog.e("hasFocus = " + hasFocus);
             CommonUtil.showSoftInputFromWindow(mActivity, et_login_mobile);
         }
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-
+        isRequestFocus = false;
     }
 
     @Override
