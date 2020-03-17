@@ -159,6 +159,8 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 }

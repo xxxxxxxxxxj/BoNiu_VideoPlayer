@@ -248,13 +248,18 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         if (response != null) {
             AppInfoBean.VersionInfoVo versionInfoVo = response.getVersionInfoVo();
             if (versionInfoVo != null) {
-                // 强制升级
-                UpdateUtil.showUpgradeDialog(mActivity, versionInfoVo.getTitle(), versionInfoVo.getContent(),
-                        versionInfoVo.isForceUp(), new View.OnClickListener() {
+                boolean ISCLOSEUPGRADEDIALOG = spUtil.getBoolean(Global.SP_KEY_ISCLOSEUPGRADEDIALOG, false);
+                String UPGRADETIME = spUtil.getString(Global.SP_KEY_UPGRADETIME, "");
+                if (ISCLOSEUPGRADEDIALOG && CommonUtil.getTimeDays(UPGRADETIME, CommonUtil.getCurrentDate()) > 7) {
+                    spUtil.saveString(Global.SP_KEY_UPGRADETIME, CommonUtil.getCurrentDate());
+                    // 强制升级
+                    UpdateUtil.showUpgradeDialog(mActivity, versionInfoVo.getTitle(), versionInfoVo.getContent(),
+                            versionInfoVo.isForceUp(), new View.OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
-                                requestEachCombined(new PermissionListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    CommonUtil.goBrowser(mContext, versionInfoVo.getLinkUrl());
+                                /*requestEachCombined(new PermissionListener() {
                                     @Override
                                     public void onGranted(String permissionName) {
                                         int isUpgrade = 0;
@@ -282,9 +287,10 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
                                             }
                                         });
                                     }
-                                }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
-                            }
-                        });
+                                }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});*/
+                                }
+                            });
+                }
             }
         }
     }
@@ -301,6 +307,8 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
             startActivity(LoginActivity.class);
         } else if (status == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(desc);
         }
     }
 

@@ -23,16 +23,20 @@ package com.zhouyou.http.model;
  * 版本： v1.0<br>
  */
 public class ApiResult<T> {
-    private int errorCode;
+    private String errorCode = "0";
     private String errorMsg;
     private T result;
 
     public int getCode() {
-        return errorCode;
+        int code = 0;
+        if (errorCode.contains("-")) {
+            code = Integer.parseInt(errorCode.split("-")[2]);
+        }
+        return code;
     }
 
     public void setCode(int code) {
-        this.errorCode = code;
+        this.errorCode = String.valueOf(code);
     }
 
     public String getMsg() {
@@ -52,7 +56,7 @@ public class ApiResult<T> {
     }
 
     public boolean isOk() {
-        return errorCode == 0;
+        return errorCode.equals("0");
     }
 
     @Override

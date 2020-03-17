@@ -10,6 +10,7 @@ import com.boniu.shipinbofangqi.mvp.model.entity.ProductInfo;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMemberActivityView;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.StringUtil;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
@@ -37,7 +38,9 @@ public class MemberActivityPresenter extends BasePresenter<IMemberActivityView> 
      */
     public void getProductList() {
         HttpParams params = UrlConstants.getParams(mContext);
-        params.put("accountId", CommonUtil.getAccountId(mContext));
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.PRODUCTLIST)
                 .requestBody(requestBody)
@@ -61,7 +64,9 @@ public class MemberActivityPresenter extends BasePresenter<IMemberActivityView> 
      */
     public void getPayChannel() {
         HttpParams params = UrlConstants.getParams(mContext);
-        params.put("accountId", CommonUtil.getAccountId(mContext));
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.PAYCHANNEL)
                 .requestBody(requestBody)
@@ -86,7 +91,9 @@ public class MemberActivityPresenter extends BasePresenter<IMemberActivityView> 
     public void orderCreate(String productId) {
         HttpParams params = UrlConstants.getParams(mContext);
         params.put("productId", productId);
-        params.put("accountId", CommonUtil.getAccountId(mContext));
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.ORDERCREATE)
                 .requestBody(requestBody)
@@ -113,7 +120,9 @@ public class MemberActivityPresenter extends BasePresenter<IMemberActivityView> 
         params.put("orderId", orderId);
         params.put("payChannel", payChannel);
         params.put("appName", "SHIPINBOFANGQI_BONIU");
-        params.put("accountId", CommonUtil.getAccountId(mContext));
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.SUBMITORDER)
                 .requestBody(requestBody)

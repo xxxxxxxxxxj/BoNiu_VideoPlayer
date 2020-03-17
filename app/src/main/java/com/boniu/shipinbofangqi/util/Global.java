@@ -30,4 +30,7 @@ public class Global {
 
     public static final String SP_KEY_ISCANCEL = "SP_KEY_ISCANCEL";//账户是否注销
     public static final String SP_KEY_VALIDITYTIME = "SP_KEY_VALIDITYTIME";//VIP到期时间
+
+    public static final String SP_KEY_UPGRADETIME = "SP_KEY_UPGRADETIME";//升级弹框时间
+    public static final String SP_KEY_ISCLOSEUPGRADEDIALOG = "SP_ISCLOSEUPGRADEDIALOG";//是否关闭升级弹框
 }

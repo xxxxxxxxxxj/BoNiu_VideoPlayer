@@ -8,6 +8,7 @@ import com.boniu.shipinbofangqi.mvp.model.entity.AccountInfoBean;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.iview.IFlashActivityView;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.StringUtil;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
@@ -33,7 +34,9 @@ public class FlashActivityPresenter extends BasePresenter<IFlashActivityView> {
      */
     public void getAccountInfo() {
         HttpParams params = new UrlConstants().getParams(mContext);
-        params.put("accountId", CommonUtil.getAccountId(mContext));
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.GETACCOUNTINFO)
                 .requestBody(requestBody)

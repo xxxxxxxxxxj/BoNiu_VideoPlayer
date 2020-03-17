@@ -2,6 +2,8 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ import com.boniu.shipinbofangqi.mvp.view.iview.ILoginActivityView;
 import com.boniu.shipinbofangqi.permission.PermissionListener;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.CountdownUtil;
 import com.boniu.shipinbofangqi.util.GetDeviceId;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
@@ -92,6 +95,29 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
 
     @Override
     protected void initEvent() {
+        et_login_mobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (StringUtil.isNotEmpty(s.toString())) {
+                    if (!CommonUtil.isChinaPhoneLegal(s.toString())) {
+                        RingToast.show("请输入正确的手机号码");
+                        et_login_mobile.setText("");
+                        et_login_mobile.requestFocus();
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         requestEachCombined(new PermissionListener() {
             @Override
             public void onGranted(String permissionName) {
@@ -139,9 +165,19 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
         super.onCreate(savedInstanceState);
     }
 
-    @OnClick({R.id.iv_toolbar_back, R.id.tv_login_yzm, R.id.tv_login_sub})
+    @OnClick({R.id.iv_toolbar_back, R.id.tv_login_yzm, R.id.tv_login_sub, R.id.tv_login_yhxy, R.id.tv_login_yszc})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.tv_login_yhxy:
+                Bundle bundle = new Bundle();
+                bundle.putString(WebViewActivity.URL_KEY, "file:///android_asset/network.html");
+                startActivity(WebViewActivity.class, bundle);
+                break;
+            case R.id.tv_login_yszc:
+                Bundle bundle1 = new Bundle();
+                bundle1.putString(WebViewActivity.URL_KEY, "file:///android_asset/privacy.html");
+                startActivity(WebViewActivity.class, bundle1);
+                break;
             case R.id.iv_toolbar_back:
                 finish();
                 break;
@@ -172,8 +208,21 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     public void sendVerifyCodeSuccess(Boolean response) {
         hideLoadDialog();
         RingLog.e("sendVerifyCodeSuccess() response = " + response);
-        if(response){
+        if (response) {
             RingToast.show("验证码获取成功");
+            CountdownUtil.getInstance().newTimer(60000, 1000, new CountdownUtil.ICountDown() {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    tvLoginYzm.setEnabled(false);
+                    tvLoginYzm.setText((millisUntilFinished / 1000) + "s");
+                }
+
+                @Override
+                public void onFinish() {
+                    tvLoginYzm.setEnabled(true);
+                    tvLoginYzm.setText("重新获取");
+                }
+            }, "LOGIN_TIMER");
             et_login_yzm.requestFocus();
         }
     }
@@ -190,6 +239,8 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
             spUtil.removeData(Global.SP_KEY_TOKEN);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 
@@ -197,7 +248,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     public void loginSuccess(LoginBean response) {
         hideLoadDialog();
         RingLog.e("loginSuccess() response = " + response);
-        if(response!=null){
+        if (response != null) {
             RingToast.show("登录成功");
             spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
             spUtil.saveString(Global.SP_KEY_CELLPHONE, StringUtil.checkEditText(et_login_mobile));
@@ -220,6 +271,15 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
             spUtil.removeData(Global.SP_KEY_TOKEN);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
+        et_login_yzm.requestFocus();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CountdownUtil.getInstance().cancel("LOGIN_TIMER");
     }
 }

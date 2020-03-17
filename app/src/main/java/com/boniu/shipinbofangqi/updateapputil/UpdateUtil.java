@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.util.Global;
+import com.boniu.shipinbofangqi.util.SharedPreferenceUtil;
 import com.kongzue.dialog.v3.CustomDialog;
 
 import java.io.File;
@@ -70,6 +72,7 @@ public class UpdateUtil {
                     iv_upgradedialog_close.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            SharedPreferenceUtil.getInstance(mActivity).saveBoolean(Global.SP_KEY_ISCLOSEUPGRADEDIALOG, true);
                             dialog.doDismiss();
                         }
                     });

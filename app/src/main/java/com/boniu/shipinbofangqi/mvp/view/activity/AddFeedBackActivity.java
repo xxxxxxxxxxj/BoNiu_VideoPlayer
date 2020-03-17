@@ -50,6 +50,7 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
         srlAddfeedback.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("帮助与反馈");
         tvAddfeedbackName.setText(name);
+        etAddfeedbackName.setHorizontallyScrolling(true);
     }
 
     @Override
@@ -76,8 +77,8 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
-                if (s.length() == 400) {
-                    RingToast.show("至少输入400个字符～");
+                if (s.length() >= 400) {
+                    RingToast.show("至多400字");
                 } else {
                     showtext.setText(s.length() + "/400");
                 }
@@ -158,6 +159,8 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 }

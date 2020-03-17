@@ -323,6 +323,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
         setData();
     }
@@ -338,6 +340,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             spUtil.removeData(Global.SP_KEY_TOKEN);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 

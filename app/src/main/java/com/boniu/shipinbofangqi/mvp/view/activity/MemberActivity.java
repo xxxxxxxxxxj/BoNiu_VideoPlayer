@@ -317,6 +317,8 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 
@@ -332,6 +334,8 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 
@@ -376,6 +380,8 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 
@@ -391,6 +397,8 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            RingToast.show(errorMsg);
         }
     }
 

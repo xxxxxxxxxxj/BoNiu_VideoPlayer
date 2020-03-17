@@ -22,10 +22,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
+import com.boniu.shipinbofangqi.mvp.model.entity.OrderCreateBean;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.ImageViewerPopupView;
 import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener;
@@ -43,6 +45,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import okhttp3.RequestBody;
 
@@ -269,7 +274,9 @@ public class CommonUtil {
 
     public static void getNewAccountId(Context mContext) {
         HttpParams params = new UrlConstants().getParams(mContext);
-        params.put("accountId", CommonUtil.getAccountId(mContext));
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.GETNEWACCOUNTID)
                 .requestBody(requestBody)
@@ -282,7 +289,13 @@ public class CommonUtil {
 
                     @Override
                     public void onSuccess(String response) {
-                        SharedPreferenceUtil.getInstance(mContext).saveString(Global.SP_KEY_ACCOUNTIUD, response);
+                        if (StringUtil.isNotEmpty(response)) {
+                            Gson gson = new Gson();
+                            OrderCreateBean orderCreateBean = gson.fromJson(response, OrderCreateBean.class);
+                            if (orderCreateBean != null) {
+                                SharedPreferenceUtil.getInstance(mContext).saveString(Global.SP_KEY_ACCOUNTIUD, orderCreateBean.getResult());
+                            }
+                        }
                     }
                 });
     }
@@ -331,5 +344,27 @@ public class CommonUtil {
         } else {
             RingToast.show("请安装QQ");
         }
+    }
+
+    public static void goBrowser(Context mContext, String linkUrl) {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        Uri uri = Uri.parse(linkUrl);
+        intent.setData(uri);
+        mContext.startActivity(intent);
+    }
+
+    //手机号判断 true为通过验证
+    public static boolean isChinaPhoneLegal(String str) throws PatternSyntaxException {
+        if (str == null) {
+            return false;
+        }
+        if (str.length() != 11) {
+            return false;
+        }
+        String regExp = "^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$";
+        Pattern p = Pattern.compile(regExp);
+        Matcher m = p.matcher(str);
+        return m.matches();
     }
 }

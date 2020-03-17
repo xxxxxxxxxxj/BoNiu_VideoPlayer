@@ -7,6 +7,7 @@ import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.iview.IAddFeedBackActivityView;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.StringUtil;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
@@ -34,7 +35,9 @@ public class AddFeedBackActivityPresenter extends BasePresenter<IAddFeedBackActi
         HttpParams params = UrlConstants.getParams(mContext);
         params.put("type", type);
         params.put("content", content);
-        params.put("accountId", CommonUtil.getAccountId(mContext));
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.ADDFEEDBACK)
                 .requestBody(requestBody)

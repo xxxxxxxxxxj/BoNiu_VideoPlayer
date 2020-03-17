@@ -9,6 +9,7 @@ import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayResult;
 import com.boniu.shipinbofangqi.mvp.model.event.PayResultEvent;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.StringUtil;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
@@ -57,7 +58,9 @@ public class PayResultService extends Service {
         public void run() {
             HttpParams params = UrlConstants.getParams(getApplicationContext());
             params.put("orderId", orderId);
-            params.put("accountId", CommonUtil.getAccountId(getApplicationContext()));
+            if (StringUtil.isNotEmpty(CommonUtil.getAccountId(getApplicationContext()))) {
+                params.put("accountId", CommonUtil.getAccountId(getApplicationContext()));
+            }
             RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
             EasyHttp.post(UrlConstants.QUERYPAYORDER)
                     .requestBody(requestBody)
