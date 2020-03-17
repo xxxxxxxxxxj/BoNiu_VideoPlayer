@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.SharedPreferenceUtil;
 import com.kongzue.dialog.v3.CustomDialog;
@@ -57,7 +58,7 @@ public class UpdateUtil {
         mDialog.show();
     }
 
-    public static void showUpgradeDialog(final AppCompatActivity mActivity, String title, String msg, final boolean forceUp, View.OnClickListener listener) {
+    public static void showUpgradeDialog(final AppCompatActivity mActivity, String title, String msg, final boolean forceUp, String linkUrl) {
         CustomDialog.build(mActivity, R.layout.layout_upgrade_dialog, new CustomDialog.OnBindView() {
             @Override
             public void onBind(final CustomDialog dialog, View v) {
@@ -77,7 +78,13 @@ public class UpdateUtil {
                         }
                     });
                 }
-                tv_upgradedialog_sub.setOnClickListener(listener);
+                tv_upgradedialog_sub.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CommonUtil.goBrowser(mActivity, linkUrl);
+                        dialog.doDismiss();
+                    }
+                });
                 tv_upgradedialog_title.setText(title);
                 tv_upgradedialog_content.setText(msg);
             }

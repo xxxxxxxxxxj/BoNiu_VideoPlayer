@@ -12,6 +12,7 @@ import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintUtil;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.AccountInfoBean;
 import com.boniu.shipinbofangqi.mvp.model.event.LoginEvent;
+import com.boniu.shipinbofangqi.mvp.model.event.PayEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MyFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.AboutActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
@@ -72,6 +73,13 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     public void getUpdateAppState(LoginEvent event) {
         if (event != null) {
             setData();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(PayEvent event) {
+        if (event != null) {
+            loadData();
         }
     }
 
@@ -323,8 +331,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
-        } else {
-            RingToast.show(errorMsg);
         }
         setData();
     }

@@ -350,8 +350,6 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
             spUtil.removeData(Global.SP_KEY_TOKEN);
         } else if (status == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
-        } else {
-            RingToast.show(desc);
         }
         setJumpLogic();
     }

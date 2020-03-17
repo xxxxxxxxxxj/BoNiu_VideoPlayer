@@ -250,49 +250,26 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
             if (versionInfoVo != null) {
                 boolean ISCLOSEUPGRADEDIALOG = spUtil.getBoolean(Global.SP_KEY_ISCLOSEUPGRADEDIALOG, false);
                 String UPGRADETIME = spUtil.getString(Global.SP_KEY_UPGRADETIME, "");
-                if (ISCLOSEUPGRADEDIALOG && CommonUtil.getTimeDays(UPGRADETIME, CommonUtil.getCurrentDate()) > 7) {
-                    spUtil.saveString(Global.SP_KEY_UPGRADETIME, CommonUtil.getCurrentDate());
-                    // 强制升级
-                    UpdateUtil.showUpgradeDialog(mActivity, versionInfoVo.getTitle(), versionInfoVo.getContent(),
-                            versionInfoVo.isForceUp(), new View.OnClickListener() {
-
-                                @Override
-                                public void onClick(View v) {
-                                    CommonUtil.goBrowser(mContext, versionInfoVo.getLinkUrl());
-                                /*requestEachCombined(new PermissionListener() {
-                                    @Override
-                                    public void onGranted(String permissionName) {
-                                        int isUpgrade = 0;
-                                        if (versionInfoVo.isForceUp()) {
-                                            isUpgrade = 1;
-                                        } else {
-                                            isUpgrade = 0;
-                                        }
-                                        UpdateUtil.updateApk(mContext,
-                                                versionInfoVo.getLinkUrl(), versionInfoVo.getVersion(), UpdateUtil.UPDATEFORNOTIFICATION, isUpgrade);
-                                    }
-
-                                    @Override
-                                    public void onDenied(String permissionName) {
-                                        showToast("请打开存储权限");
-                                    }
-
-                                    @Override
-                                    public void onDeniedWithNeverAsk(String permissionName) {
-                                        MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
-                                            @Override
-                                            public boolean onClick(BaseDialog baseDialog, View v) {
-                                                QMUIDeviceHelper.goToPermissionManager(mActivity);
-                                                return false;
-                                            }
-                                        });
-                                    }
-                                }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});*/
-                                }
-                            });
+                if (ISCLOSEUPGRADEDIALOG) {
+                    if (StringUtil.isNotEmpty(UPGRADETIME)) {
+                        if (CommonUtil.getTimeDays(UPGRADETIME, CommonUtil.getCurrentDate()) > 7) {
+                            setUpgradeDialog(versionInfoVo);
+                        }
+                    } else {
+                        setUpgradeDialog(versionInfoVo);
+                    }
+                } else {
+                    setUpgradeDialog(versionInfoVo);
                 }
             }
         }
+    }
+
+    private void setUpgradeDialog(AppInfoBean.VersionInfoVo versionInfoVo) {
+        spUtil.saveString(Global.SP_KEY_UPGRADETIME, CommonUtil.getCurrentDate());
+        // 强制升级
+        UpdateUtil.showUpgradeDialog(mActivity, versionInfoVo.getTitle(), versionInfoVo.getContent(),
+                versionInfoVo.isForceUp(), versionInfoVo.getLinkUrl());
     }
 
     @Override

@@ -17,6 +17,33 @@ public class PayInfo {
     private String nonceStr;
     private String timeStamp;
     private String sign;
+    private String resultCode;
+    private String errorCode;
+    private String resultMsg;
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getResultMsg() {
+        return resultMsg;
+    }
+
+    public void setResultMsg(String resultMsg) {
+        this.resultMsg = resultMsg;
+    }
 
     @Override
     public String toString() {
@@ -29,6 +56,9 @@ public class PayInfo {
                 ", nonceStr='" + nonceStr + '\'' +
                 ", timeStamp='" + timeStamp + '\'' +
                 ", sign='" + sign + '\'' +
+                ", resultCode='" + resultCode + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                ", resultMsg='" + resultMsg + '\'' +
                 '}';
     }
 

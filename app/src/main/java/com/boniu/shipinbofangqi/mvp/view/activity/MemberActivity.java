@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alipay.sdk.app.EnvUtils;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.log.RingLog;
@@ -23,6 +24,7 @@ import com.boniu.shipinbofangqi.mvp.model.entity.PayChannel;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayInfo;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayResult;
 import com.boniu.shipinbofangqi.mvp.model.entity.ProductInfo;
+import com.boniu.shipinbofangqi.mvp.model.event.PayEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.PayResultEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.WXPayResultEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MemberActivityPresenter;
@@ -44,6 +46,7 @@ import com.lxj.xpopup.XPopup;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -97,12 +100,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                         pollingNum = 1;
                         showLoadDialog();
                         PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
-                    } else if(TextUtils.equals(resultStatus, "8000")){//支付结果确认中
+                    } else if (TextUtils.equals(resultStatus, "8000")) {//支付结果确认中
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                         pollingNum = 1;
                         showLoadDialog();
                         PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
-                    }else{//支付失败
+                    } else {//支付失败
                         RingToast.show("支付失败");
                     }
                     break;
@@ -151,6 +154,7 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                             pollingNum = pollingNum + 1;
                             PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
                         } else if (resultCode.equals("SUCCESS")) {
+                            EventBus.getDefault().post(new PayEvent());
                             RingToast.show("支付成功");
                             hideLoadDialog();
                             PollingUtils.stopPollingService(mActivity, PayResultService.class, PayResultService.ACTION);
@@ -201,6 +205,7 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
 
     @Override
     protected void initData(Bundle savedInstanceState) {
+        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
     }
 
     @Override
@@ -407,6 +412,10 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         RingLog.e("PayInfo() response = " + response);
         hideLoadDialog();
         if (response != null) {
+            if ((StringUtil.isNotEmpty(response.getErrorCode()) && response.getErrorCode().equals("FAIL")) || (StringUtil.isNotEmpty(response.getErrorCode()) && response.getResultCode().equals("FAIL"))) {
+                RingToast.show(response.getResultMsg());
+                return;
+            }
             if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
                 PayUtils.weChatPayment(mActivity, response.getAppId(), response.getPartnerId(), response.getPrepayId(), response.getPackageValue(), response.getNonceStr(), response.getTimeStamp(), response.getSign(), tipDialog);
             } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {

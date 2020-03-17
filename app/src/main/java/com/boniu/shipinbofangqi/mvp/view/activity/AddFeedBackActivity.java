@@ -17,7 +17,6 @@ import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -33,8 +32,6 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
     TextView tvAddfeedbackName;
     @BindView(R.id.et_addfeedback_name)
     EditText etAddfeedbackName;
-    @BindView(R.id.srl_addfeedback)
-    SmartRefreshLayout srlAddfeedback;
     @BindView(R.id.showtext)
     TextView showtext;
     private String name;
@@ -47,10 +44,8 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        srlAddfeedback.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("帮助与反馈");
         tvAddfeedbackName.setText(name);
-        etAddfeedbackName.setHorizontallyScrolling(true);
     }
 
     @Override
