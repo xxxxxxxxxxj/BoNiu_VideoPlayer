@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -807,5 +810,18 @@ public abstract class BaseActivity<P extends BasePresenter> extends SwipeBackAct
         if (isUseEventBus() && EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+    }
+
+    /**
+     * 晃动动画
+     *
+     * @param counts 1秒钟晃动多少下
+     * @return
+     */
+    protected Animation shakeAnimation(int counts) {
+        Animation translateAnimation = new TranslateAnimation(0, 10, 0, 0);
+        translateAnimation.setInterpolator(new CycleInterpolator(counts));
+        translateAnimation.setDuration(1000);
+        return translateAnimation;
     }
 }

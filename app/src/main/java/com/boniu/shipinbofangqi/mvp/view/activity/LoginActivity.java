@@ -2,11 +2,10 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -61,6 +60,10 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     ImageView iv_toolbar_back;
     @BindView(R.id.srl_login)
     SmartRefreshLayout srlLogin;
+    @BindView(R.id.ll_login_mobile)
+    LinearLayout ll_login_mobile;
+    @BindView(R.id.rl_login_yzm)
+    RelativeLayout rl_login_yzm;
 
     @Override
     protected int getLayoutResID() {
@@ -95,29 +98,6 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
 
     @Override
     protected void initEvent() {
-        et_login_mobile.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                if (StringUtil.isNotEmpty(s.toString())) {
-                    if (!CommonUtil.isChinaPhoneLegal(s.toString())) {
-                        RingToast.show("请输入正确的手机号码");
-                        et_login_mobile.setText("");
-                        et_login_mobile.requestFocus();
-                    }
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
         requestEachCombined(new PermissionListener() {
             @Override
             public void onGranted(String permissionName) {
@@ -184,6 +164,14 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
             case R.id.tv_login_yzm:
                 if (StringUtil.isEmpty(StringUtil.checkEditText(et_login_mobile))) {
                     RingToast.show("请输入电话号码");
+                    ll_login_mobile.startAnimation(shakeAnimation(5));
+                    et_login_mobile.requestFocus();
+                    return;
+                }
+                if (!CommonUtil.isChinaPhoneLegal(StringUtil.checkEditText(et_login_mobile))) {
+                    RingToast.show("请输入正确的手机号码");
+                    ll_login_mobile.startAnimation(shakeAnimation(5));
+                    et_login_mobile.requestFocus();
                     return;
                 }
                 showLoadDialog();
@@ -192,10 +180,20 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
             case R.id.tv_login_sub:
                 if (StringUtil.isEmpty(StringUtil.checkEditText(et_login_mobile))) {
                     RingToast.show("请输入电话号码");
+                    ll_login_mobile.startAnimation(shakeAnimation(5));
+                    et_login_mobile.requestFocus();
+                    return;
+                }
+                if (!CommonUtil.isChinaPhoneLegal(StringUtil.checkEditText(et_login_mobile))) {
+                    RingToast.show("请输入正确的手机号码");
+                    ll_login_mobile.startAnimation(shakeAnimation(5));
+                    et_login_mobile.requestFocus();
                     return;
                 }
                 if (StringUtil.isEmpty(StringUtil.checkEditText(et_login_yzm))) {
                     RingToast.show("请输入验证码");
+                    rl_login_yzm.startAnimation(shakeAnimation(5));
+                    et_login_yzm.requestFocus();
                     return;
                 }
                 showLoadDialog();
