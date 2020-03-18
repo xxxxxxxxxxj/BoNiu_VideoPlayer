@@ -56,6 +56,9 @@ public class FileUtil {
             case 7://拍摄视频生成封面以及拍照存储的文件夹
                 tempFile = createImgBitmapFile(mContext, true, true, "", bitmap, AppConfig.DIRECTORY_VIDEO_FRAME);
                 break;
+            case 8://手势密码存储的文件夹
+                tempFile = createGesturesFile(mContext);
+                break;
         }
         return tempFile;
     }
@@ -141,6 +144,26 @@ public class FileUtil {
         tempFile = new File(tempFile, AppConfig.DIRECTORY_DEVICEID);
         if (!tempFile.exists()) tempFile.mkdirs();
         tempFile = new File(tempFile, AppConfig.FILENAME_DEVICEID);
+        return tempFile;
+    }
+
+    public static File createGesturesFile(Context mContext) throws IOException {
+        File tempFile = null;
+        if (externalMemoryAvailable()) {//判断sd卡在手机上是否是正常使用状态
+            //external storage外部存储,路径是:SD根目录:/mnt/sdcard/ (6.0后写入需要用户授权)
+            if (Build.VERSION.SDK_INT >= 29) {
+                //步骤二：Android 10.0及以上操作文件夹
+                tempFile = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            } else {
+                tempFile = Environment.getExternalStorageDirectory();
+            }
+        } else {
+            //internal storage内部存储,路径是:/data/data/< package name >/files/…
+            tempFile = mContext.getFilesDir();
+        }
+        tempFile = new File(tempFile, AppConfig.DIRECTORY_GESTURES);
+        if (!tempFile.exists()) tempFile.mkdirs();
+        tempFile = new File(tempFile, AppConfig.FILENAME_GESTURES);
         return tempFile;
     }
 

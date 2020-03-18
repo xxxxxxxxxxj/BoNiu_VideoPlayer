@@ -1,5 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.fragment;
 
+import android.Manifest;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -7,8 +8,6 @@ import android.widget.TextView;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
-import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintCore;
-import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintUtil;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.AccountInfoBean;
 import com.boniu.shipinbofangqi.mvp.model.event.LoginEvent;
@@ -18,11 +17,15 @@ import com.boniu.shipinbofangqi.mvp.view.activity.AboutActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.SetGesturesActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
+import com.boniu.shipinbofangqi.permission.PermissionListener;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.GetGestures;
 import com.boniu.shipinbofangqi.util.Global;
+import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
@@ -66,7 +69,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     ImageView shFragmyFolder;
     @BindView(R.id.tv_fragmy_loginout)
     TextView tv_fragmy_loginout;
-    private FingerprintCore mFingerprintCore;
     private String validityTime;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -126,33 +128,51 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         srlFragMy.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         tvToolbarTitle.setText("我的");
         ivToolbarBack.setVisibility(View.GONE);
-
-        mFingerprintCore = new FingerprintCore(mActivity);
-        if (mFingerprintCore.isSupport()) {
-            ll_fragmy_folder.setVisibility(View.VISIBLE);
-            ll_fragmy_finger.setVisibility(View.VISIBLE);
-            //判断设备是否录入指纹
-            boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
-            //判断是否开启指纹支付
-            boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-            if (isFinger && hasEnrolledFingerprints) {
-                sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
-            } else {
-                sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
-                spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
+        requestEachCombined(new PermissionListener() {
+            @Override
+            public void onGranted(String permissionName) {
+                String pwd = GetGestures.readGestures(mActivity);
+                if (StringUtil.isNotEmpty(pwd)) {
+                    //判断是否开启手势密码解锁
+                    boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                    if (isFinger) {
+                        sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
+                    } else {
+                        sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
+                        spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                    }
+                    //判断是否开启加密文件夹
+                    boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                    if (ISOPENENCRYPTEDFOLDER) {
+                        shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
+                    } else {
+                        shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
+                        spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                    }
+                } else {
+                    shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
+                    sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
+                    spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
+                    spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                }
             }
-        } else {
-            ll_fragmy_finger.setVisibility(View.GONE);
-            ll_fragmy_folder.setVisibility(View.GONE);
-            spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
-        }
-        //判断是否开启加密文件夹
-        boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
-        if (ISOPENENCRYPTEDFOLDER) {
-            shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
-        } else {
-            shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
-        }
+
+            @Override
+            public void onDenied(String permissionName) {
+                showToast("请打开存储权限");
+            }
+
+            @Override
+            public void onDeniedWithNeverAsk(String permissionName) {
+                MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+                        QMUIDeviceHelper.goToPermissionManager(mActivity);
+                        return false;
+                    }
+                });
+            }
+        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
     }
 
     @Override
@@ -184,9 +204,37 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     }
 
     @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about, R.id.sh_fragmy,
-            R.id.sh_fragmy_folder, R.id.tv_fragmy_loginout})
+            R.id.sh_fragmy_folder, R.id.tv_fragmy_loginout, R.id.ll_fragmy_gestures})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.ll_fragmy_gestures:
+                if (CommonUtil.isLogin(mActivity)) {
+                    requestEachCombined(new PermissionListener() {
+                        @Override
+                        public void onGranted(String permissionName) {
+                            startActivity(SetGesturesActivity.class);
+                        }
+
+                        @Override
+                        public void onDenied(String permissionName) {
+                            showToast("请打开存储权限");
+                        }
+
+                        @Override
+                        public void onDeniedWithNeverAsk(String permissionName) {
+                            MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                @Override
+                                public boolean onClick(BaseDialog baseDialog, View v) {
+                                    QMUIDeviceHelper.goToPermissionManager(mActivity);
+                                    return false;
+                                }
+                            });
+                        }
+                    }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
+                } else {
+                    startActivity(LoginActivity.class);
+                }
+                break;
             case R.id.tv_fragmy_loginout:
                 MessageDialog.show(mActivity, "退出登录", "确定退出登录吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
                     @Override
@@ -226,15 +274,35 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                         sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
                         spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
                     } else {
-                        //判断设备是否录入指纹
-                        boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
-                        if (hasEnrolledFingerprints) {
-                            sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
-                            spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, true);
-                        } else {
-                            RingToast.show("您还没有录制指纹，请录入！");
-                            FingerprintUtil.openFingerPrintSettingPage(mActivity);
-                        }
+                        requestEachCombined(new PermissionListener() {
+                            @Override
+                            public void onGranted(String permissionName) {
+                                String pwd = GetGestures.readGestures(mActivity);
+                                if (StringUtil.isNotEmpty(pwd)) {
+                                    sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
+                                    spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, true);
+                                } else {
+                                    RingToast.show("请先设置手势密码");
+                                    startActivity(SetGesturesActivity.class);
+                                }
+                            }
+
+                            @Override
+                            public void onDenied(String permissionName) {
+                                showToast("请打开存储权限");
+                            }
+
+                            @Override
+                            public void onDeniedWithNeverAsk(String permissionName) {
+                                MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                    @Override
+                                    public boolean onClick(BaseDialog baseDialog, View v) {
+                                        QMUIDeviceHelper.goToPermissionManager(mActivity);
+                                        return false;
+                                    }
+                                });
+                            }
+                        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
                     }
                 } else {
                     startActivity(LoginActivity.class);
@@ -250,21 +318,35 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                         //判断是否开通高级版
                         boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
                         if (ISOPENENVIP) {
-                            //再判断是否录入指纹
-                            boolean hasEnrolledFingerprints = mFingerprintCore.isHasEnrolledFingerprints();
-                            if (hasEnrolledFingerprints) {
-                                //再判断是否开启指纹识别
-                                boolean isFinger1 = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                                if (isFinger1) {
-                                    shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
-                                    spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, true);
-                                } else {
-                                    RingToast.show("请先开启指纹识别！");
+                            requestEachCombined(new PermissionListener() {
+                                @Override
+                                public void onGranted(String permissionName) {
+                                    String pwd = GetGestures.readGestures(mActivity);
+                                    if (StringUtil.isNotEmpty(pwd)) {
+                                        shFragmyFolder.setImageResource(R.mipmap.icon_switch_open);
+                                        spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, true);
+                                    } else {
+                                        RingToast.show("请先设置手势密码");
+                                        startActivity(SetGesturesActivity.class);
+                                    }
                                 }
-                            } else {
-                                RingToast.show("您还没有录制指纹，请录入！");
-                                FingerprintUtil.openFingerPrintSettingPage(mActivity);
-                            }
+
+                                @Override
+                                public void onDenied(String permissionName) {
+                                    showToast("请打开存储权限");
+                                }
+
+                                @Override
+                                public void onDeniedWithNeverAsk(String permissionName) {
+                                    MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                                        @Override
+                                        public boolean onClick(BaseDialog baseDialog, View v) {
+                                            QMUIDeviceHelper.goToPermissionManager(mActivity);
+                                            return false;
+                                        }
+                                    });
+                                }
+                            }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
                         } else {
                             //弹出高级版开通弹窗
                             CustomDialog.build(mActivity, R.layout.layout_openvip_dialog, new CustomDialog.OnBindView() {

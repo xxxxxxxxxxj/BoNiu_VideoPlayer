@@ -411,6 +411,16 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
     }
 
     /**
+     * @param cls
+     * @param requestCode
+     */
+    protected void startActivityForResult(Class<?> cls,int requestCode) {
+        Intent intent = new Intent();
+        intent.setClass(mActivity, cls);
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
      * [含有Bundle通过Class打开界面并回调]
      *
      * @param cls

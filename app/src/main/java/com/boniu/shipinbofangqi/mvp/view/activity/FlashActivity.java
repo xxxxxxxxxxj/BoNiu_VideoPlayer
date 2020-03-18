@@ -12,7 +12,6 @@ import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -20,9 +19,9 @@ import androidx.core.content.ContextCompat;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.app.UrlConstants;
-import com.boniu.shipinbofangqi.fingerprintrecognition.FingerprintCore;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.AccountInfoBean;
+import com.boniu.shipinbofangqi.mvp.model.event.GestureSuccessEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.FlashActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.iview.IFlashActivityView;
@@ -42,6 +41,9 @@ import com.kongzue.dialog.v3.CustomDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.zhouyou.http.EasyHttp;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,11 +57,13 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     TextView tv_flash_shouquan;
     @BindView(R.id.btn_flash_skip)
     Button btnFlashSkip;
-    private FingerprintCore mFingerprintCore;
-    private CustomDialog startfingerDialog;
-    private MessageDialog startAgainfingerDialog;
-    private MessageDialog fingerFailDialog;
-    private int fingerNum;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(GestureSuccessEvent event) {
+        if (event != null && event.getType() == 1) {
+            startActivity(MainActivity.class, true);
+        }
+    }
 
     @Override
     protected int getLayoutResID() {
@@ -68,8 +72,6 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        mFingerprintCore = new FingerprintCore(this);
-        mFingerprintCore.setFingerprintManager(mResultListener);
     }
 
     @Override
@@ -175,7 +177,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
 
     @Override
     protected boolean isUseEventBus() {
-        return false;
+        return true;
     }
 
     @Override
@@ -204,116 +206,42 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 //判断是否开启指纹识别
                 boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
                 if (ISOPENFINGER) {
-                    fingerNum = 0;
-                    //开启指纹识别
-                    if (!mFingerprintCore.isAuthenticating()) {
-                        mFingerprintCore.startAuthenticate();
-                    }
-                    startFingerDialog();
+                    setGesture();
                 }
                 break;
         }
     }
 
-    private void startFingerDialog() {
-        startfingerDialog = CustomDialog.build(mActivity, R.layout.layout_startfinger_dialog, new CustomDialog.OnBindView() {
+    private void setGesture() {
+        requestEachCombined(new PermissionListener() {
             @Override
-            public void onBind(final CustomDialog dialog, View v) {
+            public void onGranted(String permissionName) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("type", 1);
+                startActivity(StartGesturesActivity.class, bundle);
             }
-        }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false);
-        startfingerDialog.show();
-    }
 
-    private void startAgainFingerDialog() {
-        startAgainfingerDialog = MessageDialog.show(mActivity, "", "", "取消")
-                .setButtonOrientation(LinearLayout.VERTICAL)
-                .setCustomView(R.layout.layout_startagainfinger_dialog, new MessageDialog.OnBindView() {
-                    @Override
-                    public void onBind(MessageDialog dialog, View v) {
-                    }
-                }).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
-                    @Override
-                    public boolean onClick(BaseDialog baseDialog, View v) {
-                        mFingerprintCore.cancelAuthenticate();
-                        return false;
-                    }
-                }).setCancelable(false);
-    }
+            @Override
+            public void onDenied(String permissionName) {
+                showToast("请打开存储权限");
+            }
 
-    private void showFingerFailDialog() {
-        fingerFailDialog = MessageDialog.show(mActivity, "", "", "取消")
-                .setCustomView(R.layout.layout_fingerfail_dialog, new MessageDialog.OnBindView() {
-                    @Override
-                    public void onBind(MessageDialog dialog, View v) {
-                    }
-                }).setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+            @Override
+            public void onDeniedWithNeverAsk(String permissionName) {
+                MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
                     @Override
                     public boolean onClick(BaseDialog baseDialog, View v) {
-                        mFingerprintCore.cancelAuthenticate();
+                        QMUIDeviceHelper.goToPermissionManager(mActivity);
                         return false;
                     }
-                }).setCancelable(false);
+                });
+            }
+        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
     }
-
-    private FingerprintCore.IFingerprintResultListener mResultListener = new FingerprintCore.IFingerprintResultListener() {
-        @Override
-        public void onAuthenticateSuccess() {
-            if (startfingerDialog != null) {
-                startfingerDialog.doDismiss();
-            }
-            startfingerDialog = null;
-            if (startAgainfingerDialog != null) {
-                startAgainfingerDialog.doDismiss();
-            }
-            startAgainfingerDialog = null;
-            if (fingerFailDialog != null) {
-                fingerFailDialog.doDismiss();
-            }
-            fingerFailDialog = null;
-            mFingerprintCore.cancelAuthenticate();
-            RingToast.show("验证成功");
-            //直接进入首页
-            startActivity(MainActivity.class, true);
-        }
-
-        @Override
-        public void onAuthenticateFailed(int helpId) {
-            Log.e("TAG", "onAuthenticateFailed");
-            fingerNum++;
-            if (startfingerDialog != null) {
-                startfingerDialog.doDismiss();
-            }
-            startfingerDialog = null;
-            if (startAgainfingerDialog != null) {
-                startAgainfingerDialog.doDismiss();
-            }
-            startAgainfingerDialog = null;
-            if (fingerFailDialog != null) {
-                fingerFailDialog.doDismiss();
-            }
-            fingerFailDialog = null;
-            if (fingerNum == 1) {//第一次验证失败
-                startAgainFingerDialog();
-            } else if (fingerNum == 2) {//第二次验证失败
-                showFingerFailDialog();
-            }
-        }
-
-        @Override
-        public void onAuthenticateError(int errMsgId) {
-            Log.e("TAG", "onAuthenticateError");
-        }
-
-        @Override
-        public void onStartAuthenticateResult(boolean isSuccess) {
-
-        }
-    };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mFingerprintCore.onDestroy();
         CountdownUtil.getInstance().cancel("FLASH_TIMER");
     }
 
@@ -371,11 +299,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
                 if (ISOPENFINGER) {
                     tv_flash_shouquan.setVisibility(View.VISIBLE);
-                    //开启指纹识别
-                    if (!mFingerprintCore.isAuthenticating()) {
-                        mFingerprintCore.startAuthenticate();
-                    }
-                    startFingerDialog();
+                    setGesture();
                 } else {
                     //直接进入首页
                     startActivity(MainActivity.class, true);
@@ -388,11 +312,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                     boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
                     if (ISOPENFINGER) {
                         tv_flash_shouquan.setVisibility(View.VISIBLE);
-                        //开启指纹识别
-                        if (!mFingerprintCore.isAuthenticating()) {
-                            mFingerprintCore.startAuthenticate();
-                        }
-                        startFingerDialog();
+                        setGesture();
                     } else {
                         //直接进入首页
                         startActivity(MainActivity.class, true);

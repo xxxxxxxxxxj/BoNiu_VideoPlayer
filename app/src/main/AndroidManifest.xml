@@ -46,12 +46,14 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <service android:name=".services.PayResultService">
             <intent-filter>
                 <action android:name="com.boniu.shipinbofangqi.services.PayResultService" />
             </intent-filter>
         </service>
-        <activity android:name=".mvp.view.activity.CancelAccountActivity"/>
+
+        <activity android:name=".mvp.view.activity.CancelAccountActivity" />
         <!--
         适配刘海屏：对Application生效，意味着该应用的所有页面，
         系统都不会做竖屏场景的特殊下移或者是横屏场景的右移特殊处理：
@@ -143,6 +145,8 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".mvp.view.activity.SetGesturesActivity" />
+        <activity android:name=".mvp.view.activity.StartGesturesActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

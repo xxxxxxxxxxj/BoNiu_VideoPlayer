@@ -1,5 +1,10 @@
 <resources>
-
+    <style name="Linkage_Style">
+        <item name="android:clickable">true</item>
+        <item name="android:layout_width">@dimen/linkage_width</item>
+        <item name="android:layout_height">@dimen/linkage_width</item>
+        <item name="android:gravity">center</item>
+    </style>
     <!-- window 透明的-->
     <style name="Theme.AppCompat.Translucent" parent="AppTheme">
         <item name="android:windowBackground">@android:color/transparent</item>

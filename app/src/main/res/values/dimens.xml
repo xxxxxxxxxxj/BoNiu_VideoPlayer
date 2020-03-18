@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="linkage_width">12dp</dimen>
+    <!--24px|8px|8px-->
+    <dimen name="linkage_magin">4dp</dimen>
+    <dimen name="linkage_magin_top">@dimen/linkage_magin</dimen>
+    <dimen name="small_icon_radius">25px</dimen>
     <dimen name="monogram_width">40dp</dimen>
     <dimen name="grid_expected_size">120dp</dimen>
     <dimen name="crop__bar_height">48dp</dimen>
