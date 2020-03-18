@@ -371,14 +371,37 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             Gson gson = new Gson();
             OrderCreateBean orderCreateBean = gson.fromJson(response, OrderCreateBean.class);
             if (orderCreateBean != null) {
-                orderId = orderCreateBean.getResult();
-                if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {//微信支付
-                    payChannel = "WECHAT_PAY";
-                } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {//支付宝支付
-                    payChannel = "ALIPAY";
+                if (orderCreateBean.getErrorCode().equals("0")) {
+                    orderId = orderCreateBean.getResult();
+                    if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {//微信支付
+                        payChannel = "WECHAT_PAY";
+                    } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {//支付宝支付
+                        payChannel = "ALIPAY";
+                    }
+                    showLoadDialog();
+                    mPresenter.submitOrder(orderId, payChannel);
+                } else {
+                    int code = 0;
+                    if (orderCreateBean.getErrorCode().contains("-")) {
+                        code = Integer.parseInt(orderCreateBean.getErrorCode().split("-")[2]);
+                    }
+                    if (code == AppConfig.EXIT_USER_CODE) {
+                        spUtil.removeData(Global.SP_KEY_ISLOGIN);
+                        spUtil.removeData(Global.SP_KEY_CELLPHONE);
+                        spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+                        spUtil.removeData(Global.SP_KEY_TOKEN);
+                        startActivity(LoginActivity.class);
+                    } else if (code == AppConfig.CLEARACCOUNTID_CODE) {
+                        CommonUtil.getNewAccountId(mActivity);
+                    } else {
+                        int netWorkState = CommonUtil.getNetWorkState(mContext);
+                        if (netWorkState == CommonUtil.NETWORK_NONE) {
+                            RingToast.show("无网络连接");
+                        } else {
+                            RingToast.show(orderCreateBean.getErrorMsg());
+                        }
+                    }
                 }
-                showLoadDialog();
-                mPresenter.submitOrder(orderId, payChannel);
             }
         }
     }

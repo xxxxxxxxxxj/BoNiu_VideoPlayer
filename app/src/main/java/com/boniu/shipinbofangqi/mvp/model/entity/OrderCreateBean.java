@@ -21,6 +21,24 @@ public class OrderCreateBean {
     private String returnCode;
     private String result;
     private boolean timeOut;
+    private String errorCode = "0";
+    private String errorMsg;
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
 
     public boolean isSuccess() {
         return success;

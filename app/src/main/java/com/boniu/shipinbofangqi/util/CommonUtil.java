@@ -282,6 +282,10 @@ public class CommonUtil {
         return SharedPreferenceUtil.getInstance(mContext).getString(Global.SP_KEY_CELLPHONE, "");
     }
 
+    public static String getToken(Context mContext) {
+        return SharedPreferenceUtil.getInstance(mContext).getString(Global.SP_KEY_TOKEN, "");
+    }
+
     public static String getAccountId(Context mContext) {
         return SharedPreferenceUtil.getInstance(mContext).getString(Global.SP_KEY_ACCOUNTIUD, "");
     }
@@ -290,6 +294,9 @@ public class CommonUtil {
         HttpParams params = new UrlConstants().getParams(mContext);
         if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
             params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
+        if (StringUtil.isNotEmpty(CommonUtil.getToken(mContext))) {
+            params.put("token", CommonUtil.getToken(mContext));
         }
         RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
         EasyHttp.post(UrlConstants.GETNEWACCOUNTID)
@@ -307,7 +314,9 @@ public class CommonUtil {
                             Gson gson = new Gson();
                             OrderCreateBean orderCreateBean = gson.fromJson(response, OrderCreateBean.class);
                             if (orderCreateBean != null) {
-                                SharedPreferenceUtil.getInstance(mContext).saveString(Global.SP_KEY_ACCOUNTIUD, orderCreateBean.getResult());
+                                if (orderCreateBean.getErrorCode().equals("0")) {
+                                    SharedPreferenceUtil.getInstance(mContext).saveString(Global.SP_KEY_ACCOUNTIUD, orderCreateBean.getResult());
+                                }
                             }
                         }
                     }
