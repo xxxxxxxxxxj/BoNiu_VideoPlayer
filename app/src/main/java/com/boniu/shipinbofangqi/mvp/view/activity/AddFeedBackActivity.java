@@ -155,7 +155,12 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(errorMsg);
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
         }
     }
 }

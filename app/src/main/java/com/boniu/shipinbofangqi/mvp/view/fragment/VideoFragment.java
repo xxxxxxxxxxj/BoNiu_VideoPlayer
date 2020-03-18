@@ -237,22 +237,22 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     protected void initData() {
         boNiuVideoDao = new BoNiuVideoDao(mActivity);
         boNiuFolderDao = new BoNiuFolderDao(mActivity);
-        setData();
-    }
-
-    private void setData() {
         boolean isAdd = false;
         if (boNiuFolderDao.getAll() != null && boNiuFolderDao.getAll().size() > 0) {
             for (int i = 0; i < boNiuFolderDao.getAll().size(); i++) {
-                if (boNiuFolderDao.getAll().get(i).getBoniu_folder_name().equals("默认文件夹")) {
+                if (boNiuFolderDao.getAll().get(i).getBoniu_folder_isdefault() == 1) {
                     isAdd = true;
                     break;
                 }
             }
         }
         if (!isAdd) {
-            boNiuFolderDao.add(new BoNiuFolderInfo("默认文件夹", CommonUtil.getCurrentTime()));
+            boNiuFolderDao.add(new BoNiuFolderInfo("默认文件夹", CommonUtil.getCurrentTime(), 1));
         }
+        setData();
+    }
+
+    private void setData() {
         videoList.clear();
         videoList.addAll(boNiuVideoDao.getAll());
         folderList.clear();

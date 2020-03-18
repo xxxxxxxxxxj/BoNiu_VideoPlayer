@@ -323,7 +323,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(errorMsg);
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
         }
     }
 
@@ -340,7 +345,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(errorMsg);
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
         }
     }
 
@@ -386,7 +396,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(errorMsg);
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
         }
     }
 
@@ -403,7 +418,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(errorMsg);
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
         }
     }
 

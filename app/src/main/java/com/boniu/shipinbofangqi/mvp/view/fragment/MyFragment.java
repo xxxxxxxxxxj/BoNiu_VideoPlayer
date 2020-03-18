@@ -72,7 +72,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(LoginEvent event) {
         if (event != null) {
-            setData();
+            loadData();
         }
     }
 
@@ -331,6 +331,13 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            int netWorkState = CommonUtil.getNetWorkState(mActivity);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                //RingToast.show(errorMsg);
+            }
         }
         setData();
     }
@@ -347,7 +354,12 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(errorMsg);
+            int netWorkState = CommonUtil.getNetWorkState(mActivity);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
         }
     }
 

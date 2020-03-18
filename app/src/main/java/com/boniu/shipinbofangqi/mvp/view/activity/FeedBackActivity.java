@@ -2,6 +2,7 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.boniu.shipinbofangqi.R;
@@ -14,9 +15,7 @@ import com.boniu.shipinbofangqi.mvp.view.iview.IFeedBackActivityView;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
-import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
-import com.kongzue.dialog.util.BaseDialog;
-import com.kongzue.dialog.v3.MessageDialog;
+import com.kongzue.dialog.v3.CustomDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import butterknife.BindView;
@@ -39,7 +38,7 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
     @Override
     protected void initView(Bundle savedInstanceState) {
         srlFeedback.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
-        tvToolbarTitle.setText("账号注销");
+        tvToolbarTitle.setText("帮助与反馈");
     }
 
     @Override
@@ -122,14 +121,34 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
                 if (ISCANCEL) {
                     RingToast.show("账号已注销");
                 } else {
-                    MessageDialog.show(mActivity, "注销账号", "确定注销账号吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
+                    CustomDialog.build(mActivity, R.layout.layout_cancelaccount_dialog, new CustomDialog.OnBindView() {
                         @Override
-                        public boolean onClick(BaseDialog baseDialog, View v) {
-                            showLoadDialog();
-                            mPresenter.cancelAccount();
-                            return false;
+                        public void onBind(final CustomDialog dialog, View v) {
+                            ImageView iv_cancelaccountdialog_close = v.findViewById(R.id.iv_cancelaccountdialog_close);
+                            TextView tv_cancelaccountdialog_zx = v.findViewById(R.id.tv_cancelaccountdialog_zx);
+                            TextView tv_cancelaccountdialog_cancel = v.findViewById(R.id.tv_cancelaccountdialog_cancel);
+                            iv_cancelaccountdialog_close.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.doDismiss();
+                                }
+                            });
+                            tv_cancelaccountdialog_zx.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    showLoadDialog();
+                                    mPresenter.cancelAccount();
+                                    dialog.doDismiss();
+                                }
+                            });
+                            tv_cancelaccountdialog_cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.doDismiss();
+                                }
+                            });
                         }
-                    });
+                    }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
                 }
                 break;
         }
@@ -160,7 +179,12 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(errorMsg);
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
         }
     }
 }

@@ -39,6 +39,7 @@ public class BoNiuFolderDao {
         values.put("boniu_folder_formatmemory", boNiuFolderInfo.getBoniu_folder_formatmemory());
         values.put("boniu_folder_memory", boNiuFolderInfo.getBoniu_folder_memory());
         values.put("boniu_folder_createtime", boNiuFolderInfo.getBoniu_folder_createtime());
+        values.put("boniu_folder_isdefault", boNiuFolderInfo.getBoniu_folder_isdefault());
         long id = database.insert("boniu_folder", null, values);
         RingLog.e("id = " + id);
         // 保存产生的id
@@ -63,9 +64,10 @@ public class BoNiuFolderDao {
             String boniu_folder_formatmemory = cursor.getString(2);
             double boniu_folder_memory = cursor.getDouble(3);
             String boniu_folder_createtime = cursor.getString(4);
+            int boniu_folder_isdefault = cursor.getInt(5);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime);
+                    boniu_folder_createtime,boniu_folder_isdefault);
             list.add(boNiuFolderInfo);
         }
         cursor.close();
@@ -91,9 +93,10 @@ public class BoNiuFolderDao {
             String boniu_folder_formatmemory = cursor.getString(2);
             double boniu_folder_memory = cursor.getDouble(3);
             String boniu_folder_createtime = cursor.getString(4);
+            int boniu_folder_isdefault = cursor.getInt(5);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime);
+                    boniu_folder_createtime,boniu_folder_isdefault);
             list.add(boNiuFolderInfo);
         }
         cursor.close();

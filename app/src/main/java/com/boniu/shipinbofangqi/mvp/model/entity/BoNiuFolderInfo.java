@@ -16,6 +16,7 @@ public class BoNiuFolderInfo implements Serializable {
     private String boniu_folder_formatmemory = "0.00M";
     private double boniu_folder_memory;
     private String boniu_folder_createtime;
+    private int boniu_folder_isdefault;
 
     @Override
     public String toString() {
@@ -25,22 +26,30 @@ public class BoNiuFolderInfo implements Serializable {
                 ", boniu_folder_formatmemory='" + boniu_folder_formatmemory + '\'' +
                 ", boniu_folder_memory=" + boniu_folder_memory +
                 ", boniu_folder_createtime='" + boniu_folder_createtime + '\'' +
+                ", boniu_folder_isdefault=" + boniu_folder_isdefault +
                 '}';
     }
 
     public BoNiuFolderInfo() {
     }
 
-    public BoNiuFolderInfo(String boniu_folder_name, String boniu_folder_createtime) {
-        this.boniu_folder_name = boniu_folder_name;
-        this.boniu_folder_createtime = boniu_folder_createtime;
-    }
-
-    public BoNiuFolderInfo(int boniu_folder_id, String boniu_folder_name, String boniu_folder_formatmemory, double boniu_folder_memory, String boniu_folder_createtime) {
+    public BoNiuFolderInfo(int boniu_folder_id, String boniu_folder_name, String boniu_folder_formatmemory, double boniu_folder_memory, String boniu_folder_createtime, int boniu_folder_isdefault) {
         this.boniu_folder_id = boniu_folder_id;
         this.boniu_folder_name = boniu_folder_name;
         this.boniu_folder_formatmemory = boniu_folder_formatmemory;
         this.boniu_folder_memory = boniu_folder_memory;
+        this.boniu_folder_createtime = boniu_folder_createtime;
+        this.boniu_folder_isdefault = boniu_folder_isdefault;
+    }
+
+    public BoNiuFolderInfo(String boniu_folder_name, String boniu_folder_createtime, int boniu_folder_isdefault) {
+        this.boniu_folder_name = boniu_folder_name;
+        this.boniu_folder_createtime = boniu_folder_createtime;
+        this.boniu_folder_isdefault = boniu_folder_isdefault;
+    }
+
+    public BoNiuFolderInfo(String boniu_folder_name, String boniu_folder_createtime) {
+        this.boniu_folder_name = boniu_folder_name;
         this.boniu_folder_createtime = boniu_folder_createtime;
     }
 
@@ -74,6 +83,14 @@ public class BoNiuFolderInfo implements Serializable {
 
     public void setBoniu_folder_memory(double boniu_folder_memory) {
         this.boniu_folder_memory = boniu_folder_memory;
+    }
+
+    public int getBoniu_folder_isdefault() {
+        return boniu_folder_isdefault;
+    }
+
+    public void setBoniu_folder_isdefault(int boniu_folder_isdefault) {
+        this.boniu_folder_isdefault = boniu_folder_isdefault;
     }
 
     public String getBoniu_folder_createtime() {

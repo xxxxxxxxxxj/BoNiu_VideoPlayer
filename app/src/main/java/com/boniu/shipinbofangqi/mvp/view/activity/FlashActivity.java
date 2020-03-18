@@ -350,6 +350,13 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
             spUtil.removeData(Global.SP_KEY_TOKEN);
         } else if (status == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
+        } else {
+            int netWorkState = CommonUtil.getNetWorkState(mActivity);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                //RingToast.show(errorMsg);
+            }
         }
         setJumpLogic();
     }

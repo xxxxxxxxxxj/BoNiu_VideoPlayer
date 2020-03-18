@@ -285,7 +285,12 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         } else if (status == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);
         } else {
-            RingToast.show(desc);
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(desc);
+            }
         }
     }
 
