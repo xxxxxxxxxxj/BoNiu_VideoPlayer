@@ -244,6 +244,7 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSwipeBack(false);
     }
 
     @OnClick({R.id.iv_toolbar_back, R.id.tv_member_sub})

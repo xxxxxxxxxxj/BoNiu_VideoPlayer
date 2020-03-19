@@ -146,6 +146,7 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSwipeBack(false);
     }
 
     @OnClick({R.id.iv_toolbar_back, R.id.tv_login_yzm, R.id.tv_login_sub, R.id.tv_login_yhxy, R.id.tv_login_yszc})

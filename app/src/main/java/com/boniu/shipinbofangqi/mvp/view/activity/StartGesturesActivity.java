@@ -3,9 +3,12 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
@@ -15,6 +18,7 @@ import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.widget.gestures.Lock9View;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.GetGestures;
+import com.gyf.immersionbar.ImmersionBar;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,6 +35,10 @@ public class StartGesturesActivity extends BaseActivity {
     TextView hintDescTv;
     @BindView(R.id.lock_9_view)
     Lock9View lock9View;
+    @BindView(R.id.toolbar)
+    RelativeLayout toolbar;
+    @BindView(R.id.iv_toolbar_back)
+    ImageView iv_toolbar_back;
     private String password;
     private int errorCount = 5;
 
@@ -48,7 +56,10 @@ public class StartGesturesActivity extends BaseActivity {
 
     @Override
     protected void setView(Bundle savedInstanceState) {
-
+        toolbar.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.a2D2D2D));
+        iv_toolbar_back.setImageResource(R.mipmap.icon_title_close);
+        tvToolbarTitle.setVisibility(View.GONE);
+        ImmersionBar.with(this).statusBarColor(R.color.a2D2D2D).init();
     }
 
     @Override
@@ -110,6 +121,7 @@ public class StartGesturesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSwipeBack(false);
     }
 
     @OnClick({R.id.iv_toolbar_back})

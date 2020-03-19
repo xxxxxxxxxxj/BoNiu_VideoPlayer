@@ -5,27 +5,26 @@
     android:layout_height="match_parent"
     android:background="@color/a2D2D2D"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="20dip">
 
     <include layout="@layout/include_toolbar" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="200px"
+    <com.boniu.shipinbofangqi.mvp.view.widget.gestures.LinkageGroup
+        android:id="@+id/linkage_parent_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="center"
         android:layout_gravity="center"
-        android:gravity="center_horizontal">
-
-        <com.boniu.shipinbofangqi.mvp.view.widget.gestures.LinkageGroup
-            android:id="@+id/linkage_parent_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
+        android:layout_marginTop="20dip"
+        android:layout_marginBottom="20dip" />
 
     <TextView
         android:id="@+id/hint_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
         android:gravity="center"
         android:text="设置手势密码"
         android:textColor="#7e838a"
