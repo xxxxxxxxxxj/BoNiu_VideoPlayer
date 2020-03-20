@@ -8,6 +8,7 @@ import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.Global;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import butterknife.BindView;
@@ -25,7 +26,6 @@ public class CancelAccountActivity extends BaseActivity {
     TextView tvCancelaccountTime;
     @BindView(R.id.srl_cancelaccount)
     SmartRefreshLayout srlCancelaccount;
-    private String applyTime;
 
     @Override
     protected int getLayoutResID() {
@@ -35,18 +35,17 @@ public class CancelAccountActivity extends BaseActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         srlCancelaccount.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
-        tvToolbarTitle.setText("帮助与反馈");
+        tvToolbarTitle.setText("账号注销");
     }
 
     @Override
     protected void setView(Bundle savedInstanceState) {
         tvCancelaccountZh.setText("注销账号：" + CommonUtil.getCellPhone(mContext));
-        tvCancelaccountTime.setText("注销申请时间：" + applyTime);
+        tvCancelaccountTime.setText("注销申请时间：" + spUtil.getString(Global.SP_KEY_CANCELTIME,""));
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        applyTime = getIntent().getStringExtra("applyTime");
     }
 
     @Override

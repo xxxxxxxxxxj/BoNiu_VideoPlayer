@@ -337,9 +337,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             spUtil.saveBoolean(Global.SP_KEY_ISLOGIN, true);
             spUtil.saveString(Global.SP_KEY_CELLPHONE, response.getMobile());
             if (StringUtil.isNotEmpty(response.getApplyCancelTime())) {
-                spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
-            } else {
-                spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, false);
+                spUtil.saveString(Global.SP_KEY_CANCELTIME, response.getApplyCancelTime());
             }
             if (StringUtil.isNotEmpty(response.getType()) && response.getType().equals("VIP")) {
                 validityTime = response.getVipExpireTime();
@@ -361,6 +359,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             spUtil.removeData(Global.SP_KEY_CELLPHONE);
             spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
             spUtil.removeData(Global.SP_KEY_TOKEN);
+            RingToast.show("您已在其他设备登录");
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);

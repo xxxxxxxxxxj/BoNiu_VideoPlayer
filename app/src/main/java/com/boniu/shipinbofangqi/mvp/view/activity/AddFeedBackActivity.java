@@ -151,6 +151,7 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
             spUtil.removeData(Global.SP_KEY_CELLPHONE);
             spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
             spUtil.removeData(Global.SP_KEY_TOKEN);
+            RingToast.show("您已在其他设备登录");
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);

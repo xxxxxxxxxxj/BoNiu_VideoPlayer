@@ -15,6 +15,7 @@ import com.boniu.shipinbofangqi.mvp.view.iview.IFeedBackActivityView;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
+import com.boniu.shipinbofangqi.util.StringUtil;
 import com.kongzue.dialog.v3.CustomDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
@@ -117,9 +118,9 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
                 CommonUtil.goToQQ(mActivity, "1404556846");
                 break;
             case R.id.ll_feedback_zhzx:
-                boolean ISCANCEL = spUtil.getBoolean(Global.SP_KEY_ISCANCEL, false);
-                if (ISCANCEL) {
-                    RingToast.show("账号已注销");
+                String CANCELTIME = spUtil.getString(Global.SP_KEY_CANCELTIME, "");
+                if (StringUtil.isNotEmpty(CANCELTIME)) {
+                    startActivity(CancelAccountActivity.class);
                 } else {
                     CustomDialog.build(mActivity, R.layout.layout_cancelaccount_dialog, new CustomDialog.OnBindView() {
                         @Override
@@ -158,11 +159,11 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
     public void cancelAccountSuccess(CancelAccountBean response) {
         RingLog.e("cancelAccountSuccess() response = " + response);
         hideLoadDialog();
-        spUtil.saveBoolean(Global.SP_KEY_ISCANCEL, true);
         if (response != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString("applyTime", response.getApplyTime());
-            startActivity(CancelAccountActivity.class, bundle);
+            if (StringUtil.isNotEmpty(response.getApplyTime())) {
+                spUtil.saveString(Global.SP_KEY_CANCELTIME, response.getApplyTime());
+            }
+            startActivity(CancelAccountActivity.class);
         }
     }
 
@@ -175,6 +176,7 @@ public class FeedBackActivity extends BaseActivity<FeedBackActivityPresenter> im
             spUtil.removeData(Global.SP_KEY_CELLPHONE);
             spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
             spUtil.removeData(Global.SP_KEY_TOKEN);
+            RingToast.show("您已在其他设备登录");
             startActivity(LoginActivity.class);
         } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
             CommonUtil.getNewAccountId(mActivity);

@@ -27,7 +27,7 @@ public class Global {
     public static final String SP_KEY_ISLOGIN = "SP_KEY_ISLOGIN";//是否登录
     public static final String SP_KEY_CELLPHONE = "SP_KEY_CELLPHONE";//登录手机号码
 
-    public static final String SP_KEY_ISCANCEL = "SP_KEY_ISCANCEL";//账户是否注销
+    public static final String SP_KEY_CANCELTIME = "SP_KEY_CANCELTIME";//账户注销时间
     public static final String SP_KEY_VALIDITYTIME = "SP_KEY_VALIDITYTIME";//VIP到期时间
 
     public static final String SP_KEY_UPGRADETIME = "SP_KEY_UPGRADETIME";//升级弹框时间
