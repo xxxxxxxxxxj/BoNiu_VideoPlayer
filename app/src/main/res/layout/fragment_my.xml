@@ -294,58 +294,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_fragmy_finger"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dip"
-                    android:orientation="vertical"
-                    android:paddingLeft="20dip"
-                    android:paddingRight="20dip">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="49dip">
-
-                        <ImageView
-                            android:id="@+id/sh_fragmy"
-                            android:layout_width="40dip"
-                            android:layout_height="18dip"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
-                            android:src="@mipmap/icon_switch_close" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dip"
-                            android:layout_toLeftOf="@id/sh_fragmy"
-                            android:gravity="center_vertical">
-
-                            <ImageView
-                                android:layout_width="21dip"
-                                android:layout_height="24dip"
-                                android:layout_marginRight="10dip"
-                                android:adjustViewBounds="true"
-                                android:scaleType="fitXY"
-                                android:src="@mipmap/icon_finger" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="开启手势密码解锁"
-                                android:textColor="@color/white"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="wrap_content"
-                        android:layout_height="1dip"
-                        android:background="@color/a575757" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/ll_fragmy_folder"
                     android:layout_width="match_parent"
                     android:layout_height="50dip"

@@ -159,6 +159,7 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                             hideLoadDialog();
                             PollingUtils.stopPollingService(mActivity, PayResultService.class, PayResultService.ACTION);
                             spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);
+                            finish();
                         } else if (resultCode.equals("FAIL")) {
                             RingToast.show(payResult.getResultMsg());
                             hideLoadDialog();

@@ -18,6 +18,7 @@ import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.SetGesturesActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.StartGesturesActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMyFragView;
 import com.boniu.shipinbofangqi.permission.PermissionListener;
@@ -53,12 +54,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     TextView tvToolbarTitle;
     @BindView(R.id.iv_toolbar_back)
     ImageView ivToolbarBack;
-    @BindView(R.id.sh_fragmy)
-    ImageView sh_fragmy;
     @BindView(R.id.ll_fragmy_folder)
     LinearLayout ll_fragmy_folder;
-    @BindView(R.id.ll_fragmy_finger)
-    LinearLayout ll_fragmy_finger;
     @BindView(R.id.srl_fragmy)
     SmartRefreshLayout srlFragMy;
     @BindView(R.id.tv_fragmy_login)
@@ -133,14 +130,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             public void onGranted(String permissionName) {
                 String pwd = GetGestures.readGestures(mActivity);
                 if (StringUtil.isNotEmpty(pwd)) {
-                    //判断是否开启手势密码解锁
-                    boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                    if (isFinger) {
-                        sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
-                    } else {
-                        sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
-                        spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                    }
                     //判断是否开启加密文件夹
                     boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
                     if (ISOPENENCRYPTEDFOLDER) {
@@ -151,8 +140,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                     }
                 } else {
                     shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
-                    sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
-                    spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
                     spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
                 }
             }
@@ -203,7 +190,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
         MobclickAgent.onPageEnd("MyFragment");
     }
 
-    @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about, R.id.sh_fragmy,
+    @OnClick({R.id.rl_fragmy_login, R.id.ll_fragmy_senior, R.id.ll_fragmy_feedback, R.id.ll_fragmy_about,
             R.id.sh_fragmy_folder, R.id.tv_fragmy_loginout, R.id.ll_fragmy_gestures})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -212,7 +199,12 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                     requestEachCombined(new PermissionListener() {
                         @Override
                         public void onGranted(String permissionName) {
-                            startActivity(SetGesturesActivity.class);
+                            String pwd = GetGestures.readGestures(mActivity);
+                            if (StringUtil.isNotEmpty(pwd)) {
+                                startActivity(StartGesturesActivity.class);
+                            } else {
+                                startActivity(SetGesturesActivity.class);
+                            }
                         }
 
                         @Override
@@ -266,47 +258,6 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                 break;
             case R.id.ll_fragmy_about:
                 startActivity(AboutActivity.class);
-                break;
-            case R.id.sh_fragmy:
-                if (CommonUtil.isLogin(mActivity)) {
-                    boolean isFinger = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                    if (isFinger) {
-                        sh_fragmy.setImageResource(R.mipmap.icon_switch_close);
-                        spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                    } else {
-                        requestEachCombined(new PermissionListener() {
-                            @Override
-                            public void onGranted(String permissionName) {
-                                String pwd = GetGestures.readGestures(mActivity);
-                                if (StringUtil.isNotEmpty(pwd)) {
-                                    sh_fragmy.setImageResource(R.mipmap.icon_switch_open);
-                                    spUtil.saveBoolean(Global.SP_KEY_ISOPENFINGER, true);
-                                } else {
-                                    RingToast.show("请先设置手势密码");
-                                    startActivity(SetGesturesActivity.class);
-                                }
-                            }
-
-                            @Override
-                            public void onDenied(String permissionName) {
-                                showToast("请打开存储权限");
-                            }
-
-                            @Override
-                            public void onDeniedWithNeverAsk(String permissionName) {
-                                MessageDialog.show(mActivity, "请打开存储权限", "确定要打开存储权限吗？", "确定", "取消").setOnOkButtonClickListener(new OnDialogButtonClickListener() {
-                                    @Override
-                                    public boolean onClick(BaseDialog baseDialog, View v) {
-                                        QMUIDeviceHelper.goToPermissionManager(mActivity);
-                                        return false;
-                                    }
-                                });
-                            }
-                        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
-                    }
-                } else {
-                    startActivity(LoginActivity.class);
-                }
                 break;
             case R.id.sh_fragmy_folder:
                 if (CommonUtil.isLogin(mActivity)) {

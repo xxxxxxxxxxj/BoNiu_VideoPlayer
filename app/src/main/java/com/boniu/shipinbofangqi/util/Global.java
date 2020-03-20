@@ -14,7 +14,6 @@ public class Global {
 
     public static final String SP_KEY_ISAGREEPRIVACY = "SP_KEY_ISAGREEPRIVACY";//用户协议是否弹框
     public static final String SP_KEY_ISJUMPLOGIN = "SP_KEY_ISJUMPLOGIN";//是否跳转登录
-    public static final String SP_KEY_ISOPENFINGER = "SP_KEY_ISOPENFINGER";//是否开启指纹识别
     public static final String SP_KEY_PLAYVIDEONUM_TODAY = "SP_KEY_PLAYVIDEONUM_TODAY";//当天播放视频次数
     public static final String SP_KEY_PLAYVIDEOTIME_TODAY = "SP_KEY_PLAYVIDEOTIME_TODAY";//播放视频日期
     public static final String SP_KEY_MARKETCLICKTIME = "SP_KEY_MARKETCLICKTIME";//应用市场弹框点击时间

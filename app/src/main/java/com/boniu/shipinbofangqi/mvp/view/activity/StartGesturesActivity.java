@@ -41,6 +41,7 @@ public class StartGesturesActivity extends BaseActivity {
     ImageView iv_toolbar_back;
     private String password;
     private int errorCount = 5;
+    private int type;
 
     @Override
     protected int getLayoutResID() {
@@ -64,7 +65,7 @@ public class StartGesturesActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-
+        type = getIntent().getIntExtra("type", 0);
     }
 
     @Override
@@ -94,7 +95,11 @@ public class StartGesturesActivity extends BaseActivity {
                         hintDescTv.setTextColor(Color.GRAY);
                         hintDescTv.setText("密码正确");
                         RingToast.show("密码正确");
-                        EventBus.getDefault().post(new GestureSuccessEvent(getIntent().getIntExtra("type", 0)));
+                        if (type > 0) {
+                            EventBus.getDefault().post(new GestureSuccessEvent(type));
+                        } else {
+                            startActivity(SetGesturesActivity.class);
+                        }
                         finish();
                     }
                 }

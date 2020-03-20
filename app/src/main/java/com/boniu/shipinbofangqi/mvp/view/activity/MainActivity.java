@@ -20,6 +20,7 @@ import com.boniu.shipinbofangqi.mvp.model.entity.AppInfoBean;
 import com.boniu.shipinbofangqi.mvp.model.entity.TabEntity;
 import com.boniu.shipinbofangqi.mvp.model.event.CaptureEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
+import com.boniu.shipinbofangqi.mvp.model.event.PayEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MainActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.MyFragment;
@@ -87,6 +88,13 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(PayEvent event) {
+        if (event != null) {
+            setFragMentIndex(2);
+        }
     }
 
     @Override

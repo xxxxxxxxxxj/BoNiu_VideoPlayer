@@ -30,6 +30,7 @@ import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.CountdownUtil;
 import com.boniu.shipinbofangqi.util.GetDeviceId;
+import com.boniu.shipinbofangqi.util.GetGestures;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.JumpToUtil;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
@@ -57,6 +58,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     TextView tv_flash_shouquan;
     @BindView(R.id.btn_flash_skip)
     Button btnFlashSkip;
+    private String password;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(GestureSuccessEvent event) {
@@ -145,6 +147,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
         requestEachCombined(new PermissionListener() {
             @Override
             public void onGranted(String permissionName) {
+                password = GetGestures.readGestures(mActivity);
                 if (StringUtil.isEmpty(GetDeviceId.readDeviceID(mContext))) {
                     GetDeviceId.saveDeviceID(mContext);
                     EasyHttp.getInstance().addCommonHeaders(UrlConstants.getHeaders(mActivity));//设置全局公共头
@@ -203,9 +206,8 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 startActivity(MainActivity.class, true);
                 break;
             case R.id.rl_flash_root:
-                //判断是否开启指纹识别
-                boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                if (ISOPENFINGER) {
+                //判断是否开启手势密码
+                if (StringUtil.isNotEmpty(password)) {
                     setGesture();
                 }
                 break;
@@ -295,9 +297,8 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
         if (ISAGREEPRIVACY) {
             //判断是否登录
             if (CommonUtil.isLogin(mActivity)) {
-                //判断是否开启指纹识别
-                boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                if (ISOPENFINGER) {
+                //判断是否开启手势密码
+                if (StringUtil.isNotEmpty(password)) {
                     tv_flash_shouquan.setVisibility(View.VISIBLE);
                     setGesture();
                 } else {
@@ -308,9 +309,8 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 //判断是否跳转登录
                 boolean ISJUMPLOGIN = spUtil.getBoolean(Global.SP_KEY_ISJUMPLOGIN, false);
                 if (ISJUMPLOGIN) {
-                    //判断是否开启指纹识别
-                    boolean ISOPENFINGER = spUtil.getBoolean(Global.SP_KEY_ISOPENFINGER, false);
-                    if (ISOPENFINGER) {
+                    //判断是否开启手势密码
+                    if (StringUtil.isNotEmpty(password)) {
                         tv_flash_shouquan.setVisibility(View.VISIBLE);
                         setGesture();
                     } else {
