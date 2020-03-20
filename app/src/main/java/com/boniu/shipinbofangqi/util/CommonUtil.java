@@ -20,9 +20,11 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.OrderCreateBean;
+import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -314,8 +316,28 @@ public class CommonUtil {
                             Gson gson = new Gson();
                             OrderCreateBean orderCreateBean = gson.fromJson(response, OrderCreateBean.class);
                             if (orderCreateBean != null) {
-                                if (orderCreateBean.getErrorCode().equals("0")) {
+                                int errorCode = 0;
+                                if (orderCreateBean.getErrorCode().contains("-")) {
+                                    errorCode = Integer.parseInt(orderCreateBean.getErrorCode().split("-")[2]);
+                                }
+                                if (errorCode == 0) {
                                     SharedPreferenceUtil.getInstance(mContext).saveString(Global.SP_KEY_ACCOUNTIUD, orderCreateBean.getResult());
+                                } else if (errorCode == AppConfig.EXIT_USER_CODE) {
+                                    SharedPreferenceUtil.getInstance(mContext).removeData(Global.SP_KEY_ISLOGIN);
+                                    SharedPreferenceUtil.getInstance(mContext).removeData(Global.SP_KEY_CELLPHONE);
+                                    SharedPreferenceUtil.getInstance(mContext).removeData(Global.SP_KEY_ACCOUNTIUD);
+                                    SharedPreferenceUtil.getInstance(mContext).removeData(Global.SP_KEY_TOKEN);
+                                    RingToast.show("您已在其他设备登录");
+                                    mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                                } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+                                    CommonUtil.getNewAccountId(mContext);
+                                } else {
+                                    int netWorkState = CommonUtil.getNetWorkState(mContext);
+                                    if (netWorkState == CommonUtil.NETWORK_NONE) {
+                                        RingToast.show("无网络连接");
+                                    } else {
+                                        RingToast.show(orderCreateBean.getErrorMsg());
+                                    }
                                 }
                             }
                         }

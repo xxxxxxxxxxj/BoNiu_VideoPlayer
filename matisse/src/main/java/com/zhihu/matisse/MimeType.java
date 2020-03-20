@@ -19,10 +19,9 @@ package com.zhihu.matisse;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import androidx.collection.ArraySet;
-
-import android.webkit.MimeTypeMap;
 
 import com.zhihu.matisse.internal.utils.PhotoMetadataUtils;
 
@@ -90,6 +89,9 @@ public enum MimeType {
     )),
     AVI("video/avi", arraySetOf(
             "avi"
+    )),
+    WMV("video/WMV", arraySetOf(
+            "WMV"
     ));
 
     private final String mMimeTypeName;
@@ -121,7 +123,7 @@ public enum MimeType {
     }
 
     public static Set<MimeType> ofVideo() {
-        return EnumSet.of(MPEG, MP4, QUICKTIME, THREEGPP, THREEGPP2, MKV, WEBM, TS, AVI);
+        return EnumSet.of(MPEG, MP4, QUICKTIME, THREEGPP, THREEGPP2, MKV, WEBM, TS, AVI, WMV);
     }
 
     public static boolean isImage(String mimeType) {
