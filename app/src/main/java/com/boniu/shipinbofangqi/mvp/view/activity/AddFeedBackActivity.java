@@ -2,6 +2,8 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +19,8 @@ import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
+
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,6 +40,10 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
     TextView showtext;
     private String name;
     private String type;
+    //输入框初始值
+    private int num = 0;
+    //输入框最大值
+    public int mMaxNum = 400;
 
     @Override
     protected int getLayoutResID() {
@@ -68,25 +76,57 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
 
     @Override
     protected void initEvent() {
-        etAddfeedbackName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                if (s.length() >= 400) {
-                    RingToast.show("至多400字");
-                } else {
-                    showtext.setText(s.length() + "/400");
+        etAddfeedbackName.setFilters(new InputFilter[]{
+                new InputFilter() {
+                    @Override
+                    public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
+                        try {
+                            String regex = "/^(\\w|-|[\\u4E00-\\u9FA5])*$/";
+                            boolean isChinese = Pattern.matches(regex, charSequence.toString());
+                            if (!Character.isLetterOrDigit(charSequence.charAt(i)) || isChinese) {
+                                return "";
+                            }
+                            return null;
+                        } catch (Exception e) {
+                            RingLog.e("e = " + e.toString());
+                            return null;
+                        }
+                    }
                 }
+        });
+        etAddfeedbackName.addTextChangedListener(new TextWatcher() {
+            //记录输入的字数
+            private CharSequence wordNum;
+            private int selectionStart;
+            private int selectionEnd;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //实时记录输入的字数
+                wordNum = s;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                int number = num + s.length();
+                //TextView显示剩余字数
+                showtext.setText("" + number + "/400");
+                selectionStart = etAddfeedbackName.getSelectionStart();
+                selectionEnd = etAddfeedbackName.getSelectionEnd();
+                //判断大于最大值
+                if (wordNum.length() > mMaxNum) {
+                    //删除多余输入的字（不会显示出来）
+                    s.delete(selectionStart - 1, selectionEnd);
+                    int tempSelection = selectionEnd;
+                    etAddfeedbackName.setText(s);
+                    etAddfeedbackName.setSelection(tempSelection);//设置光标在最后
+                    RingToast.show("至多400字");
+                }
             }
         });
     }
