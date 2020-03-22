@@ -126,6 +126,7 @@
         <activity android:name=".mvp.view.activity.MemberActivity" />
         <activity android:name=".mvp.view.activity.AboutActivity" />
         <activity android:name=".mvp.view.activity.FeedBackActivity" />
+        <activity android:name=".mvp.view.activity.TestActivity" />
         <activity
             android:name=".mvp.view.activity.WebViewActivity"
             android:configChanges="orientation|screenSize"
@@ -146,7 +147,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".mvp.view.activity.SetGesturesActivity" />
-        <activity android:name=".mvp.view.activity.StartGesturesActivity"/>
+        <activity android:name=".mvp.view.activity.StartGesturesActivity" />
+        <activity android:name=".mvp.view.activity.ChooseVideoActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

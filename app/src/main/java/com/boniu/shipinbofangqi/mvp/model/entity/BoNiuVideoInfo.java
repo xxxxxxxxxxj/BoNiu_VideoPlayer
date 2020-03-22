@@ -20,6 +20,7 @@ public class BoNiuVideoInfo implements Serializable {
     private String boniu_video_url;
     private int boniu_video_folder_id;
     private String boniu_video_length;
+    private boolean boniu_video_isselect;
 
     @Override
     public String toString() {
@@ -46,6 +47,14 @@ public class BoNiuVideoInfo implements Serializable {
         this.boniu_video_url = boniu_video_url;
         this.boniu_video_folder_id = boniu_video_folder_id;
         this.boniu_video_length = boniu_video_length;
+    }
+
+    public boolean isBoniu_video_isselect() {
+        return boniu_video_isselect;
+    }
+
+    public void setBoniu_video_isselect(boolean boniu_video_isselect) {
+        this.boniu_video_isselect = boniu_video_isselect;
     }
 
     public String getBoniu_video_length() {

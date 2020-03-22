@@ -76,24 +76,23 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
 
     @Override
     protected void initEvent() {
-        etAddfeedbackName.setFilters(new InputFilter[]{
-                new InputFilter() {
-                    @Override
-                    public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
-                        try {
-                            String regex = "/^(\\w|-|[\\u4E00-\\u9FA5])*$/";
-                            boolean isChinese = Pattern.matches(regex, charSequence.toString());
-                            if (!Character.isLetterOrDigit(charSequence.charAt(i)) || isChinese) {
-                                return "";
-                            }
-                            return null;
-                        } catch (Exception e) {
-                            RingLog.e("e = " + e.toString());
-                            return null;
-                        }
+        InputFilter inputFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
+                try {
+                    String regex = "/^(\\w|-|[\\u4E00-\\u9FA5])*$/";
+                    boolean isChinese = Pattern.matches(regex, charSequence.toString());
+                    if (!Character.isLetterOrDigit(charSequence.charAt(i)) || isChinese) {
+                        return "";
                     }
+                    return null;
+                } catch (Exception e) {
+                    RingLog.e("e = " + e.toString());
+                    return null;
                 }
-        });
+            }
+        };
+        etAddfeedbackName.setFilters(new InputFilter[]{inputFilter});
         etAddfeedbackName.addTextChangedListener(new TextWatcher() {
             //记录输入的字数
             private CharSequence wordNum;

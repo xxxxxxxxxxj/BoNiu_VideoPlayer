@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
+import com.boniu.shipinbofangqi.mvp.view.activity.ChooseVideoActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.widget.GifSizeFilter;
 import com.boniu.shipinbofangqi.mvp.view.widget.dialog.QMUITipDialog;
@@ -540,7 +541,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
         Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, REQUEST_CODE_CHOOSEVIDEO);
         /*Intent intent = new Intent();
-        *//* 开启Pictures画面Type设定为image *//*
+         *//* 开启Pictures画面Type设定为image *//*
         //intent.setType("image/*");
         // intent.setType("audio/*"); //选择音频
         intent.setType("video/*"); //选择视频 （mp4 3gp 是android支持的视频格式）
@@ -658,6 +659,27 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
         //跳转裁剪页面
         uCrop.start(mActivity, requestCode);
         return cameraScalePath;
+    }
+
+    protected void chooseVideo(int maxSelectable) {
+        requestEachCombined(new PermissionListener() {
+            @Override
+            public void onGranted(String permissionName) {
+                Intent intent = new Intent(mActivity, ChooseVideoActivity.class);
+                intent.putExtra("maxSelectable", maxSelectable);
+                startActivityForResult(intent, REQUEST_CODE_CHOOSE);
+            }
+
+            @Override
+            public void onDenied(String permissionName) {
+                showToast("请打开存储和相机权限");
+            }
+
+            @Override
+            public void onDeniedWithNeverAsk(String permissionName) {
+                showToast("请打开存储和相机权限");
+            }
+        }, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA});
     }
 
     protected void getVideo(int maxSelectable) {

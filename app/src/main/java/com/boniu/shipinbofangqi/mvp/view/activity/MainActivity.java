@@ -17,6 +17,7 @@ import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.AppInfoBean;
+import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
 import com.boniu.shipinbofangqi.mvp.model.entity.TabEntity;
 import com.boniu.shipinbofangqi.mvp.model.event.CaptureEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
@@ -47,7 +48,6 @@ import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.yalantis.ucrop.UCrop;
-import com.zhihu.matisse.Matisse;
 import com.zhouyou.http.EasyHttp;
 
 import org.greenrobot.eventbus.EventBus;
@@ -333,9 +333,10 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_CHOOSE://Matisse选择照片返回
-                    List<Uri> uris = Matisse.obtainResult(data);
-                    List<String> strings = Matisse.obtainPathResult(data);
-                    EventBus.getDefault().post(new MatisseDataEvent(uris, strings));
+                    List<BoNiuVideoInfo> videoList = (ArrayList<BoNiuVideoInfo>) data.getSerializableExtra("videoList");
+                    if (videoList != null && videoList.size() > 0) {
+                        EventBus.getDefault().post(new MatisseDataEvent(videoList));
+                    }
                     break;
                 case REQUEST_CODE_PREVIEW://选择相册返回码
                     //启动裁剪
