@@ -93,6 +93,7 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
             case R.id.ll_fragresources_input:
                 if (CommonUtil.isLogin(mActivity)) {
                     getVideo(9);
+                    //chooseVideo();
                 } else {
                     startActivity(LoginActivity.class);
                 }
