@@ -84,22 +84,35 @@ public class BoNiuVideoDao {
     }
 
     /**
-     * 判断视频是否已存在
+     * 查询所有没有保存到文件夹的视频
      *
      * @return
      */
-    public boolean isExists(String boniu_video_url) {
-        List<BoNiuVideoInfo> all = getAll();
-        boolean isExists = false;
-        if (all != null && all.size() > 0) {
-            for (int i = 0; i < all.size(); i++) {
-                if (all.get(i).getBoniu_video_url().equals(boniu_video_url)) {
-                    isExists = true;
-                    break;
-                }
-            }
+    public List<BoNiuVideoInfo> getAllByPage(int page) {
+        List<BoNiuVideoInfo> list = new ArrayList<BoNiuVideoInfo>();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select * from boniu_video where boniu_video_folder_id<=0 order by boniu_video_id desc limit 10 offset ?";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf((page - 1) * 10)});
+        while (cursor.moveToNext()) {
+            int boniu_video_id = cursor.getInt(0);
+            String boniu_video_name = cursor.getString(1);
+            String boniu_video_coverimg = cursor.getString(2);
+            String boniu_video_formatmemory = cursor.getString(3);
+            String boniu_video_createtime = cursor.getString(4);
+            double boniu_video_memory = cursor.getDouble(5);
+            String boniu_video_url = cursor.getString(6);
+            int boniu_video_folder_id = cursor.getInt(7);
+            String boniu_video_length = cursor.getString(8);
+            BoNiuVideoInfo BoNiuVideoInfo = new BoNiuVideoInfo(boniu_video_id,
+                    boniu_video_name, boniu_video_coverimg, boniu_video_formatmemory,
+                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length);
+            list.add(BoNiuVideoInfo);
         }
-        return isExists;
+        cursor.close();
+        database.close();
+        RingLog.e("list = " + list.toString());
+        return list;
     }
 
     /**
@@ -113,6 +126,38 @@ public class BoNiuVideoDao {
         // query
         String sql = "select * from boniu_video where boniu_video_folder_id=? order by boniu_video_id desc";
         Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_video_folder_id)});
+        while (cursor.moveToNext()) {
+            int boniu_video_id = cursor.getInt(0);
+            String boniu_video_name = cursor.getString(1);
+            String boniu_video_coverimg = cursor.getString(2);
+            String boniu_video_formatmemory = cursor.getString(3);
+            String boniu_video_createtime = cursor.getString(4);
+            double boniu_video_memory = cursor.getDouble(5);
+            String boniu_video_url = cursor.getString(6);
+            int boniu_video_folder_id = cursor.getInt(7);
+            String boniu_video_length = cursor.getString(8);
+            BoNiuVideoInfo BoNiuVideoInfo = new BoNiuVideoInfo(boniu_video_id,
+                    boniu_video_name, boniu_video_coverimg, boniu_video_formatmemory,
+                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length);
+            list.add(BoNiuVideoInfo);
+        }
+        cursor.close();
+        database.close();
+        RingLog.e("list = " + list.toString());
+        return list;
+    }
+
+    /**
+     * 查询一个文件夹下所有的视频
+     *
+     * @return
+     */
+    public List<BoNiuVideoInfo> getAllByFolderIdByPage(int local_boniu_video_folder_id, int page) {
+        List<BoNiuVideoInfo> list = new ArrayList<BoNiuVideoInfo>();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select * from boniu_video where boniu_video_folder_id=? order by boniu_video_id desc limit 10 offset ?";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_video_folder_id), String.valueOf((page - 1) * 10)});
         while (cursor.moveToNext()) {
             int boniu_video_id = cursor.getInt(0);
             String boniu_video_name = cursor.getString(1);

@@ -67,7 +67,36 @@ public class BoNiuFolderDao {
             int boniu_folder_isdefault = cursor.getInt(5);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime,boniu_folder_isdefault);
+                    boniu_folder_createtime, boniu_folder_isdefault);
+            list.add(boNiuFolderInfo);
+        }
+        cursor.close();
+        database.close();
+        RingLog.e("list = " + list.toString());
+        return list;
+    }
+
+    /**
+     * 查询所有文件夹
+     *
+     * @return
+     */
+    public List<BoNiuFolderInfo> getAllByPage(int page) {
+        List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select * from boniu_folder order by boniu_folder_id desc limit 10 offset ?";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf((page - 1) * 10)});
+        while (cursor.moveToNext()) {
+            int boniu_folder_id = cursor.getInt(0);
+            String boniu_folder_name = cursor.getString(1);
+            String boniu_folder_formatmemory = cursor.getString(2);
+            double boniu_folder_memory = cursor.getDouble(3);
+            String boniu_folder_createtime = cursor.getString(4);
+            int boniu_folder_isdefault = cursor.getInt(5);
+            BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
+                    boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
+                    boniu_folder_createtime, boniu_folder_isdefault);
             list.add(boNiuFolderInfo);
         }
         cursor.close();
@@ -81,7 +110,7 @@ public class BoNiuFolderDao {
      *
      * @return
      */
-    public List<BoNiuFolderInfo> getAll(int local_boniu_folder_id) {
+    public List<BoNiuFolderInfo> getAllByFolderId(int local_boniu_folder_id) {
         List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
@@ -96,8 +125,79 @@ public class BoNiuFolderDao {
             int boniu_folder_isdefault = cursor.getInt(5);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime,boniu_folder_isdefault);
+                    boniu_folder_createtime, boniu_folder_isdefault);
             list.add(boNiuFolderInfo);
+        }
+        cursor.close();
+        database.close();
+        RingLog.e("list = " + list.toString());
+        return list;
+    }
+
+    /**
+     * 查询除了指定文件夹之外的所有文件夹
+     *
+     * @return
+     */
+    public List<BoNiuFolderInfo> getAllByFolderIdByPage(int local_boniu_folder_id, int page) {
+        List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select * from boniu_folder where boniu_folder_id!=? order by boniu_folder_id desc limit 10 offset ?";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_folder_id), String.valueOf((page - 1) * 10)});
+        while (cursor.moveToNext()) {
+            int boniu_folder_id = cursor.getInt(0);
+            String boniu_folder_name = cursor.getString(1);
+            String boniu_folder_formatmemory = cursor.getString(2);
+            double boniu_folder_memory = cursor.getDouble(3);
+            String boniu_folder_createtime = cursor.getString(4);
+            int boniu_folder_isdefault = cursor.getInt(5);
+            BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
+                    boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
+                    boniu_folder_createtime, boniu_folder_isdefault);
+            list.add(boNiuFolderInfo);
+        }
+        cursor.close();
+        database.close();
+        RingLog.e("list = " + list.toString());
+        return list;
+    }
+
+    /**
+     * 查询所有文件夹的名字
+     *
+     * @return
+     */
+    public List<String> getAllFolderName() {
+        List<String> list = new ArrayList<String>();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select boniu_folder_name from boniu_folder";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            String boniu_folder_name = cursor.getString(0);
+            list.add(boniu_folder_name);
+        }
+        cursor.close();
+        database.close();
+        RingLog.e("list = " + list.toString());
+        return list;
+    }
+
+    /**
+     * 查询所有文件夹的状态
+     *
+     * @return
+     */
+    public List<Integer> getAllFolderDefault() {
+        List<Integer> list = new ArrayList<Integer>();
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        // query
+        String sql = "select boniu_folder_isdefault from boniu_folder";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int boniu_folder_isdefault = cursor.getInt(0);
+            list.add(boniu_folder_isdefault);
         }
         cursor.close();
         database.close();
@@ -111,15 +211,24 @@ public class BoNiuFolderDao {
      * @return
      */
     public boolean isExists(String boniu_folder_name) {
-        List<BoNiuFolderInfo> all = getAll();
+        List<String> all = getAllFolderName();
         boolean isExists = false;
-        if (all != null && all.size() > 0) {
-            for (int i = 0; i < all.size(); i++) {
-                if (all.get(i).getBoniu_folder_name().equals(boniu_folder_name)) {
-                    isExists = true;
-                    break;
-                }
-            }
+        if (all != null && all.size() > 0 && all.contains(boniu_folder_name)) {
+            isExists = true;
+        }
+        return isExists;
+    }
+
+    /**
+     * 判断默认文件夹是否已存在
+     *
+     * @return
+     */
+    public boolean isExists() {
+        List<Integer> all = getAllFolderDefault();
+        boolean isExists = false;
+        if (all != null && all.size() > 0 && all.contains(1)) {
+            isExists = true;
         }
         return isExists;
     }

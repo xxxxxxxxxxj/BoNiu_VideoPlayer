@@ -2,8 +2,6 @@ package com.boniu.shipinbofangqi.mvp.model.event;
 
 import android.net.Uri;
 
-import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
-
 import java.util.List;
 
 /**
@@ -17,10 +15,10 @@ import java.util.List;
 public class MatisseDataEvent {
     private List<Uri> uris;
     private List<String> strings;
-    private List<BoNiuVideoInfo> videoList;
+    private String videoUrl;
 
-    public MatisseDataEvent(List<BoNiuVideoInfo> videoList) {
-        this.videoList = videoList;
+    public MatisseDataEvent(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
     public MatisseDataEvent(List<Uri> uris, List<String> strings) {
@@ -28,12 +26,12 @@ public class MatisseDataEvent {
         this.strings = strings;
     }
 
-    public List<BoNiuVideoInfo> getVideoList() {
-        return videoList;
+    public String getVideoUrl() {
+        return videoUrl;
     }
 
-    public void setVideoList(List<BoNiuVideoInfo> videoList) {
-        this.videoList = videoList;
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
     public List<Uri> getUris() {

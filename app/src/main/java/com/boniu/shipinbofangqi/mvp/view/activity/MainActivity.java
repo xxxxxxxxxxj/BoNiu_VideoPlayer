@@ -17,7 +17,6 @@ import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.AppInfoBean;
-import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
 import com.boniu.shipinbofangqi.mvp.model.entity.TabEntity;
 import com.boniu.shipinbofangqi.mvp.model.event.CaptureEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
@@ -332,12 +331,6 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         RingLog.e("resultCode = " + resultCode);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_CHOOSE://Matisse选择照片返回
-                    List<BoNiuVideoInfo> videoList = (ArrayList<BoNiuVideoInfo>) data.getSerializableExtra("videoList");
-                    if (videoList != null && videoList.size() > 0) {
-                        EventBus.getDefault().post(new MatisseDataEvent(videoList));
-                    }
-                    break;
                 case REQUEST_CODE_PREVIEW://选择相册返回码
                     //启动裁剪
                     Uri selectedUri = data.getData();

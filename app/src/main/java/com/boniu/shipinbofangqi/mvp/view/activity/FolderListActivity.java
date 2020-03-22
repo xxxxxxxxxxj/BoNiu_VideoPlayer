@@ -111,7 +111,7 @@ public class FolderListActivity extends BaseActivity {
     @Override
     protected void loadData() {
         folderList.clear();
-        folderList.addAll(boNiuFolderDao.getAll(boniu_folder_id));
+        folderList.addAll(boNiuFolderDao.getAllByFolderId(boniu_folder_id));
         folderAdapter.notifyDataSetChanged();
         if (folderList.size() <= 0) {
             folderAdapter.setEmptyView(setEmptyViewBase(2, "您还没有创建文件夹", null));

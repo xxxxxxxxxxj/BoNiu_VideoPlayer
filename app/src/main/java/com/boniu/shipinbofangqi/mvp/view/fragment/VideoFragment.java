@@ -21,6 +21,7 @@ import com.boniu.shipinbofangqi.mvp.presenter.VideoFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FolderListActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.PlayVideoActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.StartGesturesActivity;
@@ -35,6 +36,7 @@ import com.boniu.shipinbofangqi.sqllite.dao.BoNiuFolderDao;
 import com.boniu.shipinbofangqi.sqllite.dao.BoNiuVideoDao;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
+import com.boniu.shipinbofangqi.util.FileSizeUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
@@ -150,15 +152,29 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(MatisseDataEvent event) {
         if (event != null) {
-            List<BoNiuVideoInfo> videoList = event.getVideoList();
-            if (videoList != null && videoList.size() > 0) {
-                for (int i = 0; i < videoList.size(); i++) {
-                    BoNiuVideoInfo boNiuVideoInfo = videoList.get(i);
-                    boNiuVideoInfo.setBoniu_video_createtime(CommonUtil.getCurrentTime());
-                    boNiuVideoDao.add(boNiuVideoInfo);
-                }
-                setData();
-            }
+            String videoUrl = event.getVideoUrl();
+            String videoName = videoUrl.substring(videoUrl.lastIndexOf("/") + 1, videoUrl.length());
+            BoNiuVideoInfo boNiuVideoInfo = new BoNiuVideoInfo();
+            long size = FileSizeUtil.getFileOrFilesSize(videoUrl);
+            String formatSize = FileSizeUtil.formatFileSize(size, false);
+            int videoDuration = CommonUtil.getLocalVideoDuration(videoUrl);
+            String formatVideoDuration = FileSizeUtil.formatSeconds(videoDuration / 1000);
+            String currentTime = CommonUtil.getCurrentTime();
+            RingLog.e("videoUrl = " + videoUrl);
+            RingLog.e("videoName = " + videoName);
+            RingLog.e("size = " + size);
+            RingLog.e("formatSize = " + formatSize);
+            RingLog.e("videoDuration = " + videoDuration);
+            RingLog.e("formatVideoDuration = " + formatVideoDuration);
+            RingLog.e("currentTime = " + currentTime);
+            boNiuVideoInfo.setBoniu_video_url(videoUrl);
+            boNiuVideoInfo.setBoniu_video_memory(size);
+            boNiuVideoInfo.setBoniu_video_formatmemory(formatSize);
+            boNiuVideoInfo.setBoniu_video_length(formatVideoDuration);
+            boNiuVideoInfo.setBoniu_video_name(videoName);
+            boNiuVideoInfo.setBoniu_video_createtime(currentTime);
+            boNiuVideoDao.add(boNiuVideoInfo);
+            setData();
         }
     }
 
@@ -211,16 +227,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     protected void initData() {
         boNiuVideoDao = new BoNiuVideoDao(mActivity);
         boNiuFolderDao = new BoNiuFolderDao(mActivity);
-        boolean isAdd = false;
-        if (boNiuFolderDao.getAll() != null && boNiuFolderDao.getAll().size() > 0) {
-            for (int i = 0; i < boNiuFolderDao.getAll().size(); i++) {
-                if (boNiuFolderDao.getAll().get(i).getBoniu_folder_isdefault() == 1) {
-                    isAdd = true;
-                    break;
-                }
-            }
-        }
-        if (!isAdd) {
+        if (!boNiuFolderDao.isExists()) {
             boNiuFolderDao.add(new BoNiuFolderInfo("默认文件夹", CommonUtil.getCurrentTime(), 1));
         }
         setData();
