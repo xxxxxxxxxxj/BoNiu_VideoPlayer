@@ -20,6 +20,8 @@ import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
 
+import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -78,9 +80,9 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
             @Override
             public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
                 try {
-                    //String regex = "/^(\\w|-|[\\u4E00-\\u9FA5])*$/";
-                    //boolean isChinese = Pattern.matches(regex, charSequence.toString());
-                    if (!Character.isLetterOrDigit(charSequence.charAt(i))/* || isChinese*/) {
+                    String regex = "/^(\\w|-|[\\u4E00-\\u9FA5])*$/";
+                    boolean isChinese = Pattern.matches(regex, charSequence.toString());
+                    if (!Character.isLetterOrDigit(charSequence.charAt(i))  || isChinese) {
                         return "";
                     }
                     return null;
