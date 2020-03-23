@@ -1,6 +1,7 @@
 package com.boniu.shipinbofangqi.mvp.view.fragment;
 
 import android.Manifest;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,6 +11,7 @@ import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.AccountInfoBean;
+import com.boniu.shipinbofangqi.mvp.model.event.GestureSuccessEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.LoginEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.PayEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.MyFragPresenter;
@@ -67,6 +69,14 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     @BindView(R.id.tv_fragmy_loginout)
     TextView tv_fragmy_loginout;
     private String validityTime;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(GestureSuccessEvent event) {
+        if (event != null && event.getType() == 3) {
+            shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
+            spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(LoginEvent event) {
@@ -263,8 +273,9 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
                 if (CommonUtil.isLogin(mActivity)) {
                     boolean ISOPENENCRYPTEDFOLDER = spUtil.getBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
                     if (ISOPENENCRYPTEDFOLDER) {
-                        shFragmyFolder.setImageResource(R.mipmap.icon_switch_close);
-                        spUtil.saveBoolean(Global.SP_KEY_ISOPENENCRYPTEDFOLDER, false);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("type", 3);
+                        startActivity(StartGesturesActivity.class, bundle);
                     } else {
                         //判断是否开通高级版
                         boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);

@@ -9,7 +9,7 @@ package com.boniu.shipinbofangqi.mvp.model.event;
  * @date zhoujunxia on 2020-03-19 00:24
  */
 public class GestureSuccessEvent {
-    private int type;
+    private int type;//1.FlashActivity，2.VideoFragment，3.MyFragment
 
     public GestureSuccessEvent() {
     }

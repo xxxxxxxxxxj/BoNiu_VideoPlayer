@@ -120,13 +120,14 @@
                     <View
                         android:layout_width="8dip"
                         android:layout_height="8dip"
-                        android:layout_marginRight="29dip"
+                        android:layout_marginLeft="-35dip"
+                        android:layout_marginRight="64dip"
                         android:background="@drawable/bg_oval_d8" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="支持开启指纹或人脸开屏解锁"
+                        android:text="支持开启手势密码"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
