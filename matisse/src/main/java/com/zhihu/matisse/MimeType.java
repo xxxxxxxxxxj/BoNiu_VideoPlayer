@@ -19,6 +19,7 @@ package com.zhihu.matisse;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.collection.ArraySet;
@@ -90,8 +91,8 @@ public enum MimeType {
     AVI("video/avi", arraySetOf(
             "avi"
     )),
-    WMV("video/WMV", arraySetOf(
-            "WMV"
+    WMV("video/x-ms-asf", arraySetOf(
+            "asf"
     ));
 
     private final String mMimeTypeName;
@@ -156,10 +157,12 @@ public enum MimeType {
             return false;
         }
         String type = map.getExtensionFromMimeType(resolver.getType(uri));
+        Log.e("TAG", "type = " + type);
         String path = null;
         // lazy load the path and prevent resolve for multiple times
         boolean pathParsed = false;
         for (String extension : mExtensions) {
+            Log.e("TAG", "extension = " + extension);
             if (extension.equals(type)) {
                 return true;
             }

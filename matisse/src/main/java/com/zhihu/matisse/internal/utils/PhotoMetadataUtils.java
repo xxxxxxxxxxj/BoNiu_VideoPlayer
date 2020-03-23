@@ -141,6 +141,8 @@ public final class PhotoMetadataUtils {
     }
 
     private static boolean isSelectableType(Context context, Item item) {
+        Log.e("TAG", "item.uri = " + item.uri);
+        Log.e("TAG", "item.mimeType = " + item.mimeType);
         if (context == null) {
             return false;
         }
