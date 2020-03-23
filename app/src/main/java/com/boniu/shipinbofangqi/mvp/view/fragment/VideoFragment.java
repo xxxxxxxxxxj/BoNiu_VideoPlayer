@@ -1,6 +1,7 @@
 package com.boniu.shipinbofangqi.mvp.view.fragment;
 
 import android.Manifest;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,7 +22,6 @@ import com.boniu.shipinbofangqi.mvp.presenter.VideoFragPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FolderListActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
-import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.PlayVideoActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.StartGesturesActivity;
@@ -152,29 +152,39 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(MatisseDataEvent event) {
         if (event != null) {
-            String videoUrl = event.getVideoUrl();
-            String videoName = videoUrl.substring(videoUrl.lastIndexOf("/") + 1, videoUrl.length());
-            BoNiuVideoInfo boNiuVideoInfo = new BoNiuVideoInfo();
-            long size = FileSizeUtil.getFileOrFilesSize(videoUrl);
-            String formatSize = FileSizeUtil.formatFileSize(size, false);
-            int videoDuration = CommonUtil.getLocalVideoDuration(videoUrl);
-            String formatVideoDuration = FileSizeUtil.formatSeconds(videoDuration / 1000);
-            String currentTime = CommonUtil.getCurrentTime();
-            RingLog.e("videoUrl = " + videoUrl);
-            RingLog.e("videoName = " + videoName);
-            RingLog.e("size = " + size);
-            RingLog.e("formatSize = " + formatSize);
-            RingLog.e("videoDuration = " + videoDuration);
-            RingLog.e("formatVideoDuration = " + formatVideoDuration);
-            RingLog.e("currentTime = " + currentTime);
-            boNiuVideoInfo.setBoniu_video_url(videoUrl);
-            boNiuVideoInfo.setBoniu_video_memory(size);
-            boNiuVideoInfo.setBoniu_video_formatmemory(formatSize);
-            boNiuVideoInfo.setBoniu_video_length(formatVideoDuration);
-            boNiuVideoInfo.setBoniu_video_name(videoName);
-            boNiuVideoInfo.setBoniu_video_createtime(currentTime);
-            boNiuVideoDao.add(boNiuVideoInfo);
-            setData();
+            List<String> videoUrls = event.getStrings();
+            List<Uri> uris = event.getUris();
+            RingLog.e("uris = " + uris.toString());
+            RingLog.e("videoUrls = " + videoUrls.toString());
+            if (videoUrls != null && videoUrls.size() > 0) {
+                for (int i = 0; i < videoUrls.size(); i++) {
+                    String videoUrl = videoUrls.get(i);
+                    RingLog.e("videoUrl = " + videoUrl);
+                    if (StringUtil.isNotEmpty(videoUrl)) {
+                        BoNiuVideoInfo boNiuVideoInfo = new BoNiuVideoInfo();
+                        String videoName = videoUrl.substring(videoUrl.lastIndexOf("/") + 1, videoUrl.length());
+                        long size = FileSizeUtil.getFileOrFilesSize(videoUrls.get(i));
+                        String formatSize = FileSizeUtil.formatFileSize(size, false);
+                        int videoDuration = CommonUtil.getLocalVideoDuration(videoUrls.get(i));
+                        String currentTime = CommonUtil.getCurrentTime();
+                        String formatVideoDuration = FileSizeUtil.formatSeconds(videoDuration / 1000);
+                        RingLog.e("videoName = " + videoName);
+                        RingLog.e("size = " + size);
+                        RingLog.e("formatSize = " + formatSize);
+                        RingLog.e("videoDuration = " + videoDuration);
+                        RingLog.e("formatVideoDuration = " + formatVideoDuration);
+                        RingLog.e("currentTime = " + currentTime);
+                        boNiuVideoInfo.setBoniu_video_url(videoUrl);
+                        boNiuVideoInfo.setBoniu_video_memory(size);
+                        boNiuVideoInfo.setBoniu_video_formatmemory(formatSize);
+                        boNiuVideoInfo.setBoniu_video_length(formatVideoDuration);
+                        boNiuVideoInfo.setBoniu_video_name(videoName);
+                        boNiuVideoInfo.setBoniu_video_createtime(currentTime);
+                        boNiuVideoDao.add(boNiuVideoInfo);
+                    }
+                }
+                setData();
+            }
         }
     }
 

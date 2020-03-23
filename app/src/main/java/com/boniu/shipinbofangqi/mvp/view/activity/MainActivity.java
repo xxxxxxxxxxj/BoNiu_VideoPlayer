@@ -47,6 +47,7 @@ import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.yalantis.ucrop.UCrop;
+import com.zhihu.matisse.Matisse;
 import com.zhouyou.http.EasyHttp;
 
 import org.greenrobot.eventbus.EventBus;
@@ -331,6 +332,11 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         RingLog.e("resultCode = " + resultCode);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
+                case REQUEST_CODE_CHOOSE://Matisse选择照片返回
+                    List<Uri> uris = Matisse.obtainResult(data);
+                    List<String> strings = Matisse.obtainPathResult(data);
+                    EventBus.getDefault().post(new MatisseDataEvent(uris, strings));
+                    break;
                 case REQUEST_CODE_PREVIEW://选择相册返回码
                     //启动裁剪
                     Uri selectedUri = data.getData();

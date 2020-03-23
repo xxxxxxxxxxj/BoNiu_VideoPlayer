@@ -7,9 +7,11 @@ import android.widget.TextView;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.ResourcesFragPresenter;
+import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MainActivity;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
 import com.boniu.shipinbofangqi.mvp.view.iview.IResourcesFragView;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.umeng.analytics.MobclickAgent;
 
@@ -89,11 +91,11 @@ public class ResourcesFragment extends BaseFragment<ResourcesFragPresenter> impl
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_fragresources_input:
-                //if (CommonUtil.isLogin(mActivity)) {
-                    chooseVideo(9);
-                /*} else {
+                if (CommonUtil.isLogin(mActivity)) {
+                    getVideo(9);
+                } else {
                     startActivity(LoginActivity.class);
-                }*/
+                }
                 break;
         }
     }
