@@ -14,6 +14,7 @@ import com.boniu.shipinbofangqi.util.GlideUtil;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.zhihu.matisse.internal.ui.widget.CheckView;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class ChooseVideoAdapter extends BaseQuickAdapter<String, BaseViewHolder>
 
     @Override
     protected void convert(BaseViewHolder helper, String item) {
+        CheckView check_view = helper.getView(R.id.check_view);
         ImageView media_thumbnail = helper.getView(R.id.media_thumbnail);
         TextView video_duration = helper.getView(R.id.video_duration);
         RelativeLayout rl_itemchoosevideo_root = helper.getView(R.id.rl_itemchoosevideo_root);

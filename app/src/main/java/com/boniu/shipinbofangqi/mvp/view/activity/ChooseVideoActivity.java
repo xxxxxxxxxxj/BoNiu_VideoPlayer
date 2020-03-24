@@ -1,7 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,19 +8,21 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.ChooseVideoAdapter;
 import com.boniu.shipinbofangqi.mvp.view.widget.GridSpacingItemDecoration;
+import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.QMUIDisplayHelper;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.duyin.quickscan.QuickScanManager;
+import com.duyin.quickscan.baen.ScanResult;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,6 @@ public class ChooseVideoActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        getVideoFile(videoList, Environment.getExternalStorageDirectory());
         tvToolbarTitle.setText("选择视频");
         srlChoosevideo.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
         rvChoosevideo.setLayoutManager(new GridLayoutManager(mContext, 3));
@@ -61,7 +61,54 @@ public class ChooseVideoActivity extends BaseActivity {
 
     @Override
     protected void setView(Bundle savedInstanceState) {
+        QuickScanManager.getQuickScanManager().Init(this).getAllResult("", new QuickScanManager.OnResultListener() {
+            @Override
+            public void ScanSuccess(List<ScanResult> lists) {
+                videoList.clear();
+                for (ScanResult scanResult : lists) {
+                    String name = scanResult.getName();
+                    int i = name.indexOf('.');
+                    if (i != -1) {
+                        name = name.substring(i);
+                        if (name.equalsIgnoreCase(".mp4")
+                                || name.equalsIgnoreCase(".3gp")
+                                || name.equalsIgnoreCase(".wmv")
+                                || name.equalsIgnoreCase(".ts")
+                                || name.equalsIgnoreCase(".rmvb")
+                                || name.equalsIgnoreCase(".mov")
+                                || name.equalsIgnoreCase(".m4v")
+                                || name.equalsIgnoreCase(".avi")
+                                || name.equalsIgnoreCase(".m3u8")
+                                || name.equalsIgnoreCase(".3gpp")
+                                || name.equalsIgnoreCase(".3gpp2")
+                                || name.equalsIgnoreCase(".mkv")
+                                || name.equalsIgnoreCase(".flv")
+                                || name.equalsIgnoreCase(".divx")
+                                || name.equalsIgnoreCase(".f4v")
+                                || name.equalsIgnoreCase(".rm")
+                                || name.equalsIgnoreCase(".asf")
+                                || name.equalsIgnoreCase(".ram")
+                                || name.equalsIgnoreCase(".mpg")
+                                || name.equalsIgnoreCase(".v8")
+                                || name.equalsIgnoreCase(".swf")
+                                || name.equalsIgnoreCase(".m2v")
+                                || name.equalsIgnoreCase(".asx")
+                                || name.equalsIgnoreCase(".ra")
+                                || name.equalsIgnoreCase(".ndivx")
+                                || name.equalsIgnoreCase(".xvid")) {
+                            RingLog.e("name = " + name);
+                            videoList.add(scanResult.getPath());
+                        }
+                    }
+                }
+                chooseVideoAdapter.notifyDataSetChanged();
+            }
 
+            @Override
+            public void ScanError(String msg) {
+                RingToast.show(msg);
+            }
+        });
     }
 
     @Override
@@ -108,51 +155,5 @@ public class ChooseVideoActivity extends BaseActivity {
                 finish();
                 break;
         }
-    }
-
-    private void getVideoFile(final List<String> list, File file) {// 获得视频文件
-        file.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                // sdCard找到视频名称
-                String name = file.getName();
-                int i = name.indexOf('.');
-                if (i != -1) {
-                    name = name.substring(i);
-                    if (name.equalsIgnoreCase(".mp4")
-                            || name.equalsIgnoreCase(".3gp")
-                            || name.equalsIgnoreCase(".wmv")
-                            || name.equalsIgnoreCase(".ts")
-                            || name.equalsIgnoreCase(".rmvb")
-                            || name.equalsIgnoreCase(".mov")
-                            || name.equalsIgnoreCase(".m4v")
-                            || name.equalsIgnoreCase(".avi")
-                            || name.equalsIgnoreCase(".m3u8")
-                            || name.equalsIgnoreCase(".3gpp")
-                            || name.equalsIgnoreCase(".3gpp2")
-                            || name.equalsIgnoreCase(".mkv")
-                            || name.equalsIgnoreCase(".flv")
-                            || name.equalsIgnoreCase(".divx")
-                            || name.equalsIgnoreCase(".f4v")
-                            || name.equalsIgnoreCase(".rm")
-                            || name.equalsIgnoreCase(".asf")
-                            || name.equalsIgnoreCase(".ram")
-                            || name.equalsIgnoreCase(".mpg")
-                            || name.equalsIgnoreCase(".v8")
-                            || name.equalsIgnoreCase(".swf")
-                            || name.equalsIgnoreCase(".m2v")
-                            || name.equalsIgnoreCase(".asx")
-                            || name.equalsIgnoreCase(".ra")
-                            || name.equalsIgnoreCase(".ndivx")
-                            || name.equalsIgnoreCase(".xvid")) {
-                        list.add(file.getAbsolutePath());
-                        return true;
-                    }
-                } else if (file.isDirectory()) {
-                    getVideoFile(list, file);
-                }
-                return false;
-            }
-        });
     }
 }
