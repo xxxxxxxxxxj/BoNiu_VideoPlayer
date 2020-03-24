@@ -487,16 +487,31 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
     public void submitOrderSuccess(PayInfo response) {
         RingLog.e("PayInfo() response = " + response);
         hideLoadDialog();
-        if (response != null) {
-            if ((StringUtil.isNotEmpty(response.getErrorCode()) && response.getErrorCode().equals("FAIL")) || (StringUtil.isNotEmpty(response.getErrorCode()) && response.getResultCode().equals("FAIL"))) {
-                RingToast.show(response.getResultMsg());
-                return;
+        try {
+            if (response != null) {
+                if ((StringUtil.isNotEmpty(response.getErrorCode()) && response.getErrorCode().equals("FAIL")) || (StringUtil.isNotEmpty(response.getErrorCode()) && response.getResultCode().equals("FAIL"))) {
+                    RingToast.show(response.getResultMsg());
+                } else {
+                    if (response.getPayInfo() != null) {
+                        if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
+                            String[] split = response.getPayInfo().split(",");
+                            response.setPackageValue(split[0].split(":")[1].replace("\"",""));
+                            response.setAppId(split[1].split(":")[1].replace("\"",""));
+                            response.setSign(split[2].split(":")[1].replace("\"",""));
+                            response.setPartnerId(split[3].split(":")[1].replace("\"",""));
+                            response.setPrepayId(split[4].split(":")[1].replace("\"",""));
+                            response.setNonceStr(split[5].split(":")[1].replace("\"",""));
+                            response.setTimeStamp(split[6].split(":")[1].replace("}", "").replace("\"",""));
+                            RingLog.e("PayInfo() response = " + response);
+                            PayUtils.weChatPayment(mActivity, response.getAppId(), response.getPartnerId(), response.getPrepayId(), response.getPackageValue(), response.getNonceStr(), response.getTimeStamp(), response.getSign(), tipDialog);
+                        } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {
+                            PayUtils.payByAliPay(mActivity, response.getPayInfo(), mHandler);
+                        }
+                    }
+                }
             }
-            if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
-                PayUtils.weChatPayment(mActivity, response.getAppId(), response.getPartnerId(), response.getPrepayId(), response.getPackageValue(), response.getNonceStr(), response.getTimeStamp(), response.getSign(), tipDialog);
-            } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {
-                PayUtils.payByAliPay(mActivity, response.getPayInfo(), mHandler);
-            }
+        } catch (Exception e) {
+            RingLog.e("submitOrderSuccess() Exception = " + e.toString());
         }
     }
 }
