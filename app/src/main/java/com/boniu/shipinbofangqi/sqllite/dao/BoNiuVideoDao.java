@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
 import com.boniu.shipinbofangqi.sqllite.helper.DBHelper;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.QMUILangHelper;
 
 import java.util.ArrayList;
@@ -22,11 +23,12 @@ import java.util.List;
  * @date zhoujunxia on 2020-02-29 12:30
  */
 public class BoNiuVideoDao {
-
+    private Context mContext;
     private DBHelper dbHelper;
 
     public BoNiuVideoDao(Context context) {
         dbHelper = new DBHelper(context);
+        this.mContext = context;
     }
 
     /**
@@ -44,6 +46,7 @@ public class BoNiuVideoDao {
         values.put("boniu_video_url", boNiuVideoInfo.getBoniu_video_url());
         values.put("boniu_video_folder_id", boNiuVideoInfo.getBoniu_video_folder_id());
         values.put("boniu_video_length", boNiuVideoInfo.getBoniu_video_length());
+        values.put("boniu_video_account", boNiuVideoInfo.getBoniu_video_account());
         long id = database.insert("boniu_video", null, values);
         RingLog.e("id = " + id);
         // 保存产生的id
@@ -60,8 +63,8 @@ public class BoNiuVideoDao {
         List<BoNiuVideoInfo> list = new ArrayList<BoNiuVideoInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select * from boniu_video where boniu_video_folder_id<=0 order by boniu_video_id desc";
-        Cursor cursor = database.rawQuery(sql, null);
+        String sql = "select * from boniu_video where boniu_video_folder_id<=0 and boniu_video_account=? order by boniu_video_id desc";
+        Cursor cursor = database.rawQuery(sql, new String[]{CommonUtil.getCellPhone(mContext)});
         while (cursor.moveToNext()) {
             int boniu_video_id = cursor.getInt(0);
             String boniu_video_name = cursor.getString(1);
@@ -72,9 +75,11 @@ public class BoNiuVideoDao {
             String boniu_video_url = cursor.getString(6);
             int boniu_video_folder_id = cursor.getInt(7);
             String boniu_video_length = cursor.getString(8);
+            String boniu_video_account = cursor.getString(9);
             BoNiuVideoInfo BoNiuVideoInfo = new BoNiuVideoInfo(boniu_video_id,
                     boniu_video_name, boniu_video_coverimg, boniu_video_formatmemory,
-                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length);
+                    boniu_video_createtime, boniu_video_memory, boniu_video_url,
+                    boniu_video_folder_id, boniu_video_length, boniu_video_account);
             list.add(BoNiuVideoInfo);
         }
         cursor.close();
@@ -92,8 +97,8 @@ public class BoNiuVideoDao {
         List<BoNiuVideoInfo> list = new ArrayList<BoNiuVideoInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select * from boniu_video where boniu_video_folder_id<=0 order by boniu_video_id desc limit 10 offset ?";
-        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf((page - 1) * 10)});
+        String sql = "select * from boniu_video where boniu_video_folder_id<=0 and boniu_video_account=? order by boniu_video_id desc limit 10 offset ?";
+        Cursor cursor = database.rawQuery(sql, new String[]{CommonUtil.getCellPhone(mContext),String.valueOf((page - 1) * 10)});
         while (cursor.moveToNext()) {
             int boniu_video_id = cursor.getInt(0);
             String boniu_video_name = cursor.getString(1);
@@ -104,9 +109,10 @@ public class BoNiuVideoDao {
             String boniu_video_url = cursor.getString(6);
             int boniu_video_folder_id = cursor.getInt(7);
             String boniu_video_length = cursor.getString(8);
+            String boniu_video_account = cursor.getString(9);
             BoNiuVideoInfo BoNiuVideoInfo = new BoNiuVideoInfo(boniu_video_id,
                     boniu_video_name, boniu_video_coverimg, boniu_video_formatmemory,
-                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length);
+                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length, boniu_video_account);
             list.add(BoNiuVideoInfo);
         }
         cursor.close();
@@ -136,9 +142,10 @@ public class BoNiuVideoDao {
             String boniu_video_url = cursor.getString(6);
             int boniu_video_folder_id = cursor.getInt(7);
             String boniu_video_length = cursor.getString(8);
+            String boniu_video_account = cursor.getString(9);
             BoNiuVideoInfo BoNiuVideoInfo = new BoNiuVideoInfo(boniu_video_id,
                     boniu_video_name, boniu_video_coverimg, boniu_video_formatmemory,
-                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length);
+                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length, boniu_video_account);
             list.add(BoNiuVideoInfo);
         }
         cursor.close();
@@ -168,9 +175,10 @@ public class BoNiuVideoDao {
             String boniu_video_url = cursor.getString(6);
             int boniu_video_folder_id = cursor.getInt(7);
             String boniu_video_length = cursor.getString(8);
+            String boniu_video_account = cursor.getString(9);
             BoNiuVideoInfo BoNiuVideoInfo = new BoNiuVideoInfo(boniu_video_id,
                     boniu_video_name, boniu_video_coverimg, boniu_video_formatmemory,
-                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length);
+                    boniu_video_createtime, boniu_video_memory, boniu_video_url, boniu_video_folder_id, boniu_video_length, boniu_video_account);
             list.add(BoNiuVideoInfo);
         }
         cursor.close();

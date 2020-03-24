@@ -190,7 +190,7 @@ dependencies {
     //kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
     //视频播放器（IJKplayer、ExoPlayer、MediaPlayer）
-    implementation 'com.shuyu:GSYVideoPlayer:7.1.2'
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.3'
     //友盟统计
     implementation 'com.umeng.umsdk:analytics:8.0.0'
     implementation 'com.umeng.umsdk:common:2.0.0'

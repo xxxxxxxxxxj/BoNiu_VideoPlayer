@@ -28,9 +28,11 @@ public final class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table boniu_video(boniu_video_id integer primary key autoincrement, " +
                 "boniu_video_name varchar,boniu_video_coverimg varchar,boniu_video_formatmemory varchar," +
-                "boniu_video_createtime varchar,boniu_video_memory double,boniu_video_url varchar,boniu_video_folder_id integer,boniu_video_length varchar)");
+                "boniu_video_createtime varchar,boniu_video_memory double,boniu_video_url varchar," +
+                "boniu_video_folder_id integer,boniu_video_length varchar,boniu_video_account varchar)");
         db.execSQL("create table boniu_folder(boniu_folder_id integer primary key autoincrement, " +
-                "boniu_folder_name varchar, boniu_folder_formatmemory varchar, boniu_folder_memory double,boniu_folder_createtime varchar,boniu_folder_isdefault integer)");
+                "boniu_folder_name varchar, boniu_folder_formatmemory varchar, boniu_folder_memory double," +
+                "boniu_folder_createtime varchar,boniu_folder_isdefault integer,boniu_folder_account varchar)");
     }
 
     @Override

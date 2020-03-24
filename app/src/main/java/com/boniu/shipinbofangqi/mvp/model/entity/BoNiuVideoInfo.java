@@ -20,6 +20,7 @@ public class BoNiuVideoInfo implements Serializable {
     private String boniu_video_url;
     private int boniu_video_folder_id;
     private String boniu_video_length;
+    private String boniu_video_account;
 
     @Override
     public String toString() {
@@ -33,10 +34,11 @@ public class BoNiuVideoInfo implements Serializable {
                 ", boniu_video_url='" + boniu_video_url + '\'' +
                 ", boniu_video_folder_id=" + boniu_video_folder_id +
                 ", boniu_video_length='" + boniu_video_length + '\'' +
+                ", boniu_video_account='" + boniu_video_account + '\'' +
                 '}';
     }
 
-    public BoNiuVideoInfo(int boniu_video_id, String boniu_video_name, String boniu_video_coverimg, String boniu_video_formatmemory, String boniu_video_createtime, double boniu_video_memory, String boniu_video_url, int boniu_video_folder_id, String boniu_video_length) {
+    public BoNiuVideoInfo(int boniu_video_id, String boniu_video_name, String boniu_video_coverimg, String boniu_video_formatmemory, String boniu_video_createtime, double boniu_video_memory, String boniu_video_url, int boniu_video_folder_id, String boniu_video_length, String boniu_video_account) {
         this.boniu_video_id = boniu_video_id;
         this.boniu_video_name = boniu_video_name;
         this.boniu_video_coverimg = boniu_video_coverimg;
@@ -46,6 +48,7 @@ public class BoNiuVideoInfo implements Serializable {
         this.boniu_video_url = boniu_video_url;
         this.boniu_video_folder_id = boniu_video_folder_id;
         this.boniu_video_length = boniu_video_length;
+        this.boniu_video_account = boniu_video_account;
     }
 
     public String getBoniu_video_length() {
@@ -118,6 +121,14 @@ public class BoNiuVideoInfo implements Serializable {
 
     public void setBoniu_video_folder_id(int boniu_video_folder_id) {
         this.boniu_video_folder_id = boniu_video_folder_id;
+    }
+
+    public String getBoniu_video_account() {
+        return boniu_video_account;
+    }
+
+    public void setBoniu_video_account(String boniu_video_account) {
+        this.boniu_video_account = boniu_video_account;
     }
 
     public BoNiuVideoInfo() {

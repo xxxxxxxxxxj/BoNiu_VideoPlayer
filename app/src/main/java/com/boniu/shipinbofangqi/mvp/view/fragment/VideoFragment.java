@@ -15,6 +15,7 @@ import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuFolderInfo;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuVideoInfo;
 import com.boniu.shipinbofangqi.mvp.model.event.GestureSuccessEvent;
+import com.boniu.shipinbofangqi.mvp.model.event.LoginEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.MarketDialogEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
 import com.boniu.shipinbofangqi.mvp.model.event.RefreshVideoEvent;
@@ -110,6 +111,13 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(LoginEvent event) {
+        if (event != null) {
+            setData();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void getUpdateAppState(MarketDialogEvent event) {
         if (event != null) {
             CustomDialog.build(mActivity, R.layout.layout_market_dialog, new CustomDialog.OnBindView() {
@@ -180,6 +188,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                         boNiuVideoInfo.setBoniu_video_length(formatVideoDuration);
                         boNiuVideoInfo.setBoniu_video_name(videoName);
                         boNiuVideoInfo.setBoniu_video_createtime(currentTime);
+                        boNiuVideoInfo.setBoniu_video_account(CommonUtil.getCellPhone(mActivity));
                         boNiuVideoDao.add(boNiuVideoInfo);
                     }
                 }
@@ -238,7 +247,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
         boNiuVideoDao = new BoNiuVideoDao(mActivity);
         boNiuFolderDao = new BoNiuFolderDao(mActivity);
         if (!boNiuFolderDao.isExists()) {
-            boNiuFolderDao.add(new BoNiuFolderInfo("默认文件夹", CommonUtil.getCurrentTime(), 1));
+            boNiuFolderDao.add(new BoNiuFolderInfo("默认文件夹", CommonUtil.getCurrentTime(), 1, CommonUtil.getCellPhone(mActivity)));
         }
         setData();
     }
@@ -467,7 +476,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                                     public boolean onClick(BaseDialog baseDialog, View v, String inputStr) {
                                         if (StringUtil.isNotEmpty(inputStr)) {
                                             if (!boNiuFolderDao.isExists(inputStr)) {
-                                                boNiuFolderDao.add(new BoNiuFolderInfo(inputStr, CommonUtil.getCurrentTime()));
+                                                boNiuFolderDao.add(new BoNiuFolderInfo(inputStr, CommonUtil.getCurrentTime(), CommonUtil.getCellPhone(mActivity)));
                                                 setData();
                                                 RingToast.show("文件夹创建成功");
                                                 return false;

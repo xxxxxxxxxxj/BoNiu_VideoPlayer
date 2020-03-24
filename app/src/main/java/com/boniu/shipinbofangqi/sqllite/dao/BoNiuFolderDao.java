@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.BoNiuFolderInfo;
 import com.boniu.shipinbofangqi.sqllite.helper.DBHelper;
+import com.boniu.shipinbofangqi.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,12 @@ import java.util.List;
  * @date zhoujunxia on 2020-02-29 12:30
  */
 public class BoNiuFolderDao {
-
+    private Context mContext;
     private DBHelper dbHelper;
 
     public BoNiuFolderDao(Context context) {
         dbHelper = new DBHelper(context);
+        this.mContext = context;
     }
 
     /**
@@ -40,6 +42,7 @@ public class BoNiuFolderDao {
         values.put("boniu_folder_memory", boNiuFolderInfo.getBoniu_folder_memory());
         values.put("boniu_folder_createtime", boNiuFolderInfo.getBoniu_folder_createtime());
         values.put("boniu_folder_isdefault", boNiuFolderInfo.getBoniu_folder_isdefault());
+        values.put("boniu_folder_account", boNiuFolderInfo.getBoniu_folder_account());
         long id = database.insert("boniu_folder", null, values);
         RingLog.e("id = " + id);
         // 保存产生的id
@@ -56,8 +59,8 @@ public class BoNiuFolderDao {
         List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select * from boniu_folder order by boniu_folder_id desc";
-        Cursor cursor = database.rawQuery(sql, null);
+        String sql = "select * from boniu_folder where boniu_folder_account=? order by boniu_folder_id desc";
+        Cursor cursor = database.rawQuery(sql, new String[]{CommonUtil.getCellPhone(mContext)});
         while (cursor.moveToNext()) {
             int boniu_folder_id = cursor.getInt(0);
             String boniu_folder_name = cursor.getString(1);
@@ -65,9 +68,10 @@ public class BoNiuFolderDao {
             double boniu_folder_memory = cursor.getDouble(3);
             String boniu_folder_createtime = cursor.getString(4);
             int boniu_folder_isdefault = cursor.getInt(5);
+            String boniu_folder_account = cursor.getString(6);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime, boniu_folder_isdefault);
+                    boniu_folder_createtime, boniu_folder_isdefault, boniu_folder_account);
             list.add(boNiuFolderInfo);
         }
         cursor.close();
@@ -85,8 +89,8 @@ public class BoNiuFolderDao {
         List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select * from boniu_folder order by boniu_folder_id desc limit 10 offset ?";
-        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf((page - 1) * 10)});
+        String sql = "select * from boniu_folder where boniu_folder_account=? order by boniu_folder_id desc limit 10 offset ?";
+        Cursor cursor = database.rawQuery(sql, new String[]{CommonUtil.getCellPhone(mContext),String.valueOf((page - 1) * 10)});
         while (cursor.moveToNext()) {
             int boniu_folder_id = cursor.getInt(0);
             String boniu_folder_name = cursor.getString(1);
@@ -94,9 +98,10 @@ public class BoNiuFolderDao {
             double boniu_folder_memory = cursor.getDouble(3);
             String boniu_folder_createtime = cursor.getString(4);
             int boniu_folder_isdefault = cursor.getInt(5);
+            String boniu_folder_account = cursor.getString(6);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime, boniu_folder_isdefault);
+                    boniu_folder_createtime, boniu_folder_isdefault,boniu_folder_account);
             list.add(boNiuFolderInfo);
         }
         cursor.close();
@@ -114,8 +119,8 @@ public class BoNiuFolderDao {
         List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select * from boniu_folder where boniu_folder_id!=? order by boniu_folder_id desc";
-        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_folder_id)});
+        String sql = "select * from boniu_folder where boniu_folder_id!=? and boniu_folder_account=? order by boniu_folder_id desc";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_folder_id),CommonUtil.getCellPhone(mContext)});
         while (cursor.moveToNext()) {
             int boniu_folder_id = cursor.getInt(0);
             String boniu_folder_name = cursor.getString(1);
@@ -123,9 +128,10 @@ public class BoNiuFolderDao {
             double boniu_folder_memory = cursor.getDouble(3);
             String boniu_folder_createtime = cursor.getString(4);
             int boniu_folder_isdefault = cursor.getInt(5);
+            String boniu_folder_account = cursor.getString(6);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime, boniu_folder_isdefault);
+                    boniu_folder_createtime, boniu_folder_isdefault,boniu_folder_account);
             list.add(boNiuFolderInfo);
         }
         cursor.close();
@@ -143,8 +149,8 @@ public class BoNiuFolderDao {
         List<BoNiuFolderInfo> list = new ArrayList<BoNiuFolderInfo>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select * from boniu_folder where boniu_folder_id!=? order by boniu_folder_id desc limit 10 offset ?";
-        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_folder_id), String.valueOf((page - 1) * 10)});
+        String sql = "select * from boniu_folder where boniu_folder_id!=? and boniu_folder_account=? order by boniu_folder_id desc limit 10 offset ?";
+        Cursor cursor = database.rawQuery(sql, new String[]{String.valueOf(local_boniu_folder_id) ,CommonUtil.getCellPhone(mContext), String.valueOf((page - 1) * 10)});
         while (cursor.moveToNext()) {
             int boniu_folder_id = cursor.getInt(0);
             String boniu_folder_name = cursor.getString(1);
@@ -152,9 +158,10 @@ public class BoNiuFolderDao {
             double boniu_folder_memory = cursor.getDouble(3);
             String boniu_folder_createtime = cursor.getString(4);
             int boniu_folder_isdefault = cursor.getInt(5);
+            String boniu_folder_account = cursor.getString(6);
             BoNiuFolderInfo boNiuFolderInfo = new BoNiuFolderInfo(boniu_folder_id,
                     boniu_folder_name, boniu_folder_formatmemory, boniu_folder_memory,
-                    boniu_folder_createtime, boniu_folder_isdefault);
+                    boniu_folder_createtime, boniu_folder_isdefault,boniu_folder_account);
             list.add(boNiuFolderInfo);
         }
         cursor.close();
@@ -172,8 +179,8 @@ public class BoNiuFolderDao {
         List<String> list = new ArrayList<String>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select boniu_folder_name from boniu_folder";
-        Cursor cursor = database.rawQuery(sql, null);
+        String sql = "select boniu_folder_name from boniu_folder where boniu_folder_account=?";
+        Cursor cursor = database.rawQuery(sql, new String[]{CommonUtil.getCellPhone(mContext)});
         while (cursor.moveToNext()) {
             String boniu_folder_name = cursor.getString(0);
             list.add(boniu_folder_name);
@@ -193,8 +200,8 @@ public class BoNiuFolderDao {
         List<Integer> list = new ArrayList<Integer>();
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         // query
-        String sql = "select boniu_folder_isdefault from boniu_folder";
-        Cursor cursor = database.rawQuery(sql, null);
+        String sql = "select boniu_folder_isdefault from boniu_folder where boniu_folder_account=?";
+        Cursor cursor = database.rawQuery(sql,  new String[]{CommonUtil.getCellPhone(mContext)});
         while (cursor.moveToNext()) {
             int boniu_folder_isdefault = cursor.getInt(0);
             list.add(boniu_folder_isdefault);
