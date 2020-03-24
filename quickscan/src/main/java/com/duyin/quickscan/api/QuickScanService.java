@@ -20,26 +20,30 @@ import rx.Subscriber;
 public class QuickScanService implements QuickScanListener {
 
     public static QuickScanService quickScanService;
-    public synchronized static QuickScanService getQuickScanService(){
-        if(quickScanService==null){
+
+    public synchronized static QuickScanService getQuickScanService() {
+        if (quickScanService == null) {
             quickScanService = new QuickScanService();
         }
         return quickScanService;
     }
+
     @Override
     public Observable<List<ScanResult>> getAllResult(final Context context, final String end) {
         return Observable.create(new Observable.OnSubscribe<List<ScanResult>>() {
             @Override
             public void call(Subscriber<? super List<ScanResult>> subscriber) {
-                subscriber.onNext(queryFiles(context,end));
+                subscriber.onNext(queryFiles(context, end));
             }
         });
     }
 
-    private List<ScanResult> queryFiles(Context context,String end) {
+    private List<ScanResult> queryFiles(Context context, String end) {
         String[] projection = new String[]{MediaStore.Files.FileColumns._ID,
                 MediaStore.Files.FileColumns.DATA,
-                MediaStore.Files.FileColumns.SIZE
+                MediaStore.Files.FileColumns.SIZE,
+                MediaStore.Files.FileColumns.DATE_ADDED,
+                MediaStore.Files.FileColumns.DATE_MODIFIED
         };
         Cursor cursor = context.getContentResolver().query(
                 Uri.parse("content://media/external/file"),
@@ -51,15 +55,20 @@ public class QuickScanService implements QuickScanListener {
         List<ScanResult> list = new ArrayList<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                int dataindex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+                int idIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID);
+                int sizeIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
+                int dateAddedIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED);
+                int dateModifiedIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED);
+                int dataIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
                 do {
-                    String path = cursor.getString(dataindex);
-                    int dot = path.lastIndexOf("/");
-                    String name = path.substring(dot + 1);
-                    ScanResult books = new ScanResult();
-                    books.setName(name);
-                    books.setPath(path);
-                    list.add(books);/*
+                    String _ID = cursor.getString(idIndex);
+                    String SIZE = cursor.getString(sizeIndex);
+                    String DATE_ADDED = cursor.getString(dateAddedIndex);
+                    String DATE_MODIFIED = cursor.getString(dateModifiedIndex);
+                    String DATA = cursor.getString(dataIndex);
+                    int dot = DATA.lastIndexOf("/");
+                    ScanResult scanResult = new ScanResult(DATA.substring(dot + 1), DATA, _ID, SIZE, DATE_ADDED, DATE_MODIFIED);
+                    list.add(scanResult);/*
                     if (name.lastIndexOf(".") > 0)
                         name = name.substring(0, name.lastIndexOf("."));
                     if (!name.startsWith(".")) {

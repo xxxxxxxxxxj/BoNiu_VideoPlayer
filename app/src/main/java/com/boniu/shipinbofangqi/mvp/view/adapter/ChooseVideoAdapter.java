@@ -14,6 +14,7 @@ import com.boniu.shipinbofangqi.util.GlideUtil;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.duyin.quickscan.baen.ScanResult;
 import com.zhihu.matisse.internal.ui.widget.CheckView;
 
 import java.util.List;
@@ -26,16 +27,16 @@ import java.util.List;
  * @author 徐俊
  * @date zhoujunxia on 2020-03-22 16:24
  */
-public class ChooseVideoAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class ChooseVideoAdapter extends BaseQuickAdapter<ScanResult, BaseViewHolder> {
     private int width;
 
-    public ChooseVideoAdapter(int layoutResId, List<String> data, int width) {
+    public ChooseVideoAdapter(int layoutResId, List<ScanResult> data, int width) {
         super(layoutResId, data);
         this.width = width;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, String item) {
+    protected void convert(BaseViewHolder helper, ScanResult item) {
         CheckView check_view = helper.getView(R.id.check_view);
         ImageView media_thumbnail = helper.getView(R.id.media_thumbnail);
         TextView video_duration = helper.getView(R.id.video_duration);
@@ -45,10 +46,10 @@ public class ChooseVideoAdapter extends BaseQuickAdapter<String, BaseViewHolder>
         params.height = width;
         rl_itemchoosevideo_root.setLayoutParams(params);
         if (item != null) {
-            int videoDuration = CommonUtil.getLocalVideoDuration(item);
+            int videoDuration = CommonUtil.getLocalVideoDuration(item.getPath());
             String formatVideoDuration = FileSizeUtil.formatSeconds(videoDuration / 1000);
             StringUtil.setText(video_duration, formatVideoDuration, "", View.VISIBLE, View.GONE);
-            GlideUtil.displayVideoCoverImg(mContext, item, media_thumbnail);
+            GlideUtil.displayVideoCoverImg(mContext, item.getPath(), media_thumbnail);
         }
     }
 }

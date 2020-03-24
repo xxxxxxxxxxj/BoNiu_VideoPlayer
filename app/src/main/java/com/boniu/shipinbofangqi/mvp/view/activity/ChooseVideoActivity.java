@@ -9,19 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
-import com.boniu.shipinbofangqi.mvp.model.event.MatisseDataEvent;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.ChooseVideoAdapter;
 import com.boniu.shipinbofangqi.mvp.view.widget.GridSpacingItemDecoration;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.QMUIDisplayHelper;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.duyin.quickscan.QuickScanManager;
 import com.duyin.quickscan.baen.ScanResult;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +35,7 @@ public class ChooseVideoActivity extends BaseActivity {
     RecyclerView rvChoosevideo;
     @BindView(R.id.srl_choosevideo)
     SmartRefreshLayout srlChoosevideo;
-    private List<String> videoList = new ArrayList<String>();
+    private List<ScanResult> videoList = new ArrayList<ScanResult>();
     private ChooseVideoAdapter chooseVideoAdapter;
 
     @Override
@@ -96,11 +92,11 @@ public class ChooseVideoActivity extends BaseActivity {
                                 || name.equalsIgnoreCase(".ra")
                                 || name.equalsIgnoreCase(".ndivx")
                                 || name.equalsIgnoreCase(".xvid")) {
-                            RingLog.e("name = " + name);
-                            videoList.add(scanResult.getPath());
+                            videoList.add(scanResult);
                         }
                     }
                 }
+                RingLog.e("videoList = " + videoList.toString());
                 chooseVideoAdapter.notifyDataSetChanged();
             }
 
@@ -116,7 +112,7 @@ public class ChooseVideoActivity extends BaseActivity {
     }
 
     @Override
-    protected void initEvent() {
+    protected void initEvent() {/*
         chooseVideoAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -125,7 +121,7 @@ public class ChooseVideoActivity extends BaseActivity {
                     finish();
                 }
             }
-        });
+        });*/
     }
 
     @Override
