@@ -13,6 +13,10 @@ public class ScanResult {
     private String date_modified;
     private boolean isSelect;
 
+    public ScanResult(String path) {
+        this.path = path;
+    }
+
     @Override
     public String toString() {
         return "ScanResult{" +

@@ -201,6 +201,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends SwipeBackAct
      * UCrop裁剪返回码
      */
     public static final int REQUEST_CODE_UCROP = 26;
+    public static final int REQUEST_CODE_CHOOSEVIDEO = 27;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -2,10 +2,7 @@ package com.boniu.shipinbofangqi.mvp.view.adapter;
 
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.util.CommonUtil;
@@ -40,11 +37,6 @@ public class ChooseVideoAdapter extends BaseQuickAdapter<ScanResult, BaseViewHol
         CheckView check_view = helper.getView(R.id.check_view);
         ImageView media_thumbnail = helper.getView(R.id.media_thumbnail);
         TextView video_duration = helper.getView(R.id.video_duration);
-        RelativeLayout rl_itemchoosevideo_root = helper.getView(R.id.rl_itemchoosevideo_root);
-        GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) rl_itemchoosevideo_root.getLayoutParams();
-        params.width = width;
-        params.height = width;
-        rl_itemchoosevideo_root.setLayoutParams(params);
         if (item != null) {
             check_view.setChecked(item.isSelect());
             int videoDuration = CommonUtil.getLocalVideoDuration(item.getPath());

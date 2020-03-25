@@ -95,7 +95,14 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         if (event != null) {
             setFragMentIndex(2);
         }
-    }
+    }/*
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getUpdateAppState(MatisseDataEvent event) {
+        if (event != null) {
+            setFragMentIndex(0);
+        }
+    }*/
 
     @Override
     protected void setView(Bundle savedInstanceState) {
@@ -332,6 +339,10 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         RingLog.e("resultCode = " + resultCode);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
+                case REQUEST_CODE_CHOOSEVIDEO://选择视频返回
+                    ArrayList<String> selectVideoList = getIntent().getStringArrayListExtra("selectVideoList");
+                    EventBus.getDefault().post(new MatisseDataEvent(null, selectVideoList));
+                    break;
                 case REQUEST_CODE_CHOOSE://Matisse选择照片返回
                     List<Uri> uris = Matisse.obtainResult(data);
                     List<String> strings = Matisse.obtainPathResult(data);

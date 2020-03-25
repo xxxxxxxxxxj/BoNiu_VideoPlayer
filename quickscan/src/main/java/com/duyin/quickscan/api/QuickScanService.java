@@ -3,7 +3,9 @@ package com.duyin.quickscan.api;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.duyin.quickscan.baen.ScanResult;
 
@@ -45,12 +47,15 @@ public class QuickScanService implements QuickScanListener {
                 MediaStore.Files.FileColumns.DATE_ADDED,
                 MediaStore.Files.FileColumns.DATE_MODIFIED
         };
-        Cursor cursor = context.getContentResolver().query(
-                Uri.parse("content://media/external/file"),
+        Uri external = MediaStore.Files.getContentUri("external");
+        Uri parse = Uri.parse("file://" + Environment.getExternalStorageDirectory());
+        Log.e("TAG","parse = "+parse.toString());
+        Log.e("TAG","external = "+external.toString());
+        Cursor cursor = context.getContentResolver().query(MediaStore.Files.getContentUri("external"),
                 projection,
-                MediaStore.Files.FileColumns.DATA + " like ?",
-                new String[]{"%"+end},
-                null);
+                null,
+                null,
+                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC");
 
         List<ScanResult> list = new ArrayList<>();
         if (cursor != null) {
@@ -67,7 +72,7 @@ public class QuickScanService implements QuickScanListener {
                     String DATE_MODIFIED = cursor.getString(dateModifiedIndex);
                     String DATA = cursor.getString(dataIndex);
                     int dot = DATA.lastIndexOf("/");
-                    ScanResult scanResult = new ScanResult(DATA.substring(dot + 1), DATA, _ID, SIZE, DATE_ADDED, DATE_MODIFIED,false);
+                    ScanResult scanResult = new ScanResult(DATA.substring(dot + 1), DATA, _ID, SIZE, DATE_ADDED, DATE_MODIFIED, false);
                     list.add(scanResult);/*
                     if (name.lastIndexOf(".") > 0)
                         name = name.substring(0, name.lastIndexOf("."));

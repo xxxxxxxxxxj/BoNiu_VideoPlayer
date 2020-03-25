@@ -1,7 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.fragment;
 
 import android.Manifest;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -161,9 +160,6 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
     public void getUpdateAppState(MatisseDataEvent event) {
         if (event != null) {
             List<String> videoUrls = event.getStrings();
-            List<Uri> uris = event.getUris();
-            RingLog.e("uris = " + uris.toString());
-            RingLog.e("videoUrls = " + videoUrls.toString());
             if (videoUrls != null && videoUrls.size() > 0) {
                 for (int i = 0; i < videoUrls.size(); i++) {
                     String videoUrl = videoUrls.get(i);
@@ -523,7 +519,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                 break;
             case R.id.ll_fragvideo_input:
                 if (CommonUtil.isLogin(mActivity)) {
-                    getVideo(9);
+                    chooseVideo(9);
                 } else {
                     startActivity(LoginActivity.class);
                 }

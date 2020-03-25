@@ -17,10 +17,6 @@ public class MatisseDataEvent {
     private List<String> strings;
     private String videoUrl;
 
-    public MatisseDataEvent(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
-
     public MatisseDataEvent(List<Uri> uris, List<String> strings) {
         this.uris = uris;
         this.strings = strings;

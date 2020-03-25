@@ -667,7 +667,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment {
             public void onGranted(String permissionName) {
                 Intent intent = new Intent(mActivity, ChooseVideoActivity.class);
                 intent.putExtra("maxSelectable", maxSelectable);
-                startActivityForResult(intent, REQUEST_CODE_CHOOSE);
+                startActivityForResult(intent, REQUEST_CODE_CHOOSEVIDEO);
             }
 
             @Override
