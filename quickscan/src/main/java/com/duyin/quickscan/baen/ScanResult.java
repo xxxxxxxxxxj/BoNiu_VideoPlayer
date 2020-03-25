@@ -11,6 +11,7 @@ public class ScanResult {
     private String size;
     private String date_added;
     private String date_modified;
+    private boolean isSelect;
 
     @Override
     public String toString() {
@@ -21,16 +22,26 @@ public class ScanResult {
                 ", size='" + size + '\'' +
                 ", date_added='" + date_added + '\'' +
                 ", date_modified='" + date_modified + '\'' +
+                ", isSelect='" + isSelect + '\'' +
                 '}';
     }
 
-    public ScanResult(String name, String path, String id, String size, String date_added, String date_modified) {
+    public ScanResult(String name, String path, String id, String size, String date_added, String date_modified,boolean isSelect) {
         this.name = name;
         this.path = path;
         this.id = id;
         this.size = size;
         this.date_added = date_added;
         this.date_modified = date_modified;
+        this.isSelect = isSelect;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 
     public String getId() {

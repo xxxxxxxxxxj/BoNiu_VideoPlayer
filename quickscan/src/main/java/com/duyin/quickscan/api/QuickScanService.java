@@ -67,7 +67,7 @@ public class QuickScanService implements QuickScanListener {
                     String DATE_MODIFIED = cursor.getString(dateModifiedIndex);
                     String DATA = cursor.getString(dataIndex);
                     int dot = DATA.lastIndexOf("/");
-                    ScanResult scanResult = new ScanResult(DATA.substring(dot + 1), DATA, _ID, SIZE, DATE_ADDED, DATE_MODIFIED);
+                    ScanResult scanResult = new ScanResult(DATA.substring(dot + 1), DATA, _ID, SIZE, DATE_ADDED, DATE_MODIFIED,false);
                     list.add(scanResult);/*
                     if (name.lastIndexOf(".") > 0)
                         name = name.substring(0, name.lastIndexOf("."));

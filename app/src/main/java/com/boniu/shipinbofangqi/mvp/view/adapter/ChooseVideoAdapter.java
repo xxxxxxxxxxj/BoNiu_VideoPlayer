@@ -46,6 +46,7 @@ public class ChooseVideoAdapter extends BaseQuickAdapter<ScanResult, BaseViewHol
         params.height = width;
         rl_itemchoosevideo_root.setLayoutParams(params);
         if (item != null) {
+            check_view.setChecked(item.isSelect());
             int videoDuration = CommonUtil.getLocalVideoDuration(item.getPath());
             String formatVideoDuration = FileSizeUtil.formatSeconds(videoDuration / 1000);
             StringUtil.setText(video_duration, formatVideoDuration, "", View.VISIBLE, View.GONE);

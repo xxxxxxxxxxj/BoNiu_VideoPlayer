@@ -15,9 +15,9 @@ import com.boniu.shipinbofangqi.mvp.view.adapter.ChooseVideoAdapter;
 import com.boniu.shipinbofangqi.mvp.view.widget.GridSpacingItemDecoration;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.QMUIDisplayHelper;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.duyin.quickscan.QuickScanManager;
 import com.duyin.quickscan.baen.ScanResult;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +29,16 @@ import butterknife.OnClick;
  * 选择视频界面
  */
 public class ChooseVideoActivity extends BaseActivity {
+    @BindView(R.id.tv_toolbar_other)
+    TextView tvToolbarOther;
     @BindView(R.id.tv_toolbar_title)
     TextView tvToolbarTitle;
     @BindView(R.id.rv_choosevideo)
     RecyclerView rvChoosevideo;
-    @BindView(R.id.srl_choosevideo)
-    SmartRefreshLayout srlChoosevideo;
     private List<ScanResult> videoList = new ArrayList<ScanResult>();
     private ChooseVideoAdapter chooseVideoAdapter;
+    private int maxSelectable;
+    private int selectable;
 
     @Override
     protected int getLayoutResID() {
@@ -46,11 +48,15 @@ public class ChooseVideoActivity extends BaseActivity {
     @Override
     protected void initView(Bundle savedInstanceState) {
         tvToolbarTitle.setText("选择视频");
-        srlChoosevideo.setEnableLoadMore(false).setEnableRefresh(false).setEnableOverScrollDrag(true);
+        rvChoosevideo.setHasFixedSize(true);//避免每次绘制Item时，不再重新计算Item高度。
+        rvChoosevideo.setItemViewCacheSize(20);
+        rvChoosevideo.setDrawingCacheEnabled(true);
+        rvChoosevideo.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         rvChoosevideo.setLayoutManager(new GridLayoutManager(mContext, 3));
         int screenWidth = QMUIDisplayHelper.getScreenWidth(mContext);
         int width = (screenWidth - QMUIDisplayHelper.dp2px(mContext, 5) * 2) / 3;
         chooseVideoAdapter = new ChooseVideoAdapter(R.layout.item_choosevideo, videoList, width);
+        chooseVideoAdapter.setHasStableIds(true);
         rvChoosevideo.addItemDecoration(new GridSpacingItemDecoration(3, QMUIDisplayHelper.dp2px(mContext, 5), QMUIDisplayHelper.dp2px(mContext, 5), false));
         rvChoosevideo.setAdapter(chooseVideoAdapter);
     }
@@ -74,7 +80,7 @@ public class ChooseVideoActivity extends BaseActivity {
                                 || name.equalsIgnoreCase(".mov")
                                 || name.equalsIgnoreCase(".m4v")
                                 || name.equalsIgnoreCase(".avi")
-                                || name.equalsIgnoreCase(".m3u8")
+                                //|| name.equalsIgnoreCase(".m3u8")
                                 || name.equalsIgnoreCase(".3gpp")
                                 || name.equalsIgnoreCase(".3gpp2")
                                 || name.equalsIgnoreCase(".mkv")
@@ -109,19 +115,37 @@ public class ChooseVideoActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
+        maxSelectable = getIntent().getIntExtra("maxSelectable", 0);
     }
 
     @Override
-    protected void initEvent() {/*
+    protected void initEvent() {
         chooseVideoAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 if (videoList.size() > 0 && videoList.size() > position) {
-                    EventBus.getDefault().post(new MatisseDataEvent(videoList.get(position)));
-                    finish();
+                    ScanResult scanResult = videoList.get(position);
+                    if (scanResult.isSelect()) {
+                        selectable = selectable - 1;
+                        scanResult.setSelect(false);
+                    } else {
+                        if (selectable >= maxSelectable) {
+                            RingToast.show("最多只能选择" + maxSelectable + "个视频");
+                        } else {
+                            selectable = selectable + 1;
+                            scanResult.setSelect(true);
+                        }
+                    }
+                    chooseVideoAdapter.notifyItemChanged(position);
+                    if (selectable > 0) {
+                        tvToolbarOther.setVisibility(View.VISIBLE);
+                        tvToolbarOther.setText("使用(" + selectable + ")");
+                    } else {
+                        tvToolbarOther.setVisibility(View.GONE);
+                    }
                 }
             }
-        });*/
+        });
     }
 
     @Override
@@ -144,11 +168,13 @@ public class ChooseVideoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
     }
 
-    @OnClick({R.id.iv_toolbar_back})
+    @OnClick({R.id.iv_toolbar_back, R.id.tv_toolbar_other})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_toolbar_back:
                 finish();
+                break;
+            case R.id.tv_toolbar_other:
                 break;
         }
     }

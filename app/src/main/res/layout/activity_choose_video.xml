@@ -8,23 +8,8 @@
 
     <include layout="@layout/include_toolbar" />
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/srl_choosevideo"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_choosevideo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_choosevideo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </androidx.recyclerview.widget.RecyclerView>
-        </RelativeLayout>
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        android:layout_height="match_parent" />
 </LinearLayout>
