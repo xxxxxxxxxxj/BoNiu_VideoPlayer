@@ -21,7 +21,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public final class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
-        super(context, "boniu_videoplayer.db", null, 1);
+        //当数据库版本需要升级修改时，增加版本号。
+        super(context, "boniu_videoplayer.db", null, 2);
     }
 
     @Override
@@ -37,6 +38,11 @@ public final class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (newVersion == oldVersion) {
+            return;
+        }
+        //当新版本高于老版本时，在这里更新表 。如果第3次需要修改数据库时，记得删除上次的修改语句。
+        db.execSQL("ALTER TABLE boniu_video ADD boniu_video_account varchar");
+        db.execSQL("ALTER TABLE boniu_folder ADD boniu_folder_account varchar");
     }
 }
