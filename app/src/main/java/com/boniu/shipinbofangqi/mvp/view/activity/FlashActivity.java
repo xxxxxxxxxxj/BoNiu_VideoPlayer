@@ -207,7 +207,7 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 break;
             case R.id.rl_flash_root:
                 //判断是否开启手势密码
-                if (StringUtil.isNotEmpty(password)) {
+                if (CommonUtil.isLogin(mActivity) && StringUtil.isNotEmpty(password)) {
                     setGesture();
                 }
                 break;
@@ -310,13 +310,13 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 boolean ISJUMPLOGIN = spUtil.getBoolean(Global.SP_KEY_ISJUMPLOGIN, false);
                 if (ISJUMPLOGIN) {
                     //判断是否开启手势密码
-                    if (StringUtil.isNotEmpty(password)) {
+                    /*if (StringUtil.isNotEmpty(password)) {
                         tv_flash_shouquan.setVisibility(View.VISIBLE);
                         setGesture();
-                    } else {
-                        //直接进入首页
-                        startActivity(MainActivity.class, true);
-                    }
+                    } else {*/
+                    //直接进入首页
+                    startActivity(MainActivity.class, true);
+                    //}
                 } else {
                     spUtil.saveBoolean(Global.SP_KEY_ISJUMPLOGIN, true);
                     //先进入首页

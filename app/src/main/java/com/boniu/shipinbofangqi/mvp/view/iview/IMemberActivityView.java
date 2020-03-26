@@ -2,6 +2,7 @@ package com.boniu.shipinbofangqi.mvp.view.iview;
 
 import com.boniu.shipinbofangqi.mvp.model.entity.PayChannel;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayInfo;
+import com.boniu.shipinbofangqi.mvp.model.entity.PayResult;
 import com.boniu.shipinbofangqi.mvp.model.entity.ProductInfo;
 import com.boniu.shipinbofangqi.mvp.view.iview.base.IBaseView;
 
@@ -31,4 +32,8 @@ public interface IMemberActivityView  extends IBaseView {
     void submitOrderFail(int code, String message);
 
     void submitOrderSuccess(PayInfo response);
+
+    void queryPayOrderFail(int code, String message);
+
+    void queryPayOrderSuccess(PayResult response);
 }

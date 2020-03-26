@@ -101,12 +101,12 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                         // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
                         pollingNum = 1;
                         showLoadDialog();
-                        PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
+                        mPresenter.queryPayOrder(orderId);
                     } else if (TextUtils.equals(resultStatus, "8000")) {//支付结果确认中
                         // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
                         pollingNum = 1;
                         showLoadDialog();
-                        PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
+                        mPresenter.queryPayOrder(orderId);
                     } else {//支付失败
                         RingToast.show("支付失败");
                     }
@@ -128,7 +128,7 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                 if (resp.errCode == 0) {
                     pollingNum = 1;
                     showLoadDialog();
-                    PollingUtils.startPollingService(mActivity, 1, PayResultService.class, PayResultService.ACTION, orderId);
+                    mPresenter.queryPayOrder(orderId);
                 } else {
                     if (StringUtil.isNotEmpty(resp.errStr)) {
                         RingToast.show(resp.errStr);
@@ -182,7 +182,7 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                 SharedPreferenceUtil.getInstance(mContext).removeData(Global.SP_KEY_ACCOUNTIUD);
                 SharedPreferenceUtil.getInstance(mContext).removeData(Global.SP_KEY_TOKEN);
                 RingToast.show("您已在其他设备登录");
-                mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                startActivity(new Intent(mContext, LoginActivity.class));
             } else if (event.getCode() == AppConfig.CLEARACCOUNTID_CODE) {
                 hideLoadDialog();
                 PollingUtils.stopPollingService(mActivity, PayResultService.class, PayResultService.ACTION);
@@ -495,13 +495,13 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
                     if (response.getPayInfo() != null) {
                         if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 1) {
                             String[] split = response.getPayInfo().split(",");
-                            response.setPackageValue(split[0].split(":")[1].replace("\"",""));
-                            response.setAppId(split[1].split(":")[1].replace("\"",""));
-                            response.setSign(split[2].split(":")[1].replace("\"",""));
-                            response.setPartnerId(split[3].split(":")[1].replace("\"",""));
-                            response.setPrepayId(split[4].split(":")[1].replace("\"",""));
-                            response.setNonceStr(split[5].split(":")[1].replace("\"",""));
-                            response.setTimeStamp(split[6].split(":")[1].replace("}", "").replace("\"",""));
+                            response.setPackageValue(split[0].split(":")[1].replace("\"", ""));
+                            response.setAppId(split[1].split(":")[1].replace("\"", ""));
+                            response.setSign(split[2].split(":")[1].replace("\"", ""));
+                            response.setPartnerId(split[3].split(":")[1].replace("\"", ""));
+                            response.setPrepayId(split[4].split(":")[1].replace("\"", ""));
+                            response.setNonceStr(split[5].split(":")[1].replace("\"", ""));
+                            response.setTimeStamp(split[6].split(":")[1].replace("}", "").replace("\"", ""));
                             RingLog.e("PayInfo() response = " + response);
                             PayUtils.weChatPayment(mActivity, response.getAppId(), response.getPartnerId(), response.getPrepayId(), response.getPackageValue(), response.getNonceStr(), response.getTimeStamp(), response.getSign(), tipDialog);
                         } else if (spUtil.getInt(Global.SP_KEY_PAYWAY, 0) == 2) {
@@ -512,6 +512,59 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
             }
         } catch (Exception e) {
             RingLog.e("submitOrderSuccess() Exception = " + e.toString());
+        }
+    }
+
+    @Override
+    public void queryPayOrderFail(int errorCode, String errorMsg) {
+        hideLoadDialog();
+        RingLog.e("submitOrderFail() errorCode = " + errorCode + "---errorMsg = " + errorMsg);
+        if (errorCode == AppConfig.EXIT_USER_CODE) {
+            spUtil.removeData(Global.SP_KEY_ISLOGIN);
+            spUtil.removeData(Global.SP_KEY_CELLPHONE);
+            spUtil.removeData(Global.SP_KEY_ACCOUNTIUD);
+            spUtil.removeData(Global.SP_KEY_TOKEN);
+            RingToast.show("您已在其他设备登录");
+            startActivity(LoginActivity.class);
+        } else if (errorCode == AppConfig.CLEARACCOUNTID_CODE) {
+            CommonUtil.getNewAccountId(mActivity);
+        } else {
+            int netWorkState = CommonUtil.getNetWorkState(mContext);
+            if (netWorkState == CommonUtil.NETWORK_NONE) {
+                RingToast.show("无网络连接");
+            } else {
+                RingToast.show(errorMsg);
+            }
+        }
+    }
+
+    @Override
+    public void queryPayOrderSuccess(PayResult response) {
+        if (pollingNum >= 3) {
+            RingToast.show("支付失败,请联系客服");
+            hideLoadDialog();
+        } else {
+            if (response != null) {
+                String resultCode = response.getResultCode();
+                if (StringUtil.isNotEmpty(resultCode)) {
+                    if (resultCode.equals("RETRY")) {
+                        pollingNum = pollingNum + 1;
+                        mPresenter.queryPayOrder(orderId);
+                    } else if (resultCode.equals("SUCCESS")) {
+                        EventBus.getDefault().post(new PayEvent());
+                        RingToast.show("支付成功");
+                        hideLoadDialog();
+                        spUtil.saveBoolean(Global.SP_KEY_ISOPENENVIP, true);
+                        finish();
+                    } else if (resultCode.equals("FAIL")) {
+                        RingToast.show(response.getResultMsg());
+                        hideLoadDialog();
+                    }
+                }
+            } else {
+                pollingNum = pollingNum + 1;
+                mPresenter.queryPayOrder(orderId);
+            }
         }
     }
 }

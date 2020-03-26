@@ -52,8 +52,6 @@
                 <action android:name="com.boniu.shipinbofangqi.services.PayResultService" />
             </intent-filter>
         </service>
-
-        <activity android:name=".mvp.view.activity.CancelAccountActivity" />
         <!--
         适配刘海屏：对Application生效，意味着该应用的所有页面，
         系统都不会做竖屏场景的特殊下移或者是横屏场景的右移特殊处理：
@@ -149,6 +147,7 @@
         <activity android:name=".mvp.view.activity.SetGesturesActivity" />
         <activity android:name=".mvp.view.activity.StartGesturesActivity" />
         <activity android:name=".mvp.view.activity.ChooseVideoActivity"/>
+        <activity android:name=".mvp.view.activity.CancelAccountActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

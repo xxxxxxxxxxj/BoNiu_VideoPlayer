@@ -6,6 +6,7 @@ import com.boniu.shipinbofangqi.app.UrlConstants;
 import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayChannel;
 import com.boniu.shipinbofangqi.mvp.model.entity.PayInfo;
+import com.boniu.shipinbofangqi.mvp.model.entity.PayResult;
 import com.boniu.shipinbofangqi.mvp.model.entity.ProductInfo;
 import com.boniu.shipinbofangqi.mvp.presenter.base.BasePresenter;
 import com.boniu.shipinbofangqi.mvp.view.iview.IMemberActivityView;
@@ -137,6 +138,33 @@ public class MemberActivityPresenter extends BasePresenter<IMemberActivityView> 
                     @Override
                     public void onSuccess(PayInfo response) {
                         mIView.submitOrderSuccess(response);
+                    }
+                });
+    }
+
+    /**
+     * 查询支付结果
+     */
+    public void queryPayOrder(String orderId) {
+        HttpParams params = UrlConstants.getParams(mContext);
+        params.put("orderId", orderId);
+        if (StringUtil.isNotEmpty(CommonUtil.getAccountId(mContext))) {
+            params.put("accountId", CommonUtil.getAccountId(mContext));
+        }
+        RequestBody requestBody = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), params.toJSONString());
+        EasyHttp.post(UrlConstants.QUERYPAYORDER)
+                .requestBody(requestBody)
+                .sign(true)
+                .execute(new SimpleCallBack<PayResult>() {
+                    @Override
+                    public void onError(ApiException e) {
+                        RingLog.e("onError() e = " + e.toString());
+                        mIView.queryPayOrderFail(e.getCode(), e.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(PayResult response) {
+                        mIView.queryPayOrderSuccess(response);
                     }
                 });
     }
