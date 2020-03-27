@@ -115,7 +115,7 @@ public class UrlConstants {
                 url = "https://demo.dzztrip.cn/api/";
                 break;
             case 3://线上环境
-                url = "https://service.dzztrip.cn/api/";
+                url = "https://standard.rhinoxlab.com/";
                 break;
             default:
                 break;
@@ -138,7 +138,7 @@ public class UrlConstants {
                 url = "https://demo.cwjia.cn/pet-api/";
                 break;
             case 3://线上环境
-                url = "https://api.ichongwujia.com/";
+                url = "https://standard.rhinoxlab.com/";
                 break;
             default:
                 break;
