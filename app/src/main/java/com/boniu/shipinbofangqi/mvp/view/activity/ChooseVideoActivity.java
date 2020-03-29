@@ -74,7 +74,7 @@ public class ChooseVideoActivity extends BaseActivity {
                 videoList.clear();
                 for (ScanResult scanResult : lists) {
                     String name = scanResult.getName();
-                    int i = name.indexOf('.');
+                    int i = name.lastIndexOf('.');
                     if (i != -1) {
                         name = name.substring(i);
                         if (name.equalsIgnoreCase(".mp4")
@@ -185,7 +185,7 @@ public class ChooseVideoActivity extends BaseActivity {
                     if (selectVideoList.size() == selectable) {
                         break;
                     } else {
-                        if(videoList.get(i).isSelect()){
+                        if (videoList.get(i).isSelect()) {
                             selectVideoList.add(videoList.get(i).getPath());
                         }
                     }

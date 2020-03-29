@@ -1,9 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.activity;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.log.RingLog;
@@ -12,60 +9,30 @@ import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
-import com.shuyu.gsyvideoplayer.GSYVideoManager;
-import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
-import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
 import butterknife.BindView;
+import cn.jzvd.JZUtils;
+import cn.jzvd.Jzvd;
+import cn.jzvd.JzvdStd;
 
 /**
  * 视频播放界面
  */
-public class PlayVideoActivity extends BaseActivity {
+public class VideoPlayActivity extends BaseActivity {
     @BindView(R.id.video_player)
-    StandardGSYVideoPlayer videoPlayer;
+    JzvdStd videoPlayer;
     private String video_name;
     private String video_url;
-    OrientationUtils orientationUtils;
 
     @Override
     protected int getLayoutResID() {
-        return R.layout.activity_play_video;
+        return R.layout.activity_video_play;
     }
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        RingLog.e("video_url = " + video_url);
-        RingLog.e("video_name = " + video_name);
-        videoPlayer.setUp(video_url, true, video_name);
-        //增加封面
-        ImageView imageView = new ImageView(this);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        /*imageView.setImageResource(R.mipmap.xxx1);
-        videoPlayer.setThumbImageView(imageView);*/
-        //增加title
-        videoPlayer.getTitleTextView().setVisibility(View.VISIBLE);
-        //设置返回键
-        videoPlayer.getBackButton().setVisibility(View.VISIBLE);
-        //设置旋转
-        orientationUtils = new OrientationUtils(this, videoPlayer);
-        //设置全屏按键功能,这是使用的是选择屏幕，而不是全屏
-        videoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                orientationUtils.resolveByClick();
-            }
-        });
-        //是否可以滑动调整
-        videoPlayer.setIsTouchWiget(true);
-        //设置返回按键功能
-        videoPlayer.getBackButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        videoPlayer.startPlayLogic();
+        videoPlayer.setUp(video_url, video_name);
+        videoPlayer.startVideo();
     }
 
     @Override
@@ -75,7 +42,6 @@ public class PlayVideoActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        RingLog.e("initData");
         String PLAYVIDEOTIME_TODAY = spUtil.getString(Global.SP_KEY_PLAYVIDEOTIME_TODAY, "");
         int PLAYVIDEONUM_TODAY = spUtil.getInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, 0);
         RingLog.e("PLAYVIDEOTIME_TODAY = " + PLAYVIDEOTIME_TODAY);
@@ -125,33 +91,15 @@ public class PlayVideoActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        videoPlayer.onVideoPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        videoPlayer.onVideoResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        GSYVideoManager.releaseAllVideos();
-        if (orientationUtils != null)
-            orientationUtils.releaseListener();
+        JZUtils.clearSavedProgress(this, null);
+        Jzvd.releaseAllVideos();
     }
 
     @Override
     public void onBackPressed() {
-        RingLog.e("onBackPressed");
-        //先返回正常状态
-        if (orientationUtils.getScreenType() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            videoPlayer.getFullscreenButton().performClick();
+        if (Jzvd.backPress()) {
             return;
         }
-        //释放所有
-        videoPlayer.setVideoAllCallBack(null);
         int PLAYVIDEONUM_TODAY = spUtil.getInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, 0);
         String PLAYVIDEOTIME_TODAY = spUtil.getString(Global.SP_KEY_PLAYVIDEOTIME_TODAY, "");
         RingLog.e("PLAYVIDEONUM_TODAY = " + PLAYVIDEONUM_TODAY);

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.boniu.shipinbofangqi">
 
-    <uses-sdk tools:overrideLibrary="com.lxj.easyadapter,com.shuyu.gsyvideoplayer.lib,com.shuyu.gsyvideoplayer,     tv.danmaku.ijk.media.exo2,com.google.android.exoplayer2,com.google.android.exoplayer2.ui,     com.google.android.exoplayer2.ext.rtmp,com.google.android.exoplayer2.source.dash,com.google.android.exoplayer2.source.hls,     com.google.android.exoplayer2.source.smoothstreaming,com.google.android.exoplayer2.core,com.shuyu.gsyvideoplayer.armv5,     com.shuyu.gsyvideoplayer.armv7a,com.shuyu.gsyvideoplayer.armv64,com.shuyu.gsyvideoplayer.x86_64,com.shuyu.gsyvideoplayer.x86,     com.shuyu.gsy.base,shuyu.com.androidvideocache,net.butterflytv.rtmp_client" />
+    <uses-sdk tools:overrideLibrary="com.lxj.easyadapter,cn.jzvd" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 安装apk所需权限 -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
@@ -97,11 +97,6 @@
                     android:scheme="boniu_videoplayer" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".mvp.view.activity.PlayVideoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Full" />
         <activity android:name=".mvp.view.activity.VideoListActivity" />
         <activity android:name=".mvp.view.activity.FolderListActivity" />
         <activity
@@ -126,6 +121,10 @@
         <activity android:name=".mvp.view.activity.FeedBackActivity" />
         <activity android:name=".mvp.view.activity.TestActivity" />
         <activity
+            android:name=".mvp.view.activity.VideoPlayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".mvp.view.activity.WebViewActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true" />
@@ -146,7 +145,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".mvp.view.activity.SetGesturesActivity" />
         <activity android:name=".mvp.view.activity.StartGesturesActivity" />
-        <activity android:name=".mvp.view.activity.ChooseVideoActivity"/>
+        <activity android:name=".mvp.view.activity.ChooseVideoActivity" />
         <activity android:name=".mvp.view.activity.CancelAccountActivity" />
 
         <provider

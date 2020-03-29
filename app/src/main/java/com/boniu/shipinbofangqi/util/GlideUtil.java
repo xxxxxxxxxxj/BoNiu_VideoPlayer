@@ -3,9 +3,11 @@ package com.boniu.shipinbofangqi.util;
 import android.content.Context;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.boniu.shipinbofangqi.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 /**
  * Glide图片加载工具类
@@ -18,7 +20,10 @@ public class GlideUtil {
     public static void displayVideoCoverImg(Context mContext, String videoUrl,
                                             ImageView imageView) {
         if (StringUtil.isNotEmpty(videoUrl)) {
-            Glide.with(mContext)
+            Glide.with(mContext).load(videoUrl).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .transition(DrawableTransitionOptions.withCrossFade(1000)) // 渐变
+                    .centerCrop().placeholder(R.mipmap.ic_image_load).error(R.mipmap.ic_image_load).into(imageView);
+            /*Glide.with(mContext)
                     .setDefaultRequestOptions(
                             new RequestOptions()
                                     .frame(1000000)
@@ -27,7 +32,7 @@ public class GlideUtil {
                                     .placeholder(R.mipmap.ic_image_load)//可以忽略
                     )
                     .load(videoUrl)
-                    .into(imageView);
+                    .into(imageView);*/
         }
     }
 
