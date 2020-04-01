@@ -85,7 +85,7 @@ public class ChooseVideoActivity extends BaseActivity {
                                 || name.equalsIgnoreCase(".mov")
                                 || name.equalsIgnoreCase(".m4v")
                                 || name.equalsIgnoreCase(".avi")
-                                //|| name.equalsIgnoreCase(".m3u8")
+                                || name.equalsIgnoreCase(".m3u8")
                                 || name.equalsIgnoreCase(".3gpp")
                                 || name.equalsIgnoreCase(".3gpp2")
                                 || name.equalsIgnoreCase(".mkv")

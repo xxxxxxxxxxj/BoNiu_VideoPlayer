@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.boniu.shipinbofangqi.R;
+import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.FileSizeUtil;
 import com.boniu.shipinbofangqi.util.GlideUtil;
@@ -52,6 +53,7 @@ public class VideoGrid extends SquareFrameLayout {
         mCheckView.setChecked(item.isSelect());
         int videoDuration = CommonUtil.getLocalVideoDuration(item.getPath());
         String formatVideoDuration = FileSizeUtil.formatSeconds(videoDuration / 1000);
+        RingLog.e("item.getDuration() = " + item.getDuration() + "---videoDuration = " + videoDuration + "---item.getSize() = " + item.getSize());
         StringUtil.setText(mVideoDuration, formatVideoDuration, "", View.VISIBLE, View.GONE);
         GlideUtil.displayVideoCoverImg(getContext(), item.getPath(), mThumbnail);
     }

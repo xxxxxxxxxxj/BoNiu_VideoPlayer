@@ -12,25 +12,13 @@ public class ScanResult {
     private String date_added;
     private String date_modified;
     private boolean isSelect;
+    private String duration;
 
     public ScanResult(String path) {
         this.path = path;
     }
 
-    @Override
-    public String toString() {
-        return "ScanResult{" +
-                "name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                ", id='" + id + '\'' +
-                ", size='" + size + '\'' +
-                ", date_added='" + date_added + '\'' +
-                ", date_modified='" + date_modified + '\'' +
-                ", isSelect='" + isSelect + '\'' +
-                '}';
-    }
-
-    public ScanResult(String name, String path, String id, String size, String date_added, String date_modified,boolean isSelect) {
+    public ScanResult(String name, String path, String id, String size, String date_added, String date_modified,boolean isSelect,String duration) {
         this.name = name;
         this.path = path;
         this.id = id;
@@ -38,6 +26,15 @@ public class ScanResult {
         this.date_added = date_added;
         this.date_modified = date_modified;
         this.isSelect = isSelect;
+        this.duration = duration;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public boolean isSelect() {

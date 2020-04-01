@@ -45,12 +45,13 @@ public class QuickScanService implements QuickScanListener {
                 MediaStore.Files.FileColumns.DATA,
                 MediaStore.Files.FileColumns.SIZE,
                 MediaStore.Files.FileColumns.DATE_ADDED,
-                MediaStore.Files.FileColumns.DATE_MODIFIED
+                MediaStore.Files.FileColumns.DATE_MODIFIED,
+                MediaStore.Video.VideoColumns.DURATION,
         };
         Uri external = MediaStore.Files.getContentUri("external");
         Uri parse = Uri.parse("file://" + Environment.getExternalStorageDirectory());
-        Log.e("TAG","parse = "+parse.toString());
-        Log.e("TAG","external = "+external.toString());
+        Log.e("TAG", "parse = " + parse.toString());
+        Log.e("TAG", "external = " + external.toString());
         Cursor cursor = context.getContentResolver().query(MediaStore.Files.getContentUri("external"),
                 projection,
                 null,
@@ -65,14 +66,16 @@ public class QuickScanService implements QuickScanListener {
                 int dateAddedIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED);
                 int dateModifiedIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED);
                 int dataIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+                int durationIndex = cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION);
                 do {
                     String _ID = cursor.getString(idIndex);
                     String SIZE = cursor.getString(sizeIndex);
                     String DATE_ADDED = cursor.getString(dateAddedIndex);
                     String DATE_MODIFIED = cursor.getString(dateModifiedIndex);
                     String DATA = cursor.getString(dataIndex);
+                    String DURATION = cursor.getString(durationIndex);
                     int dot = DATA.lastIndexOf("/");
-                    ScanResult scanResult = new ScanResult(DATA.substring(dot + 1), DATA, _ID, SIZE, DATE_ADDED, DATE_MODIFIED, false);
+                    ScanResult scanResult = new ScanResult(DATA.substring(dot + 1), DATA, _ID, SIZE, DATE_ADDED, DATE_MODIFIED, false, DURATION);
                     list.add(scanResult);/*
                     if (name.lastIndexOf(".") > 0)
                         name = name.substring(0, name.lastIndexOf("."));

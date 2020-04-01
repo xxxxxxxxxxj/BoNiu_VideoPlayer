@@ -3,13 +3,13 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -129,17 +129,21 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        DialogSettings.init();
-        boolean isUseBlur = DialogSettings.checkRenderscriptSupport(this);
-        Log.e("TAG", "isUseBlur = " + isUseBlur);
-        DialogSettings.DEBUGMODE = true;
-        DialogSettings.isUseBlur = isUseBlur;
-        DialogSettings.autoShowInputKeyboard = true;
-        //DialogSettings.backgroundColor = Color.BLUE;
-        //DialogSettings.titleTextInfo = new TextInfo().setFontSize(50);
-        //DialogSettings.buttonPositiveTextInfo = new TextInfo().setFontColor(Color.GREEN);
-        DialogSettings.style = DialogSettings.STYLE.STYLE_IOS;
-        DialogSettings.theme = DialogSettings.THEME.LIGHT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            DialogSettings.init();
+            boolean isUseBlur = DialogSettings.checkRenderscriptSupport(this);
+            RingLog.e("TAG", "isUseBlur = " + isUseBlur);
+            DialogSettings.DEBUGMODE = true;
+            DialogSettings.isUseBlur = isUseBlur;
+            DialogSettings.autoShowInputKeyboard = true;
+            //DialogSettings.backgroundColor = Color.BLUE;
+            //DialogSettings.titleTextInfo = new TextInfo().setFontSize(50);
+            //DialogSettings.buttonPositiveTextInfo = new TextInfo().setFontColor(Color.GREEN);
+            DialogSettings.style = DialogSettings.STYLE.STYLE_IOS;
+            DialogSettings.theme = DialogSettings.THEME.LIGHT;
+        } else {
+            RingLog.e("不支持");
+        }
     }
 
     @Override
