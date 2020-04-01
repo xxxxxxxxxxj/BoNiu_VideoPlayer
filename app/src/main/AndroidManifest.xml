@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.boniu.shipinbofangqi">
 
-    <uses-sdk tools:overrideLibrary="com.lxj.easyadapter,cn.jzvd" />
+    <uses-sdk tools:overrideLibrary="com.lxj.easyadapter,com.shuyu.gsyvideoplayer.lib,com.shuyu.gsyvideoplayer,     tv.danmaku.ijk.media.exo2,com.google.android.exoplayer2,com.google.android.exoplayer2.ui,     com.google.android.exoplayer2.ext.rtmp,com.google.android.exoplayer2.source.dash,com.google.android.exoplayer2.source.hls,     com.google.android.exoplayer2.source.smoothstreaming,com.google.android.exoplayer2.core,com.shuyu.gsyvideoplayer.armv5,     com.shuyu.gsyvideoplayer.armv7a,com.shuyu.gsyvideoplayer.armv64,com.shuyu.gsyvideoplayer.x86_64,com.shuyu.gsyvideoplayer.x86,     com.shuyu.gsy.base,shuyu.com.androidvideocache,net.butterflytv.rtmp_client" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 安装apk所需权限 -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
@@ -42,6 +42,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
+        android:hardwareAccelerated="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
@@ -78,6 +79,7 @@
 
         <activity
             android:name=".mvp.view.activity.FlashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -97,13 +99,17 @@
                     android:scheme="boniu_videoplayer" />
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.view.activity.VideoListActivity" />
-        <activity android:name=".mvp.view.activity.FolderListActivity" />
+        <activity android:name=".mvp.view.activity.VideoListActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".mvp.view.activity.FolderListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".mvp.view.activity.LoginActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name=".mvp.view.activity.MainActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".mvp.view.activity.FlipperActivity" />
@@ -115,10 +121,14 @@
         <activity android:name=".mvp.view.activity.RobustActivity" />
         <activity
             android:name=".mvp.view.activity.AddFeedBackActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible" />
-        <activity android:name=".mvp.view.activity.MemberActivity" />
-        <activity android:name=".mvp.view.activity.AboutActivity" />
-        <activity android:name=".mvp.view.activity.FeedBackActivity" />
+        <activity android:name=".mvp.view.activity.MemberActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".mvp.view.activity.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".mvp.view.activity.FeedBackActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".mvp.view.activity.TestActivity" />
         <activity
             android:name=".mvp.view.activity.VideoPlayActivity"
@@ -143,10 +153,19 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".mvp.view.activity.SetGesturesActivity" />
-        <activity android:name=".mvp.view.activity.StartGesturesActivity" />
-        <activity android:name=".mvp.view.activity.ChooseVideoActivity" />
-        <activity android:name=".mvp.view.activity.CancelAccountActivity" />
+        <activity android:name=".mvp.view.activity.SetGesturesActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".mvp.view.activity.StartGesturesActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".mvp.view.activity.ChooseVideoActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mvp.view.activity.CancelAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mvp.view.activity.PlayVideoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Full" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

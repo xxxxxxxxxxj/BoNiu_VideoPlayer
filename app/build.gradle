@@ -202,8 +202,8 @@ dependencies {
     //友盟统计
     implementation 'com.umeng.umsdk:analytics:8.0.0'
     implementation 'com.umeng.umsdk:common:2.0.0'
-    //高度自定义的安卓视频框架
-    implementation 'cn.jzvd:jiaozivideoplayer:7.2.3'
+    //视频播放器（IJKplayer、ExoPlayer、MediaPlayer）
+    implementation 'com.shuyu:GSYVideoPlayer:7.1.3'
 }
 
 walle {

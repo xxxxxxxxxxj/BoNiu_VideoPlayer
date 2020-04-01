@@ -36,6 +36,8 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.internal.ArrowDrawable;
 import com.scwang.smartrefresh.layout.internal.ProgressDrawable;
 import com.scwang.smartrefresh.layout.util.SmartUtil;
+import com.shuyu.gsyvideoplayer.player.IjkPlayerManager;
+import com.shuyu.gsyvideoplayer.player.PlayerFactory;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -207,7 +209,7 @@ public class MApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         //系统内核模式
-        //PlayerFactory.setPlayManager(Exo2PlayerManager.class);
+        PlayerFactory.setPlayManager(IjkPlayerManager.class);
         //注册微信
         regToWx();
         //RingLog

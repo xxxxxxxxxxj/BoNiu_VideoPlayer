@@ -23,9 +23,9 @@ import com.boniu.shipinbofangqi.mvp.view.activity.FeedBackActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.FolderListActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.LoginActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.MemberActivity;
+import com.boniu.shipinbofangqi.mvp.view.activity.PlayVideoActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.StartGesturesActivity;
 import com.boniu.shipinbofangqi.mvp.view.activity.VideoListActivity;
-import com.boniu.shipinbofangqi.mvp.view.activity.VideoPlayActivity;
 import com.boniu.shipinbofangqi.mvp.view.adapter.FolderAdapter;
 import com.boniu.shipinbofangqi.mvp.view.adapter.VideoAdapter;
 import com.boniu.shipinbofangqi.mvp.view.fragment.base.BaseFragment;
@@ -277,7 +277,7 @@ public class VideoFragment extends BaseFragment<VideoFragPresenter> implements I
                                     Bundle bundle = new Bundle();
                                     bundle.putString("video_url", boNiuVideoInfo.getBoniu_video_url());
                                     bundle.putString("video_name", boNiuVideoInfo.getBoniu_video_name());
-                                    startActivity(VideoPlayActivity.class, bundle);
+                                    startActivity(PlayVideoActivity.class, bundle);
                                 }
 
                                 @Override

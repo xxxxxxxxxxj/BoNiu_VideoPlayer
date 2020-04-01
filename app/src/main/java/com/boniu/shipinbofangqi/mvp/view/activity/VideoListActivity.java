@@ -150,7 +150,7 @@ public class VideoListActivity extends BaseActivity {
                                     Bundle bundle = new Bundle();
                                     bundle.putString("video_url", boNiuVideoInfo.getBoniu_video_url());
                                     bundle.putString("video_name", boNiuVideoInfo.getBoniu_video_name());
-                                    startActivity(VideoPlayActivity.class, bundle);
+                                    startActivity(PlayVideoActivity.class, bundle);
                                 }
 
                                 @Override

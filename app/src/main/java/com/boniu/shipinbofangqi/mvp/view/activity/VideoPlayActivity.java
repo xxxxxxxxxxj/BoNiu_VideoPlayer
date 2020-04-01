@@ -10,17 +10,12 @@ import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
 
-import butterknife.BindView;
-import cn.jzvd.JZUtils;
-import cn.jzvd.Jzvd;
-import cn.jzvd.JzvdStd;
-
 /**
  * 视频播放界面
  */
 public class VideoPlayActivity extends BaseActivity {
-    @BindView(R.id.video_player)
-    JzvdStd videoPlayer;
+    //@BindView(R.id.video_player)
+    //JzvdStd videoPlayer;
     private String video_name;
     private String video_url;
 
@@ -31,8 +26,8 @@ public class VideoPlayActivity extends BaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        videoPlayer.setUp(video_url, video_name);
-        videoPlayer.startVideo();
+        /*videoPlayer.setUp(video_url, video_name);
+        videoPlayer.startVideo();*/
     }
 
     @Override
@@ -91,15 +86,15 @@ public class VideoPlayActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        JZUtils.clearSavedProgress(this, null);
-        Jzvd.releaseAllVideos();
+        /*JZUtils.clearSavedProgress(this, null);
+        Jzvd.releaseAllVideos();*/
     }
 
     @Override
     public void onBackPressed() {
-        if (Jzvd.backPress()) {
+        /*if (Jzvd.backPress()) {
             return;
-        }
+        }*/
         int PLAYVIDEONUM_TODAY = spUtil.getInt(Global.SP_KEY_PLAYVIDEONUM_TODAY, 0);
         String PLAYVIDEOTIME_TODAY = spUtil.getString(Global.SP_KEY_PLAYVIDEOTIME_TODAY, "");
         RingLog.e("PLAYVIDEONUM_TODAY = " + PLAYVIDEONUM_TODAY);
