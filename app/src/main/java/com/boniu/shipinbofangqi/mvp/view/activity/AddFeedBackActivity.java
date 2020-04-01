@@ -3,7 +3,6 @@ package com.boniu.shipinbofangqi.mvp.view.activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -15,12 +14,15 @@ import com.boniu.shipinbofangqi.log.RingLog;
 import com.boniu.shipinbofangqi.mvp.presenter.AddFeedBackActivityPresenter;
 import com.boniu.shipinbofangqi.mvp.view.activity.base.BaseActivity;
 import com.boniu.shipinbofangqi.mvp.view.iview.IAddFeedBackActivityView;
+import com.boniu.shipinbofangqi.textfilter.InputFilterHelper;
+import com.boniu.shipinbofangqi.textfilter.handler.ChineseFilterHandler;
+import com.boniu.shipinbofangqi.textfilter.handler.EnglishFilterHandler;
+import com.boniu.shipinbofangqi.textfilter.handler.NumberFilterHandler;
+import com.boniu.shipinbofangqi.textfilter.handler.PunctuationFilterHandler;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.CommonUtil;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.StringUtil;
-
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -76,23 +78,13 @@ public class AddFeedBackActivity extends BaseActivity<AddFeedBackActivityPresent
 
     @Override
     protected void initEvent() {
-        InputFilter inputFilter = new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
-                try {
-                    String regex = "/^(\\w|-|[\\u4E00-\\u9FA5])*$/";
-                    boolean isChinese = Pattern.matches(regex, charSequence.toString());
-                    if (!Character.isLetterOrDigit(charSequence.charAt(i))  || isChinese) {
-                        return "";
-                    }
-                    return null;
-                } catch (Exception e) {
-                    RingLog.e("e = " + e.toString());
-                    return null;
-                }
-            }
-        };
-        etAddfeedbackName.setFilters(new InputFilter[]{inputFilter});
+        InputFilterHelper.Builder builder1 = new InputFilterHelper.Builder()
+                .addHandler(new ChineseFilterHandler())
+                .addHandler(new EnglishFilterHandler())
+                .addHandler(new NumberFilterHandler())
+                .addHandler(new PunctuationFilterHandler());
+        InputFilter[] inputFilters = InputFilterHelper.build(builder1).genFilters();
+        etAddfeedbackName.setFilters(inputFilters);
         etAddfeedbackName.addTextChangedListener(new TextWatcher() {
             //记录输入的字数
             private CharSequence wordNum;
