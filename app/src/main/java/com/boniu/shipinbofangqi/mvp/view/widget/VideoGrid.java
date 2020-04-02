@@ -56,5 +56,7 @@ public class VideoGrid extends SquareFrameLayout {
         RingLog.e("item.getDuration() = " + item.getDuration() + "---videoDuration = " + videoDuration + "---item.getSize() = " + item.getSize());
         StringUtil.setText(mVideoDuration, formatVideoDuration, "", View.VISIBLE, View.GONE);
         GlideUtil.displayVideoCoverImg(getContext(), item.getPath(), mThumbnail);
+        /*Bitmap thumbnail = CommonUtil.getThumbnail(getContext(), Integer.parseInt(item.getId()));
+        RingLog.e("thumbnail = " + thumbnail);*/
     }
 }

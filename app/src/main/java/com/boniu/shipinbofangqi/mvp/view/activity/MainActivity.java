@@ -40,6 +40,7 @@ import com.boniu.shipinbofangqi.util.GetDeviceId;
 import com.boniu.shipinbofangqi.util.Global;
 import com.boniu.shipinbofangqi.util.PathUtils;
 import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
+import com.boniu.shipinbofangqi.util.QMUIPackageHelper;
 import com.boniu.shipinbofangqi.util.StringUtil;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
@@ -263,18 +264,25 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
         if (response != null) {
             AppInfoBean.VersionInfoVo versionInfoVo = response.getVersionInfoVo();
             if (versionInfoVo != null) {
-                boolean ISCLOSEUPGRADEDIALOG = spUtil.getBoolean(Global.SP_KEY_ISCLOSEUPGRADEDIALOG, false);
-                String UPGRADETIME = spUtil.getString(Global.SP_KEY_UPGRADETIME, "");
-                if (ISCLOSEUPGRADEDIALOG) {
-                    if (StringUtil.isNotEmpty(UPGRADETIME)) {
-                        if (CommonUtil.getTimeDays(UPGRADETIME, CommonUtil.getCurrentDate()) > 7) {
+                String version = versionInfoVo.getVersion();
+                boolean isLatest = UpdateUtil
+                        .compareVersion(
+                                version, QMUIPackageHelper.getAppVersion(mContext));
+                RingLog.e("isLatest = " + isLatest);
+                if (isLatest) {// 需要下载安装最新版
+                    boolean ISCLOSEUPGRADEDIALOG = spUtil.getBoolean(Global.SP_KEY_ISCLOSEUPGRADEDIALOG, false);
+                    String UPGRADETIME = spUtil.getString(Global.SP_KEY_UPGRADETIME, "");
+                    if (ISCLOSEUPGRADEDIALOG) {
+                        if (StringUtil.isNotEmpty(UPGRADETIME)) {
+                            if (CommonUtil.getTimeDays(UPGRADETIME, CommonUtil.getCurrentDate()) > 7) {
+                                setUpgradeDialog(versionInfoVo);
+                            }
+                        } else {
                             setUpgradeDialog(versionInfoVo);
                         }
                     } else {
                         setUpgradeDialog(versionInfoVo);
                     }
-                } else {
-                    setUpgradeDialog(versionInfoVo);
                 }
             }
         }

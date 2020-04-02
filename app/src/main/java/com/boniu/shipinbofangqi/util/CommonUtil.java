@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -215,6 +217,16 @@ public class CommonUtil {
             return 0;
         }
         return duration;
+    }
+
+    /**
+     * get Local video duration
+     *
+     * @return
+     */
+    public static Bitmap getThumbnail(Context context, long origId) {
+        return MediaStore.Video.Thumbnails.getThumbnail(context.getContentResolver(),
+                origId, MediaStore.Video.Thumbnails.MINI_KIND, null);
     }
 
     /**
