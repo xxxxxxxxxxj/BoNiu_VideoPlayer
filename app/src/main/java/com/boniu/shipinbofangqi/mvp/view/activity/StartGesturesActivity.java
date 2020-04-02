@@ -19,6 +19,7 @@ import com.boniu.shipinbofangqi.mvp.view.widget.gestures.Lock9View;
 import com.boniu.shipinbofangqi.toast.RingToast;
 import com.boniu.shipinbofangqi.util.GetGestures;
 import com.gyf.immersionbar.ImmersionBar;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -136,5 +137,17 @@ public class StartGesturesActivity extends BaseActivity {
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

@@ -15,6 +15,7 @@ import com.boniu.shipinbofangqi.util.StringUtil;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 
@@ -126,12 +127,14 @@ public class PlayVideoActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         videoPlayer.onVideoPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         videoPlayer.onVideoResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override

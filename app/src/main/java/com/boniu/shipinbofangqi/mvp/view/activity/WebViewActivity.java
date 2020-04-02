@@ -24,11 +24,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.download.library.DownloadImpl;
-import com.download.library.DownloadListenerAdapter;
-import com.download.library.DownloadingListener;
-import com.download.library.Extra;
-import com.download.library.ResourceRequest;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.agentweb.MiddlewareChromeClient;
 import com.boniu.shipinbofangqi.agentweb.MiddlewareWebViewClient;
@@ -43,6 +38,11 @@ import com.boniu.shipinbofangqi.util.QMUIDeviceHelper;
 import com.boniu.shipinbofangqi.util.QMUIPackageHelper;
 import com.boniu.shipinbofangqi.util.SharedPreferenceUtil;
 import com.boniu.shipinbofangqi.util.StringUtil;
+import com.download.library.DownloadImpl;
+import com.download.library.DownloadListenerAdapter;
+import com.download.library.DownloadingListener;
+import com.download.library.Extra;
+import com.download.library.ResourceRequest;
 import com.google.gson.Gson;
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
@@ -55,6 +55,7 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebListenerManager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 
@@ -432,12 +433,14 @@ public class WebViewActivity extends BaseActivity {
     public void onResume() {
         mAgentWeb.getWebLifeCycle().onResume();//恢复
         super.onResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override
     public void onPause() {
         mAgentWeb.getWebLifeCycle().onPause(); //暂停应用内所有WebView ， 调用mWebView.resumeTimers();/mAgentWeb.getWebLifeCycle().onResume(); 恢复。
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override

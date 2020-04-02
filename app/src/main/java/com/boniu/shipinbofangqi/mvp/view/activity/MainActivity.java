@@ -47,6 +47,7 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.MessageDialog;
+import com.umeng.analytics.MobclickAgent;
 import com.yalantis.ucrop.UCrop;
 import com.zhihu.matisse.Matisse;
 import com.zhouyou.http.EasyHttp;
@@ -395,5 +396,17 @@ public class MainActivity extends BaseActivity<MainActivityPresenter> implements
     public void setFragMentIndex(int index) {
         this.currentIndex = index;
         ctlMain.setCurrentTab(currentIndex);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

@@ -40,6 +40,7 @@ import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.util.DialogSettings;
 import com.kongzue.dialog.v3.CustomDialog;
 import com.kongzue.dialog.v3.MessageDialog;
+import com.umeng.analytics.MobclickAgent;
 import com.zhouyou.http.EasyHttp;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -429,5 +430,17 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
                 });
             }
         }).setAlign(CustomDialog.ALIGN.DEFAULT).setCancelable(false).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

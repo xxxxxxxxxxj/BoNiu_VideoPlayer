@@ -17,6 +17,7 @@ import com.boniu.shipinbofangqi.toast.RingToast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.duyin.quickscan.QuickScanManager;
 import com.duyin.quickscan.baen.ScanResult;
+import com.umeng.analytics.MobclickAgent;
 import com.zhihu.matisse.internal.ui.widget.MediaGridInset;
 
 import org.greenrobot.eventbus.EventBus;
@@ -243,5 +244,17 @@ public class ChooseVideoActivity extends BaseActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

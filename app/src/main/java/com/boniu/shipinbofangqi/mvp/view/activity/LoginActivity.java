@@ -33,6 +33,7 @@ import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.umeng.analytics.MobclickAgent;
 import com.zhouyou.http.EasyHttp;
 
 import org.greenrobot.eventbus.EventBus;
@@ -293,5 +294,17 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> implemen
     protected void onDestroy() {
         super.onDestroy();
         CountdownUtil.getInstance().cancel("LOGIN_TIMER");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }
