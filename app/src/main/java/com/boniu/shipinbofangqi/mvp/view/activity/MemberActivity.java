@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alipay.sdk.app.EnvUtils;
 import com.boniu.shipinbofangqi.R;
 import com.boniu.shipinbofangqi.app.AppConfig;
 import com.boniu.shipinbofangqi.log.RingLog;
@@ -232,7 +231,8 @@ public class MemberActivity extends BaseActivity<MemberActivityPresenter> implem
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
+        //支付宝沙箱环境
+        //EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
     }
 
     @Override

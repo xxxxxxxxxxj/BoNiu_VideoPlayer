@@ -68,6 +68,8 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     ImageView shFragmyFolder;
     @BindView(R.id.tv_fragmy_loginout)
     TextView tv_fragmy_loginout;
+    @BindView(R.id.iv_fragmy_right1)
+    ImageView iv_fragmy_right1;
     private String validityTime;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -95,6 +97,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
     private void setData() {
         if (CommonUtil.isLogin(mActivity)) {
             tv_fragmy_loginout.setVisibility(View.VISIBLE);
+            iv_fragmy_right1.setVisibility(View.GONE);
             boolean ISOPENENVIP = spUtil.getBoolean(Global.SP_KEY_ISOPENENVIP, false);
             if (ISOPENENVIP) {
                 tvFragmySeniorState.setText(validityTime + "到期");
@@ -103,6 +106,7 @@ public class MyFragment extends BaseFragment<MyFragPresenter> implements IMyFrag
             }
             tvFragmyLogin.setText(CommonUtil.getCellPhone(mActivity));
         } else {
+            iv_fragmy_right1.setVisibility(View.VISIBLE);
             tv_fragmy_loginout.setVisibility(View.GONE);
             tvFragmySeniorState.setText("未开通");
             tvFragmyLogin.setText("未登录");
