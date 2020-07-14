@@ -3,7 +3,7 @@
     <string name="toast_cannot_retrieve_selected_image">Cannot retrieve selected image</string>
     <string name="label_select_picture">Select Picture</string>
     <string name="transition_test">test</string>
-    <string name="app_name" translatable="false">视频播放器</string>
+    <string name="app_name" translatable="false">视频播放器助手</string>
     <string name="simple_view_behavior" translatable="false">com.lzy.demo.ui.SimpleViewBehavior</string>
     <string name="translate_up_down_behavior" translatable="false">com.lzy.demo.ui.TranslateUpDownBehavior</string>
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>

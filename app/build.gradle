@@ -60,10 +60,10 @@ android {
             signingConfig signingConfigs.config//设置签名信息
         }
         debug {
-            minifyEnabled false//true：启用混淆,false:不启用
+            minifyEnabled true//true：启用混淆,false:不启用
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            shrinkResources false
-            zipAlignEnabled false
+            shrinkResources true
+            zipAlignEnabled true
             pseudoLocalesEnabled true
             signingConfig signingConfigs.config
             debuggable true//是否支持断点调试

@@ -1,7 +1,6 @@
 package com.boniu.shipinbofangqi.mvp.view.activity;
 
 import android.Manifest;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -194,12 +193,12 @@ public class FlashActivity extends BaseActivity<FlashActivityPresenter> implemen
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {/*
         setAllowFullScreen(true);
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
             finish();
             return;
-        }
+        }*/
         super.onCreate(savedInstanceState);
         setSwipeBack(false);
     }
